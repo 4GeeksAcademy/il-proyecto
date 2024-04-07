@@ -1,14 +1,29 @@
-import React, { useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
 
+/* GOOGLE LOGIN */
+import { jwtDecode } from "jwt-decode";
+
 
 export const Home = () => {
+	const [user, setUser] = useState({});
+
 	const { store, actions } = useContext(Context);
 
 	function handleCallbackResponse(response) {
 		console.log("Encoded JWT ID token: " + response.credential);
+		var userObject = jwtDecode(response.credential);
+		console.log(userObject);
+		setUser(userObject);
+		document.getElementById("signInDiv").hidden = true;
+	}
+
+	function handleSingOut(event) {
+		setUser({});
+		document.getElementById("signInDiv").hidden = false;
+
 	}
 
 	useEffect(() => {
@@ -33,24 +48,38 @@ export const Home = () => {
 			document.body.appendChild(script);
 		}
 
-
 		/* global google */
 		google.accounts.id.initialize({
-			client_id: "364011413939-4bmaa89l50nceb4c0cgapc2vsn5qh0p2.apps.googleusercontent.com",
+			client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
 			callback: handleCallbackResponse
 
 		})
+
 		google.accounts.id.renderButton(
 			document.getElementById("signInDiv"),
 			{ theme: "outline", size: "large" }
-		)
+		);
+
 	}, []);
+
+	//If we have no user: sign in button 
+	//If we have a user: show the log out button 
 
 	return (
 		<div className="text-center mt-5">
 			<h1>Welcome to Mymood</h1>
 
 			<div id="signInDiv"></div>
+			{
+				Object.keys(user).length != 0 &&
+				<button onClick={(e) => handleSingOut(e)}>Sing Out</button>
+			}
+			{user &&
+				<div>
+					<img src={user.picture} />
+					<h3>{user.name}</h3>
+				</div>
+			}
 			<p>
 				<img src={rigoImageUrl} />
 			</p>
