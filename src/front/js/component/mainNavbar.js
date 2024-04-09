@@ -10,8 +10,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Image from 'react-bootstrap/Image';
 
 /* App */
-import logo from "../../img/logo.png";
-
+import Logo from '../../img/index';
 
 export const MainNavbar = () => {
 
@@ -22,13 +21,7 @@ export const MainNavbar = () => {
 		<Navbar className="bg-body-tertiary">
 			<Container fluid>
 				<Navbar.Brand href="/" className="d-flex">
-					<img
-						src={logo}
-						width="150px"
-						height="auto"
-						className="d-inline-block align-top"
-						alt="Mymood logo"
-					/>
+					<Logo />
 				</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">

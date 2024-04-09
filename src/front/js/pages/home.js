@@ -13,7 +13,7 @@ export const Home = () => {
 
 	return (
 		<div className="text-center mt-5">
-			<h1>Welcome!</h1>
+			<h1>Welcome!</h1><span className="icon-cerrar"></span>
 
 			{/* <p>
 				<img src={rigoImageUrl} />
@@ -34,6 +34,8 @@ export const Home = () => {
 			<div>
 				<AccordionFaqs />
 			</div>
+
+			
 
 		</div>
 	);

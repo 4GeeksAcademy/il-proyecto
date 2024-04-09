@@ -5,6 +5,8 @@ import Accordion from 'react-bootstrap/Accordion';
 
 const AccordionFaqs = () => {
   return (
+    <>
+    <h1> FAQs</h1>
     <Accordion>
       <Accordion.Item eventKey="0">
         <Accordion.Header>Accordion Item #1</Accordion.Header>
@@ -31,6 +33,7 @@ const AccordionFaqs = () => {
         </Accordion.Body>
       </Accordion.Item>
     </Accordion>
+    </>
   );
 }
 

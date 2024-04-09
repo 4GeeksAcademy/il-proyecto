@@ -30,7 +30,7 @@ const MoodRectangle = () => {
                 filter="url(#shadow)" />
             <foreignObject ref={foreignObjectRef} x="10" y="10" width="330" height="150">
                 <div xmlns="http://www.w3.org/1999/xhtml" style={{ fontSize: '55px', fontFamily: 'Impact', fontWeight: '900', padding: '20px', boxSizing: 'border-box', whiteSpace: 'pre-wrap', color: '#F4B6D3', lineHeight: 1}}>
-                    ¿Para qué me he levantado de la cama?
+                    Hola
                 </div>
             </foreignObject>
         </svg>
