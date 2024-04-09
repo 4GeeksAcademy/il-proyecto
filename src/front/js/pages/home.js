@@ -5,6 +5,7 @@ import "../../styles/home.css";
 
 /*App*/
 import MoodRectangle from "../component/moodRectangle";
+import AccordionFaqs from "../component/accordeonFaqs";
 
 export const Home = () => {
 
@@ -28,6 +29,10 @@ export const Home = () => {
 			</p> */}
 			<div>
 				<MoodRectangle />
+			</div>
+
+			<div>
+				<AccordionFaqs />
 			</div>
 
 		</div>
