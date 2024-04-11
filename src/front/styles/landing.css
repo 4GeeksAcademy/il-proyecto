@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@media (min-width: 768px) {
+  /* Estilos específicos para pantallas medianas y más grandes (tablets y desktops) */
+  .image-bottom-left-container1 {
+    margin-left: 5%; /* Ajusta el margen izquierdo en pantallas más grandes */
+  }
+
+  .image-bottom-right-container1 {
+    margin-right: 5%; /* Ajusta el margen derecho en pantallas más grandes */
+  }
+}
+ 
+.container-landingpage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--option4-color);
+  border: 1px solid #020202;
+  box-sizing: border-box;
+  padding: 20px; /* Añade relleno para separar el contenido del borde */
+ 
+}
+
+.image-top-left-container1,
+.image-top-right-container1,
+.image-bottom-left-container1,
+.image-bottom-right-container1 {
+  object-fit: cover;
+  box-shadow: var(--image-box-shadow);
+  width: 100%; /* Ajusta el ancho al 100% para ocupar todo el espacio disponible */
+  height: auto; /* Permite que la altura se ajuste automáticamente */
+  display: block; /* Cambia a 'block' para eliminar espacios innecesarios */
+  margin-bottom: 3%;
+  margin-top: 2%;
+}
+
+.image-top-left-container1{
+  object-fit: cover;
+  box-shadow: var(--image-box-shadow);
+}
+
+.image-top-right-container1{
+  object-fit: contain;
+  box-shadow: var(--image-box-shadow);
+  flex-shrink: 0;
+  margin-right: 20%;
+}
+
+
+.image-bottom-left-container1{
+  object-fit: contain;
+  box-shadow: var(--image-box-shadow);
+  margin-top: 5rem;
+  margin-left: 10rem;
+  flex-shrink: 0;
+}
+
+.image-bottom-right-container1 {
+  object-fit: contain;
+  box-shadow: var(--image-box-shadow);
+  margin-top: 5rem;
+  margin-right: 5rem;
+  flex-shrink: 0;
+}
+
+/* second container */
+
+.second-container-landingpage, .sixth-container-landingpage {
+  display: flex;
+  background-color: var(--option6-color);
+  border: 1px solid #9e9e9e;
+  height: auto;
+  position: relative;
+  width: 100%;
+  margin-top: 5%;
+}
+
+.button-second-container-landingpage {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 1; 
+  width: 450px; 
+  height: 116px;
+  
+}
+
+  /* third container  */
+
+  .heading-thirdcontainer{
+  font-family: var(--heading1-font-family);
+  font-size: 45px; 
+  color: var(--heading-color);  
+  font-weight: 300;
+  font-style: italic;
+  line-height: 136px;
+  letter-spacing: 0.08px;
+  margin-top: 15%;
+}
+
+.image-third-container-landingpage{
+  box-shadow: var(--image-box-shadow);
+  max-width: 100%;  
+  height: auto;
+  margin-top: 5rem
+}
+
+/* fourth container  */
+
+.fourth-container{
+  
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(50%);
+  margin-top: 5rem;
+}
+
+.heading-fourth-container{
+  font-family: var(--heading1-font-family);
+  font-size: 45px; 
+  color: var(--heading-color);  
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.08px;
+}
+
+.image-fourth-container-landingpage {
+  box-shadow: var(--image-box-shadow);
+  max-width: 100%;  
+  height: auto;
+  margin-top: 3rem
+}
+
+
+.heading-fivethcontainer{
+  font-family: var(--heading1-font-family);
+  font-size: 45px; 
+  color: var(--heading-color);  
+  font-weight: 300;
+  font-style: italic;
+  line-height: 136px;
+  letter-spacing: 0.08px;
+  margin-top: 5%;
+}
+
+.image-happy-fiveth-container-landingpage{
+  transform: translate(-100%,-75%)
+}
+
+.image-serious-fiveth-container-landingpage{
+  transform: translate(-20%,-90%)
+}
+
+.image-angry-fiveth-container-landingpage{
+  transform: translate(-115%,-150%)
+}
+/* sixth-container  */
+
+.image-sixth-container-landingpage{
+  box-shadow: var(--image-box-shadow);
+  max-width: 100%;  
+  height: auto;
+}
+
+.button-sixth-container-landingpage{
+  color: #000000;
+  text-align: center;
+  font-family: var(--base-font-family);
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.03px;
+  background: var(--option3-color);
+  box-shadow: var(--button1-box-shadow);
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 1; 
+  width: 450px; 
+  height: 116px;
+} 
