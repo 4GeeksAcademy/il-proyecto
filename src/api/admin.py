@@ -8,7 +8,6 @@ def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
     admin = Admin(app, name='4Geeks Admin', template_mode='bootstrap3')
-
     
     # Add your models here, for example this is how we add a the User model to the admin
     admin.add_view(ModelView(User, db.session))
@@ -24,6 +23,9 @@ def setup_admin(app):
     admin.add_view(ModelView(Phycologyst , db.session))
     admin.add_view(ModelView(Sessions , db.session))
     
+    # class FavoritesView(ModelView):
+    #     column_list = ('people_id', 'planets_id', 'starships_id', 'users_id')
+    #     form_columns = ('people_id', 'planets_id', 'starships_id', 'users_id')
     
     # admin.add_view(FavoritesView(Favorites, db.session))
 
