@@ -19,7 +19,8 @@ class User(db.Model):
     phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
 
     def __repr__(self):
-        return f'<User {self.email}>'
+        return '<Users %r>' % self.id
+     
 
     def serialize(self):
         return {
@@ -29,7 +30,7 @@ class User(db.Model):
             "surnames": self.surnames,
             "age": self.age,
             "is_active": self.is_active,
-            "profile_url": self.profile_url,
+            "profile_url": self.profile_url
             # Do not serialize the password, it's a security breach
         }
 
@@ -41,7 +42,7 @@ class Location(db.Model):
     users = db.relationship('User', backref='location', lazy=True)
     
     def __repr__(self):
-        return f'<Location {self.id}>'
+        return '<Location %r>' % self.id
 
     def serialize(self):
         return {
@@ -57,7 +58,7 @@ class Hobbie(db.Model):
     users = db.relationship('User', backref='hobbie', lazy=True)
 
     def __repr__(self):
-        return f'<Hobbie {self.name}>'
+        return '<Hobbie %r>' % self.id
 
     def serialize(self):
         return {
@@ -72,7 +73,7 @@ class CategoryMood(db.Model):
     moods = db.relationship('Mood', backref='category_mood', lazy=True, uselist=False)
     
     def __repr__(self):
-        return f'<CategoryMood {self.category}>'
+         return '<CategoryMood %r>' % self.id
 
     def serialize(self):
         return {
@@ -89,7 +90,7 @@ class Mood(db.Model):
     users = db.relationship('User', backref='mood', lazy=True)
     
     def __repr__(self):
-        return f'<Mood {self.mood}>'
+        return '<Mood %r>' % self.id
 
     def serialize(self):
         return {
@@ -107,7 +108,7 @@ class UserMoodHistory(db.Model):
     mood = db.relationship('Mood')
     
     def __repr__(self):
-        return f'<UserMoodHistory {self.user_id} {self.date}>'
+        return '<UserMoodHistory %r>' % self.id
 
     def serialize(self):
         return {
@@ -126,7 +127,7 @@ class Action(db.Model):
     category = db.relationship('CategoryMood', backref='actions')
 
     def __repr__(self):
-        return f'<Action {self.action}>'
+        return '<Action %r>' % self.id
 
     def serialize(self):
         return {
@@ -142,7 +143,7 @@ class ResourceType(db.Model):
     resource_type = db.Column(db.String(255))
     
     def __repr__(self):
-        return f'<ResourceType {self.resource_type}>'
+        return '<ResourceType %r>' % self.id
 
     def serialize(self):
         return {
@@ -161,7 +162,7 @@ class Resource(db.Model):
     phycologyst = db.relationship('Phycologyst', backref='resource')
     
     def __repr__(self):
-        return f'<Resource {self.id}>'
+        return '<Resource %r>' % self.id
 
     def serialize(self):
         return {
@@ -182,7 +183,7 @@ class Chat(db.Model):
     receiver = db.relationship('User', foreign_keys=[user_reciver_id])
     
     def __repr__(self):
-        return f'<Chat {self.id}>'
+        return '<Chat %r>' % self.id
 
     def serialize(self):
         return {
@@ -204,7 +205,7 @@ class Phycologyst(db.Model):
     users = db.relationship('User', backref='phycologyst', lazy=True)
     
     def __repr__(self):
-        return f'<Phycologyst {self.name}>'
+        return '<Phycologyst %r>' % self.id
 
     def serialize(self):
         return {
@@ -224,7 +225,8 @@ class Sessions(db.Model):
     user = db.relationship('User', backref='sessions')
     
     def __repr__(self):
-        return f'<Sessions {self.id}>'
+        return '<Sessions %r>' % self.id
+        
 
     def serialize(self):
         return {
