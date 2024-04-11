@@ -10,7 +10,99 @@
     margin-right: 5%; /* Ajusta el margen derecho en pantallas más grandes */
   }
 }
- 
+
+
+@media (max-width: 767px) {
+  .heading1 {
+    font-size: 40px;
+    letter-spacing: 0.04px;
+    text-align: center; /* Centrar el texto */
+  }
+
+  .heading2 {
+    font-size: 40px;
+    letter-spacing: 0.04px;
+    text-align: center; /* Centrar el texto */
+  }
+
+  .base-paragraph {
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center; /* Centrar el texto */
+  }
+
+  .button1,
+  .button1-second-container-landingpage {
+    width: 70%; /* Ancho más amplio para botón en dispositivos móviles */
+    font-size: 24px; /* Reducir el tamaño de fuente */
+  }
+
+
+
+  /* Ajustes para contenedores de imágenes */
+  .image-top-left-container1,
+  .image-top-right-container1,
+  .image-bottom-left-container1,
+  .image-bottom-right-container1,
+  .image-third-container-landingpage,
+  .image-fourth-container-landingpage,
+  .image-happy-fiveth-container-landingpage,
+  .image-serious-fiveth-container-landingpage,
+  .image-angry-fiveth-container-landingpage,
+  .image-sixth-container-landingpage {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Ajustes para el botón fijo de desplazamiento superior */
+  #scrollToTopBtn {
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .image-top-right-container1 {
+    margin-right: 0; /* Elimina el margen derecho en dispositivos móviles */
+  }
+  
+  .image-bottom-left-container1,
+  .image-bottom-right-container1,
+  .image-happy-fiveth-container-landingpage,
+  .image-serious-fiveth-container-landingpage,
+  .image-angry-fiveth-container-landingpage {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+    /* Ajustes generales para contenedores en dispositivos móviles */
+  .container-landingpage,
+  .second-container-landingpage,
+  .fourth-container,
+  .sixth-container-landingpage {
+    padding: 10px; /* Reduce el relleno en dispositivos móviles */
+  }
+
+  /* Ajustes para el tercer y cuarto contenedor en dispositivos móviles */
+  .heading-thirdcontainer,
+  .heading-fourth-container {
+    font-size: 30px;
+    text-align: center;
+  }
+
+  .image-third-container-landingpage,
+  .image-fourth-container-landingpage {
+    margin-top: 2rem;
+  }
+
+  /* Ajustes para el sexto contenedor en dispositivos móviles */
+  .button-sixth-container-landingpage {
+    width: 70%; /* Ancho más amplio para botón en dispositivos móviles */
+  }
+}
+
+
 .container-landingpage {
   display: flex;
   flex-direction: column;
