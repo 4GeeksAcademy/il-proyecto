@@ -1,6 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ScrollToTop from "./component/scrollToTop";
+import { BrowserRouter, Route, Routes, } from "react-router-dom";
 import { BackendURL } from "./component/backendURL";
 
 import { Home } from "./pages/home";
@@ -8,7 +7,6 @@ import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import { Login } from "./pages/login";
 import injectContext from "./store/appContext";
-
 import { MainNavbar } from "./component/mainNavbar";
 import { Footer } from "./component/footer";
 
@@ -22,8 +20,7 @@ const Layout = () => {
 
     return (
         <div>
-            <BrowserRouter basename={basename}>
-                <ScrollToTop>
+            <BrowserRouter basename={basename}>                              
                     <MainNavbar />
                     <Routes>
                         <Route element={<Home />} path="/" />
@@ -32,8 +29,7 @@ const Layout = () => {
                         <Route element={<Login />} path="/login" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
-                    <Footer />
-                </ScrollToTop>
+                    <Footer />            
             </BrowserRouter>
         </div>
     );

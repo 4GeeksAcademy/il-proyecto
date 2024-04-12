@@ -1,16 +1,4 @@
-@media (min-width: 768px) {
-  /* Estilos específicos para pantallas medianas y más grandes (tablets y desktops) */
-  .image-bottom-left-container1 {
-    margin-left: 5%; /* Ajusta el margen izquierdo en pantallas más grandes */
-  }
-
-  .image-bottom-right-container1 {
-    margin-right: 5%; /* Ajusta el margen derecho en pantallas más grandes */
-  }
-}
-
-
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .heading1 {
     font-size: 35px;
     letter-spacing: 0.04px;
@@ -31,10 +19,11 @@
     font-size: 18px;
     line-height: 24px;
     text-align: center; 
+    
   }
 
   button.button-second-container-landingpage {
-    font-size: 24px; /* Reducir el tamaño de fuente */
+    font-size: 24px; 
     width: 80%;
     height: 15%;
   }
@@ -43,10 +32,21 @@
   h1.heading-thirdcontainer {
     line-height: normal;
     margin-top: 70px;
+   
   }
 
   h1.heading-fourthcontainer {
     line-height: normal;
+    
+  }
+
+  h1.heading-fivethcontainer {
+    line-height: normal;
+    margin-top: 25%;
+  }
+
+  h1.heading-sixth-container {
+    margin-top: 5%;
   }
 
   img.image-third-container-landingpage{
@@ -70,7 +70,7 @@
     line-height: normal;
   }
  
-  /* Ajustes para el botón fijo de desplazamiento superior */
+  
   #scrollToTopBtn {
     font-size: 20px;
     width: 40px;
@@ -92,15 +92,15 @@
     margin-right: 0;
   }
 
-    /* Ajustes generales para contenedores en dispositivos móviles */
+  
   .container-landingpage,
   .second-container-landingpage,
   .fourth-container,
   .sixth-container-landingpage {
-    padding: 10px; /* Reduce el relleno en dispositivos móviles */
+    padding: 10px; 
   }
 
-  /* Ajustes para el tercer y cuarto contenedor en dispositivos móviles */
+ 
   .heading-thirdcontainer{
     font-size: 37px;
     text-align: center;
@@ -126,12 +126,29 @@
     margin-top: 3rem;
   }
 
-  /* Ajustes para el sexto contenedor en dispositivos móviles */
+ 
   .button-sixth-container-landingpage {
-    width: 70%; /* Ancho más amplio para botón en dispositivos móviles */
+    width: 70%; 
   }
 }
+@media (min-width: 768px) and (max-width: 872px) {
+/* Estilos específicos para pantallas de tamaño mediano */
 
+
+ 
+
+  .container {
+      width: 80%; /* Ejemplo: ajustar el ancho del contenedor */
+      margin: 0 auto; /* Centrar el contenedor en la pantalla */
+  }
+
+  h1.heading-fivethcontainer{
+      margin-top: 50%;
+      line-height: normal;
+
+  
+  }
+}
 
 .container-landingpage {
   display: flex;
@@ -141,7 +158,7 @@
   background-color: var(--option4-color);
   border: 1px solid #020202;
   box-sizing: border-box;
-  padding: 20px; /* Añade relleno para separar el contenido del borde */
+  padding: 20px;
  
 }
 
@@ -268,6 +285,10 @@
   margin-top: 5%;
 }
 
+.sixth-container-landingpage {
+  margin-top: 5%;
+}
+
 .image-happy-fiveth-container-landingpage{
   transform: translate(-100%,-75%)
 }
@@ -285,6 +306,7 @@
   box-shadow: var(--image-box-shadow);
   max-width: 100%;  
   height: auto;
+  margin-bottom: 5%
 }
 
 .button-sixth-container-landingpage{

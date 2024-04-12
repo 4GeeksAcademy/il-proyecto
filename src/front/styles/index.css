@@ -29,12 +29,11 @@
     --image-box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Sombra para imagen */
     --image-border: 1px solid #000000; /* Borde para imagen */
   }
-
+/* 
 html,
 body{
-    overflow-x: hidden;
-    width: 100%;
-}
+    /* width: 100%; */
+
 
 
 .heading1 {
@@ -103,3 +102,4 @@ body{
 #scrollToTopBtn:hover {
     background-color: #0056b3; /* Cambio de color en el estado hover */
 }
+
