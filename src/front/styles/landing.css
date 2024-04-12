@@ -14,15 +14,19 @@
 
 @media (max-width: 767px) {
   .heading1 {
-    font-size: 40px;
+    font-size: 35px;
     letter-spacing: 0.04px;
     text-align: center; /* Centrar el texto */
   }
 
   .heading2 {
-    font-size: 40px;
+    font-size: 35px;
     letter-spacing: 0.04px;
     text-align: center; /* Centrar el texto */
+  }
+
+  img.image-top-left-container1,img.image-top-right-container1,img.image-bottom-left-container1,img.image-bottom-right-container1{
+    display: none;
   }
 
   .base-paragraph {
@@ -31,35 +35,49 @@
     text-align: center; /* Centrar el texto */
   }
 
-  .button1,
-  .button1-second-container-landingpage {
-    width: 70%; /* Ancho más amplio para botón en dispositivos móviles */
+  button.button-second-container-landingpage {
     font-size: 24px; /* Reducir el tamaño de fuente */
+    width: 80%;
+    height: 15%;
   }
 
 
-
-  /* Ajustes para contenedores de imágenes */
-  .image-top-left-container1,
-  .image-top-right-container1,
-  .image-bottom-left-container1,
-  .image-bottom-right-container1,
-  .image-third-container-landingpage,
-  .image-fourth-container-landingpage,
-  .image-happy-fiveth-container-landingpage,
-  .image-serious-fiveth-container-landingpage,
-  .image-angry-fiveth-container-landingpage,
-  .image-sixth-container-landingpage {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+  h1.heading-thirdcontainer {
+    line-height: normal;
+    margin-top: 70px;
   }
 
+  h1.heading-fourthcontainer {
+    line-height: normal;
+  }
+
+  img.image-third-container-landingpage{
+    margin-top: auto;
+  }
+
+  img.image-happy-fiveth-container-landingpage,.image-angry-fiveth-container-landingpage,.image-serious-fiveth-container-landingpage{
+    display: none;
+  }
+
+  div.fourth-container-mobile{
+    margin-top: -26rem;
+    
+  }
+
+  .fiveth-container-landingpage{
+    margin-top: 18rem;
+  }
+
+  h1.heading-fivethcontainer{
+    line-height: normal;
+  }
+ 
   /* Ajustes para el botón fijo de desplazamiento superior */
   #scrollToTopBtn {
     font-size: 20px;
     width: 40px;
     height: 40px;
-    top: 0.5rem;
+    bottom: 3rem;
     right: 0.5rem;
   }
 

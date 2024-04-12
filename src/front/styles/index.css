@@ -76,9 +76,9 @@ body{
     line-height: normal;
     letter-spacing: 0.03px;
     background: var(--option3-color);
-    box-shadow: var(--button1-box-shadow);
-        
+    box-shadow: var(--button1-box-shadow);     
 }
+
 
 #scrollToTopBtn {
     width: 50px;

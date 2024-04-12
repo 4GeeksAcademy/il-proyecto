@@ -80,7 +80,7 @@ export const Home = () => {
 						</div>
 					</Col>
 
-					<Col xs={12} md={8} className="text-left">
+					<Col xs={12} md={8} className="fourth-container-mobile text-left">
 					
 						<div className="fourth-container">
 							<h1 className="heading-fourth-container">Tu recorrido emocional es nuestro compromiso:</h1>
@@ -94,7 +94,7 @@ export const Home = () => {
 					</Col>
 
 					<Col xs={12} md={1} className="d-flex justify-content-center align-items-center" >
-						<div className="d-flex flex-column align-items-center">
+						<div className="d-flex flex-column align-items-center three-images-landing-page">
 							<img src="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Home%2Fhappy.png?alt=media&token=a9a6dff6-8fe4-4d48-a61c-dbea526616df" alt="Image 5" className="image-happy-fiveth-container-landingpage" fluid/>	
 							<img src="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Home%2Fserious.png?alt=media&token=56bdb012-834d-4a9b-87f1-6f5885f4edc2" alt="Image 5" className="image-serious-fiveth-container-landingpage" fluid/>	
 							<img src="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Home%2Fangry.png?alt=media&token=648f3a16-beb6-49f0-a9cd-34d4dabc8584" alt="Image 5" className="image-angry-fiveth-container-landingpage" fluid/>	
