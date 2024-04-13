@@ -76,6 +76,7 @@
 		"bootstrap": "^5.3.3",
 		"firebase": "^10.9.0",
 		"gapi-script": "^1.2.0",
+		"gulp-fontastic": "^0.2.0",
 		"jwt-decode": "^4.0.0",
 		"prop-types": "^15.6.1",
 		"react": "^16.8.4",

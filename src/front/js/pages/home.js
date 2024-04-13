@@ -7,7 +7,6 @@ import { Container, Row, Col, } from 'react-bootstrap';
 import "../../styles/home.css";
 
 
-
 /*App*/
 // import MoodRectangle from "../component/moodRectangle";
 // import AccordionFaqs from "../component/accordeonFaqs";
