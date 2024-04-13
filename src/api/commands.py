@@ -1,6 +1,7 @@
 
 import click
-from api.models import db, User
+import datetime  
+from .models import db, User, Location, Hobbie, Mood, UserMoodHistory, CategoryMood, Action, ResourceType, Resource, Chat, Phycologyst, Sessions
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
@@ -32,3 +33,118 @@ def setup_commands(app):
     @app.cli.command("insert-test-data")
     def insert_test_data():
         pass
+    
+
+    @app.cli.command("fill-db-with-example-data")
+    def fill_db_with_example_data():
+        """ Este comando rellenará la base de datos con datos de ejemplo. """
+
+        db.drop_all()
+        db.create_all()
+
+        try:
+            users = [
+                User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", password="111111", is_active=True),
+                User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", password="222222", is_active=True),
+                User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", password="333333", is_active=True)
+            ] 
+            db.session.add_all(users)
+            db.session.commit() 
+
+            categories = [
+                CategoryMood(category="Feliz/Contento"),
+                CategoryMood(category="Triste/Deprimido"),
+                CategoryMood(category="Ansioso/Estresado"),
+                CategoryMood(category="Enojado/Frustrado")
+            ]
+            db.session.add_all(categories)
+            db.session.commit() 
+            
+            moods = [
+                Mood(mood="Alegre", description="Me siento lleno de energía", category_id=categories[0].id),
+                Mood(mood="Melancólico", description="Un poco triste hoy", category_id=categories[1].id),
+                Mood(mood="Agobiado", description="Demasiadas cosas en la cabeza", category_id=categories[2].id),
+                Mood(mood="Irritado", description="Todo me molesta", category_id=categories[3].id)
+            ]
+            db.session.add_all(moods)
+            db.session.commit()  
+            
+            hobbies = [
+                Hobbie(name="Fotografía"),
+                Hobbie(name="Ciclismo"),
+                Hobbie(name="Dibujo"),
+                Hobbie(name="Programación")
+            ]
+            db.session.add_all(hobbies)
+            db.session.commit()
+            
+            psychologists = [
+                Phycologyst(name="Ana", surnames="Pérez", email="ana@mymood.com", password="secure", experience=5),
+                Phycologyst(name="Carlos", surnames="Gómez", email="carlos@mymood.com", password="secure", experience=7)
+            ]
+            db.session.add_all(psychologists)
+            db.session.commit()  
+               
+            resource_types = [
+                ResourceType(resource_type="Artículo"),
+                ResourceType(resource_type="Vídeo"),
+                ResourceType(resource_type="Imagen"),
+                ResourceType(resource_type="Podcast")
+            ]
+            db.session.add_all(resource_types)
+            db.session.commit()  
+            
+            resources = [
+                Resource(resource_type_id=resource_types[0].id, url="https://example.com/articulo1", description="Cómo manejar el estrés", phycologyst_id=psychologists[0].id),
+                Resource(resource_type_id=resource_types[1].id, url="https://example.com/video1", description="Meditación para principiantes", phycologyst_id=psychologists[1].id)
+            ]
+
+            db.session.add_all(resources)
+            db.session.commit()  
+
+            locations = [
+                Location(latitude=40.7128, longitude=-74.0060),
+                Location(latitude=34.0522, longitude=-118.2437),
+                Location(latitude=41.8781, longitude=-87.6298)
+            ]
+            db.session.add_all(locations)
+            db.session.commit() 
+            
+            # Acciones relacionadas con las categorías de estados de ánimo
+            actions = [
+                Action(action="Hablar con un amigo", description="Compartir tus sentimientos puede ayudar a ver las cosas desde otra perspectiva.", category_id=categories[0].id),  # Feliz/Contento
+                Action(action="Escribir en un diario", description="Escribir tus pensamientos puede ayudarte a comprenderlos mejor.", category_id=categories[1].id),  # Triste/Deprimido
+                Action(action="Meditación", description="La meditación puede ayudarte a calmar tu mente.", category_id=categories[2].id),  # Ansioso/Estresado
+                Action(action="Ejercicio físico", description="El ejercicio puede ayudar a liberar la tensión acumulada.", category_id=categories[3].id)  # Enojado/Frustrado
+            ]
+            db.session.add_all(actions)
+            db.session.commit()
+
+            # Historial de estados de ánimo de los usuarios
+            user_mood_history_entries = [
+                UserMoodHistory(user_id=users[0].id, date=datetime.date.today() - datetime.timedelta(days=1), mood_id=moods[0].id),
+                UserMoodHistory(user_id=users[1].id, date=datetime.date.today() - datetime.timedelta(days=2), mood_id=moods[1].id),
+                UserMoodHistory(user_id=users[2].id, date=datetime.date.today() - datetime.timedelta(days=3), mood_id=moods[2].id)
+            ]
+            db.session.add_all(user_mood_history_entries)
+            db.session.commit()
+
+            # Chats entre usuarios
+            chats = [
+                Chat(user_sender_id=users[0].id, user_reciver_id=users[1].id, message_text="¡Hola! ¿Cómo te sientes hoy?", time=datetime.datetime.now() - datetime.timedelta(hours=1)),
+                Chat(user_sender_id=users[1].id, user_reciver_id=users[0].id, message_text="Hola, me siento bastante bien, ¿y tú?", time=datetime.datetime.now() - datetime.timedelta(minutes=50)),
+                Chat(user_sender_id=users[0].id, user_reciver_id=users[1].id, message_text="También estoy bien, gracias por preguntar.", time=datetime.datetime.now() - datetime.timedelta(minutes=30)),
+            ]
+            db.session.add_all(chats)
+            db.session.commit()
+            
+            print("La base de datos ha sido poblada con datos de ejemplo.")
+        
+        except Exception as e:
+            db.session.rollback() 
+            print(f"Error al llenar la base de datos: {e}")
+         
+       
+        
+
+       
