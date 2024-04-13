@@ -62,8 +62,8 @@
     
   }
 
-  .fiveth-container-landingpage{
-    margin-top: 18rem;
+  div.fiveth-container-landingpage{
+    margin-top: 12rem;
   }
 
   h1.heading-fivethcontainer{
@@ -194,6 +194,7 @@
   margin-top: 5rem;
   margin-left: 10rem;
   flex-shrink: 0;
+  margin-bottom: 3rem
 }
 
 .image-bottom-right-container1 {
