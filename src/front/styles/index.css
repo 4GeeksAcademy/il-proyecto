@@ -1,3 +1,100 @@
-/* 
-    General Styles used on every website (Don't Repeat Yourself)
-*/
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Variables para texto */
+    --heading1-font-family: 'Taviraj'; /* Fuente para h1 */
+    --base-font-family: 'Space Grotesk'; /* Fuente para párrafos */
+
+    /* Variables de colores */
+    --base-color-text: #333; /* Color de texto de base */
+    --option1-color: #D2F752; /* Color de fondo para opción 1 */
+    --option2-color: #FF86D2; /* Color de fondo para opción 2 */
+    --option3-color: #FF5E41; /* Color de fondo para opción 3 */
+    --option4-color: #F9F4F0; /* Color de fondo para opcion 4 */
+    --option5-color: #000000; /* Color de fondo para opción 5 */
+    --option6-color: #FAB6DB; /* Color de fondo para opción 6 */
+
+    /* Variables sombras button / button 2 mainbutton */
+    --button1-border: 1px solid #000000; /* Borde para button1 */ 
+    --button1-box-shadow: 7px 7px 0px 0px #000; /* Sombra para button1 */
+    --button1-box-sizing: border-box; /* Box-sizing para button1 */
+  
+ 
+    /* Variables para button3 */
+    --button3-border: 1px solid #979797; /* Borde para button3 */
+    --button3-border-radius: 37px; /* Radio de borde para button3 */
+
+    /* Variables para imagenes */
+    --image-width: 100%; /* Ancho para imagen */
+    --image-box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Sombra para imagen */
+    --image-border: 1px solid #000000; /* Borde para imagen */
+  }
+
+
+.heading1 {
+    font-family: var(--heading1-font-family);
+    font-size: 80px; 
+    color: var(--heading-color); 
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.08px;
+}
+
+
+.heading2 {
+    font-family: var(--base-font-family);
+    color: var(--heading-color-);
+    font-size: 80px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.08px;
+    }
+
+
+.base-paragrahp {
+    font-size: 22px;
+    font-family: var(--base-font-family);
+    font-weight: 300;
+    line-height: 28px;
+    letter-spacing: 0.022px;
+    font-style: normal;
+    color: var(--heading-color);
+}
+
+.button1{
+    color: #000000;
+    text-align: center;
+    font-family: "Space Grotesk";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.03px;
+    background: var(--option3-color);
+    box-shadow: var(--button1-box-shadow);     
+}
+
+
+#scrollToTopBtn {
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    border: none;
+    background-color: var(--button2-color-background); /* Color de fondo predeterminado */
+    color: #000; /* Color de texto */
+    font-size: 24px;
+    font-family: var(--base-font-family);
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 9999; /* Ajusta según sea necesario */
+    border: var(--button1-border);
+    box-shadow: var(--button1-box-shadow);
+}
+
+#scrollToTopBtn:hover {
+    background-color: #0056b3; /* Cambio de color en el estado hover */
+}
+
