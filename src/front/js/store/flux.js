@@ -15,7 +15,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			], 
 			// MYMOOD
-			user: null
+			user: null,
+			
+			location: [],
 		},
 		actions: {
 			//mymood
@@ -30,6 +32,97 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
+
+
+
+			saveUserLocation: async (latitude, longitude) => {
+				const url = 'https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/admin/location';
+				const data = {
+				  latitude,
+				  longitude
+				};
+				
+				try {
+				  const response = await fetch(url, {
+					method: 'POST',
+					headers: {
+					  'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(data)
+				  });
+				  
+				  const result = await response.json();
+		
+				  // Actualizar el estado del store con la nueva ubicación
+				  setStore({ location: result.location });
+		
+				  return result; // Opcional: devolver el resultado de la operación
+				} catch (error) {
+				  console.error('Error al guardar la ubicación del usuario:', error);
+				  throw error;
+				}
+			  },
+
+
+			// getAllLocations: async () => {
+			// 	const url = 'https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/location';
+				
+			// 	try {
+			// 		const response = await fetch(url, {
+			// 			method: 'GET',
+			// 			headers: {
+			// 				'Content-Type': 'application/json'
+			// 			}
+			// 		});
+				
+			// 		if (!response.ok) {
+			// 			throw new Error('Error al obtener las localizaciones');
+			// 		}
+				
+			// 		const locationsData = await response.json();
+			// 		console.log('Localizaciones obtenidas:', locationsData);
+				
+			// 		setStore({ location: locationsData }); // Corregir el nombre de la variable a `locationsData`
+				
+			// 		return locationsData;
+			// 	} catch (error) {
+			// 		console.error('Error al obtener las localizaciones:', error);
+			// 		throw error;
+			// 	}
+			// },
+
+			getAllLocations: async () => {
+				try {
+					const locationData = localStorage.getItem("locationData");
+			
+					if (locationData) {
+						setStore({ location: JSON.parse(locationData) });
+					} else {
+						const urlLocation = `https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/admin/location`;
+						const response = await fetch(urlLocation);
+			
+						if (!response.ok) {
+							throw new Error(`Failed to fetch location data: ${response.status} ${response.statusText}`);
+						}
+			
+						const location = await response.json();
+			
+						// Verifica la estructura de los datos recibidos
+						if (Array.isArray(location)) {
+							setStore({ location });
+							localStorage.setItem("locationData", JSON.stringify(location));
+						} else {
+							throw new Error("Unexpected location data format");
+						}
+					}
+				} catch (error) {
+					console.error('Error fetching or processing location data:', error);
+				}
+			},
+			
+					
+			  
+			
 
 			getMessage: async () => {
 				try{
