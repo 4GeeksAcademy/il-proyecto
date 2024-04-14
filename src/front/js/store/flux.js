@@ -1,3 +1,5 @@
+import { set } from "firebase/database";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -64,6 +66,34 @@ const getState = ({ getStore, getActions, setStore }) => {
 			  },
 
 
+
+			  getAllLocations: async () => {
+                try {
+                    const storedDataLocation = localStorage.getItem("locationData");
+
+                    if (storedDataLocation) {
+                        setStore({ location: JSON.parse(storedDataLocation) });
+                    } else {
+                        const fetchPromises = [];
+                        const urlLocation = `https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/location`;
+						const fetchPromise = fetch(urlLocation)
+						.then(res => res.json())
+						.catch(err => console.error(`Error to get data from ${urlLocation}: ${err}`));
+
+					fetchPromises.push(fetchPromise);
+                        
+
+                        const location = await Promise.all(fetchPromises);
+
+                        setStore({ location });
+
+                        localStorage.setItem("locationData", JSON.stringify(location));
+                    }
+                } catch (error) {
+                    console.error('Error to get location details:', error);
+                }
+            },
+
 			// getAllLocations: async () => {
 			// 	const url = 'https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/location';
 				
@@ -91,34 +121,71 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 	}
 			// },
 
-			getAllLocations: async () => {
-				try {
-					const locationData = localStorage.getItem("locationData");
+
+
+			// getAllLocations: async () => {
+			// 	try {
+			// 		// Realiza una solicitud GET a la URL del servicio que devuelve las ubicaciones
+			// 		const response = await fetch('https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/location', {
+			// 			method: 'GET',
+			// 			headers: {
+			// 				'Content-Type': 'application/json'
+			// 			}
+			// 		});
 			
-					if (locationData) {
-						setStore({ location: JSON.parse(locationData) });
-					} else {
-						const urlLocation = `https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/admin/location`;
-						const response = await fetch(urlLocation);
+			// 		// Verifica si la respuesta es exitosa (código 200)
+			// 		if (!response.ok) {
+			// 			throw new Error('Error al obtener las ubicaciones');
+			// 		}
 			
-						if (!response.ok) {
-							throw new Error(`Failed to fetch location data: ${response.status} ${response.statusText}`);
-						}
+			// 		// Parsea la respuesta JSON obtenida
+			// 		const locationsData = await response.json();
 			
-						const location = await response.json();
+			// 		// Actualiza el estado del store con las ubicaciones obtenidas
+			// 		setStore({ location: result.location });
 			
-						// Verifica la estructura de los datos recibidos
-						if (Array.isArray(location)) {
-							setStore({ location });
-							localStorage.setItem("locationData", JSON.stringify(location));
-						} else {
-							throw new Error("Unexpected location data format");
-						}
-					}
-				} catch (error) {
-					console.error('Error fetching or processing location data:', error);
-				}
-			},
+			// 		console.log('Ubicaciones obtenidas:', locationsData);
+			
+			// 		// Devuelve las ubicaciones obtenidas (opcional)
+			// 		return locationsData;
+			// 	} catch (error) {
+			// 		// Captura y maneja cualquier error durante la solicitud
+			// 		console.error('Error al obtener las ubicaciones:', error);
+			// 		throw error; // Lanza el error para que pueda ser manejado por el código que llama a esta función
+			// 	}
+			// },
+			
+
+
+			// getAllLocations: async () => {
+			// 	try {
+			// 		const locationData = localStorage.getItem("locationData");
+			
+			// 		if (locationData) {
+			// 			setStore({ location: JSON.parse(locationData) });
+			// 		} else {
+			// 			const urlLocation = `https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/admin/location`;
+			// 			const response = await fetch(urlLocation);
+			
+			// 			if (!response.ok) {
+			// 				throw new Error(`Failed to fetch location data: ${response.status} ${response.statusText}`);
+			// 			}
+			
+			// 			const location = await response.json();
+			
+			// 			// Verifica la estructura de los datos recibidos
+			// 			if (Array.isArray(location)) {
+			// 				setStore({ location });
+
+			// 				localStorage.setItem("locationData", JSON.stringify(location));
+			// 			} else {
+			// 				throw new Error("Unexpected location data format");
+			// 			}
+			// 		}
+			// 	} catch (error) {
+			// 		console.error('Error fetching or processing location data:', error);
+			// 	}
+			// },
 			
 					
 			  
@@ -136,6 +203,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
+			
 			changeColor: (index, color) => {
 				//get the store
 				const store = getStore();
