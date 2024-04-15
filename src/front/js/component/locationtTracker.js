@@ -11,7 +11,7 @@ const LocationTracker = () => {
             const { latitude, longitude } = position.coords;
             try {
               // Enviar la ubicación del usuario al backend Flask
-              await axios.post('http://localhost:3001/api/user/location', {
+              await axios.post('https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/api/location', {
                 latitude,
                 longitude
               });
@@ -31,6 +31,8 @@ const LocationTracker = () => {
 
     trackUserLocation();
   }, []);
+
+  
 
   return <div>Tracking user location...</div>;
 };
