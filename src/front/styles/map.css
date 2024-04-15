@@ -1,0 +1,9 @@
+#map {
+    border: 1px solid #000000;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.map-app{
+    background-color: var(--option4-color);
+}
