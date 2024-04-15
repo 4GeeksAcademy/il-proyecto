@@ -26,6 +26,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ user: null });
 			},	
 
+
+			login: async (email, password) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            "email": email,
+                            "password": password
+                        })
+                    })
+                    console.log(response);
+                    if (response.status !== 200) {
+                        console.log("Login error:", response.status);
+                        return false;
+                    }
+
+                    const data = await response.json();
+                    // sessionStorage.setItem("token", data.access_token);
+                    // setStore({ ...getStore(), auth: true });
+                    return true;
+
+                }
+                catch (error) {
+                    console.log(error);
+                    return false;
+                }
+
+            },
+
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");

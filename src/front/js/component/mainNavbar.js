@@ -19,7 +19,7 @@ export const MainNavbar = () => {
 
 	return (
 
-		<Navbar className="bg-body-tertiary">
+		<Navbar className="bg-body-white">
 			<Container fluid>
 				<Navbar.Brand href="/" className="d-flex">
 					<img
