@@ -44,7 +44,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log("Login error:", response.status, data.msg);
 						return false;
 					}
-					sessionStorage.setItem("token", data.access_token);
+					sessionStorage.setItem("userToken", data.access_token);
 					getActions().setUser(data.user);  
 					return true;
 				}
@@ -53,21 +53,45 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
+
+			loginGoogle: async (response) => {
+				console.log(response);
+				const tokenId = response.credential;
+				const result = await fetch(`${process.env.BACKEND_URL}/api/login-google`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ id_token: tokenId })
+				});
+		
+				const data = await result.json();
+				if (result.ok) {
+					// Procesa el login exitoso
+					console.log("Login successful:", data);
+					sessionStorage.setItem('userToken', data.access_token);
+					console.log(data.user);
+					getActions().setUser(data.user);
+					return true;
+				} else {
+					console.error("Login failed:", data.message);
+					return false;
+				}
+			},
 			
 
 			logout: async () => {
+				console.log("Entramos hacer el logout.....");
 				const actions = getActions();
 				try {
 					const response = await fetch(process.env.BACKEND_URL + '/api/logout', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
-							'Authorization': 'Bearer ' + sessionStorage.getItem("token") // Asegúrate de que el token está almacenado y accesible
+							'Authorization': 'Bearer ' + sessionStorage.getItem("userToken")
 						}
 					});
 					if (response.ok) {
-						actions.clearUser(); // Limpia el usuario del estado global
-						sessionStorage.removeItem("token"); // Opcional: Limpia el token del sessionStorage
+						sessionStorage.removeItem("userToken");
+						actions.clearUser(); 
 					} else {
 						throw new Error('Logout failed');
 					}

@@ -7,6 +7,11 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
+# google
+from google.oauth2 import id_token
+from google.auth.transport import requests
+import os
+
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
@@ -94,3 +99,39 @@ def signup():
     
     else :
         return jsonify({"msg": "User exist, try recover your password"}), 200
+    
+    
+
+@api.route('/login-google', methods=['POST'])
+def login_google():
+    token = request.json.get('id_token')
+    google_client_id = os.getenv('GOOGLE_CLIENT_ID') 
+    
+    try:
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), google_client_id)
+
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Wrong issuer.')
+
+        # Obtener los datos del usuario
+        email = idinfo['email']
+        name = idinfo.get('name', "")
+
+        # Verificar si el usuario ya existe en la base de datos
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            user = User(email=email, name=name, is_active=True)
+            db.session.add(user)
+            db.session.commit()
+        else:
+            user.is_active = True
+            db.session.commit()
+
+        # Crear token de JWT
+        access_token = create_access_token(identity=email)
+        user_data = user.serialize()
+        return jsonify(access_token=access_token, user=user_data)
+
+    except ValueError:
+        # Invalid token
+        return jsonify({"msg": "Token de Google inválido"}), 401

@@ -30,12 +30,40 @@ export const Login = () => {
 		}
 	};
 
-	const responseMessage = (response) => {
+	const handleGoogleSuccess = async (response) => {
+		setError("");
 		console.log(response);
-		navigate("/");
+		let loggedWithGoogle = await actions.loginGoogle(response);
+		if (loggedWithGoogle) {
+			navigate('/');
+		}
+		else {
+			setError("Failed to log in with Google. Please check your email and password.");
+		}
 	};
 
-	const errorMessage = (error) => {
+	// const handleGoogleSuccess = async (response) => {
+	// 	console.log(response);
+	// 	const tokenId = response.credential;
+	// 	const result = await fetch(`${process.env.BACKEND_URL}/api/login-google`, {
+	// 		method: 'POST',
+	// 		headers: { 'Content-Type': 'application/json' },
+	// 		body: JSON.stringify({ id_token: tokenId })
+	// 	});
+
+	// 	const data = await result.json();
+	// 	if (result.ok) {
+	// 		// Procesa el login exitoso
+	// 		console.log("Login successful:", data);
+	// 		sessionStorage.setItem('userToken', data.token);
+	// 		navigate('/');
+	// 	} else {
+	// 		console.error("Login failed:", data.message);
+	// 	}
+	// };
+
+
+	const handleFailure = (error) => {
 		console.log(error);
 		setError("Failed to log in. Please check your email and password.");
 	};
@@ -66,7 +94,7 @@ export const Login = () => {
 					<p>O entrar con:</p>
 					<GoogleProvider>
 						<div >
-							<GoogleLogin onSuccess={responseMessage} onError={errorMessage} className="button1 form-button" />
+							<GoogleLogin onSuccess={handleGoogleSuccess} onError={handleFailure} className="button1 form-button" />
 						</div>
 					</GoogleProvider>
 				</Col>
