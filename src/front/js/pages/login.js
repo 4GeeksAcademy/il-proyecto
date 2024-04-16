@@ -1,115 +1,104 @@
-import React, { useState, useEffect, useContext } from "react";
+
+import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
+import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from '@react-oauth/google';
+import { GoogleProvider } from "../component/google";  // Asegúrate de que la ruta de importación es correcta
 
-/* React boostrap */
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-/* GOOGLE LOGIN */
-import { jwtDecode } from "jwt-decode";
-
-
 export const Login = () => {
-	const [user, setUser] = useState({});
+	const { actions } = useContext(Context);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
+	const navigate = useNavigate();
 
-	const { store, actions } = useContext(Context);
-
-	const handleCallbackResponse = (response) => {
-		console.log("Encoded JWT ID token: " + response.credential);
-		var userObject = jwtDecode(response.credential);
-		console.log(userObject);
-		setUser(userObject); // Actualiza el estado local `user`
-		actions.setUser(userObject); // Actualiza el estado global `user` en flux.js
-		// Oculta el botón de Google SignIn
-		document.getElementById("signInDiv").hidden = true;
-	};
-
-	const handleSignOut = () => {
-		setUser(null); // Limpia el estado local `user`
-		actions.clearUser(); // Limpia el estado global `user` en flux.js
-		// Muestra el botón de Google SignIn
-		document.getElementById("signInDiv").hidden = false;
-	};
-
-	useEffect(() => {
-
-		const isApiScriptLoaded = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
-
-		if (!isApiScriptLoaded) {
-			// Crea un nuevo elemento script
-			const script = document.createElement('script');
-			script.src = "https://accounts.google.com/gsi/client";
-			script.async = true;
-			script.defer = true;
-			script.onload = () => {
-				// El script se ha cargado y está listo para usar
-				console.log("Google API script loaded successfully.");
-				// Aquí puedes inicializar o ejecutar tu lógica relacionada con la API de Google
-			};
-			script.onerror = () => {
-				console.error("Error loading the Google API script.");
-			};
-			// Añade el script al documento
-			document.body.appendChild(script);
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setError("");
+		let logged = await actions.login(email, password);
+		if (logged) {
+			navigate("/");
+		} else {
+			setError("Failed to log in. Please check your email and password.");
 		}
+	};
 
-		/* global google */
-		google.accounts.id.initialize({
-			client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-			callback: handleCallbackResponse
+	const handleGoogleSuccess = async (response) => {
+		setError("");
+		console.log(response);
+		let loggedWithGoogle = await actions.loginGoogle(response);
+		if (loggedWithGoogle) {
+			navigate('/');
+		}
+		else {
+			setError("Failed to log in with Google. Please check your email and password.");
+		}
+	};
 
-		})
+	// const handleGoogleSuccess = async (response) => {
+	// 	console.log(response);
+	// 	const tokenId = response.credential;
+	// 	const result = await fetch(`${process.env.BACKEND_URL}/api/login-google`, {
+	// 		method: 'POST',
+	// 		headers: { 'Content-Type': 'application/json' },
+	// 		body: JSON.stringify({ id_token: tokenId })
+	// 	});
 
-		google.accounts.id.renderButton(
-			document.getElementById("signInDiv"),
-			{ theme: "outline", size: "large" }
-		);
+	// 	const data = await result.json();
+	// 	if (result.ok) {
+	// 		// Procesa el login exitoso
+	// 		console.log("Login successful:", data);
+	// 		sessionStorage.setItem('userToken', data.token);
+	// 		navigate('/');
+	// 	} else {
+	// 		console.error("Login failed:", data.message);
+	// 	}
+	// };
 
-	}, []);
 
-	//If we have no user: sign in button 
-	//If we have a user: show the log out button 
+	const handleFailure = (error) => {
+		console.log(error);
+		setError("Failed to log in. Please check your email and password.");
+	};
 
 	return (
-
-		<Container fluid>
-			<Row>
-				<Col></Col>
-				<Col xs={6}>
-					<h1>Iniciar sesión</h1>
-					<Form>
+		<Container fluid className="container-landingpage">
+			<Row className="mt-3">
+				<Col>
+					<h1 className="heading1">Iniciar sesión</h1>
+					<Form onSubmit={handleSubmit}>
 						<Form.Group className="mb-3" controlId="formBasicEmail">
 							<Form.Label>Email</Form.Label>
-							<Form.Control type="email" placeholder="Enter email" />
+							<Form.Control type="email" placeholder="Enter email" onChange={e => setEmail(e.target.value)} />
 						</Form.Group>
 						<Form.Group className="mb-3" controlId="formBasicPassword">
 							<Form.Label>Contraseña</Form.Label>
-							<Form.Control type="password" placeholder="Password" />
+							<Form.Control type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
 						</Form.Group>
-						<Button variant="link">He olvidado mi contraseña</Button>
-						<Button variant="primary" type="submit">
-							¡Entrar a Mymood!
-						</Button>
+						<a href="/" className="link">He olvidado mi contraseña</a>
+						<button type="submit" className="button1 form-button">¡Entrar a Mymood!</button>
 					</Form>
-					<p>O entrar con:</p>
-
-					<div className="text-center mt-5">
-						<div id="signInDiv"></div> {/* Botón de Google SignIn */}
-					</div>
+					{error && <div className="text-danger mt-3">{error}</div>}
 				</Col>
-				<Col></Col>
 			</Row>
 
-
-
-
-
-		</Container>
-
+			<Row className="text-center mt-5 mb-5">
+				<Col>
+					<p>O entrar con:</p>
+					<GoogleProvider>
+						<div >
+							<GoogleLogin onSuccess={handleGoogleSuccess} onError={handleFailure} className="button1 form-button" />
+						</div>
+					</GoogleProvider>
+				</Col>
+			</Row>
+		</Container >
 	);
 };
-

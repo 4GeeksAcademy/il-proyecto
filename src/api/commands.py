@@ -44,9 +44,9 @@ def setup_commands(app):
 
         try:
             users = [
-                User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", password="111111", is_active=True),
-                User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", password="222222", is_active=True),
-                User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", password="333333", is_active=True)
+                User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", password="111111", is_active=False),
+                User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", password="222222", is_active=False),
+                User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", password="333333", is_active=False)
             ] 
             db.session.add_all(users)
             db.session.commit() 

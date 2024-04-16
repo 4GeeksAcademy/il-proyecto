@@ -5,17 +5,13 @@ import "../../styles/landing.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, } from 'react-bootstrap';
 import "../../styles/home.css";
-
-
-/*App*/
-// import MoodRectangle from "../component/moodRectangle";
-// import AccordionFaqs from "../component/accordeonFaqs";
+import CallToAction from "../component/callToAction";
 
 export const Home = () => {
 
 	
 	return (
-		
+		<>
 		<Container fluid className="container-landingpage">		
 			
 				<Row fluid className="align-items-center">
@@ -37,8 +33,17 @@ export const Home = () => {
 					</Col>
 				</Row>
 			
-			
-				<Row fluid  className="text-center second-container-landingpage" >
+				<CallToAction
+                    title1="Dónde los sentimientos"
+                    title2="se comparten"
+                    text="Descubre, Conéctate, Comparte. En MyMood, creemos en el poder de la conexión y el apoyo mutuo para navegar por los altibajos emocionales de la vida.
+					Diseñada pensando en la juventud, nuestra plataforma es más que una simple red social;
+					es un refugio seguro donde puedes expresar tus emociones, encontrar comprensión y acceder a recursos que enriquecen tu bienestar mental."
+                    buttonText="Únete a Mymood ¡Hoy!"
+                    buttonUrl="/singup"
+                />
+
+				{/* <Row fluid  className="text-center second-container-landingpage" >
 					<Col xs={12} md="auto">
 						<h1 className="heading1">Donde los <span className="heading2">sentimientos</span><br /> se <span className="heading2">comparten</span></h1>
 						<p className="base-paragrahp">Descubre, Conéctate, Comparte. En MyMood, creemos en el poder de la conexión y el apoyo mutuo para navegar por los altibajos emocionales de la vida.
@@ -47,7 +52,7 @@ export const Home = () => {
 						</p> <br /><br /><br />
 						<button className="button1 button-second-container-landingpage"> Únete a Mymood ¡hoy!</button>
 					</Col>
-				</Row>
+				</Row> */}
 			
 		
 				<Row fluid className="third-container-landingpage" >
@@ -112,8 +117,16 @@ export const Home = () => {
 						</div>			
 					</Col>
 				</Row>
-					
-				<Row fluid className="text-center sixth-container-landingpage">
+				
+				<CallToAction
+                    title1="Conexión profesional"
+                    title2="al alcance de tu mano"
+                    text="MyMood te acerca a una selección de recursos como artículos, videos y podcasts que te ofrecen consejos prácticos e inspiración. Aprende técnicas de afrontamiento y sumérgete en las experiencias de otros que han navegado por emociones similares. Todo ello de una red de psicólogos con los que también podrás contactar."
+                    buttonText="Únete a Mymood ¡Hoy!"
+                    buttonUrl="/singup"
+                />
+
+				{/* <Row fluid className="text-center sixth-container-landingpage">
 					<Col xs={12}>
 						<h1 className="heading1 heading6-container-landing-page">Conexión <span className="heading2">profesional</span><br /> al alcance <span className="heading2">de tus manos</span></h1>
 						<p className="base-paragrahp">Descubre, Conéctate, Comparte. En MyMood, creemos en el poder de la conexión y el apoyo mutuo para navegar por los altibajos emocionales de la vida.
@@ -123,10 +136,11 @@ export const Home = () => {
 						<button className="button1 button-second-container-landingpage"> Únete a Mymood ¡hoy!</button>
 					</Col>
 					
-				</Row>
+				</Row> */}
 	
 		</Container>
 		
+		</>
 		
 	);
 }
