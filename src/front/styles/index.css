@@ -179,7 +179,7 @@ button.form-button {
     margin: 0 auto;
 }
 
-a.link {
+.link {
     color: var(--base-color-text);
     display: flex;
     flex-direction: row;

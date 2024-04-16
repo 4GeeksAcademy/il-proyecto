@@ -175,21 +175,26 @@ def get_external_base_url():
 def reset_password_request():
     from app import mail
     email = request.json['email']
+    user = User.query.filter_by(email=email).first()  # Check if user exists
+
+    if not user:
+        # No user found with the provided email address
+        return jsonify({'message': 'No existe ninguna cuenta MyMood con ese e-mail.'}), 404
+
+    # User exists, proceed with password reset process
     serializer = URLSafeTimedSerializer(current_app.config['JWT_SECRET_KEY'])
-
     token = serializer.dumps(email, salt=current_app.config['SECURITY_PASSWORD_SALT'])
-    base_url = get_external_base_url()  # Obtiene la URL base externa
+    base_url = get_external_base_url()  # Obtain the external base URL
     link = url_for('api.reset_password', token=token, _external=False)
-    full_link = f"{base_url}{link}"  # Construye la URL completa
+    full_link = f"{base_url}{link}"  # Construct the complete URL
 
-    msg = Message("Reset your MyMood Password",
+    msg = Message("MyMood: Recuperar contraseña",
                   sender="mymoodbnp@gmail.com",
                   recipients=[email])
-    
-    msg.body = f"Please click on the link to reset your password: {full_link}"
+    msg.body = f"Por favor sigue el enlace para poder recuperar tu contraseña: {full_link}"
     mail.send(msg)
 
-    return jsonify({'message': 'Please check your email for the password reset link.'}), 200
+    return jsonify({'message': 'Por favor, revisa tu email para ver el enlace de recuperar contraseña.'}), 200
 
 
 @api.route('/reset-password/<token>', methods=['GET', 'POST'])

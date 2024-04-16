@@ -28,16 +28,25 @@ const PasswordResetRequest = () => {
             <Container fluid className="container-landingpage">
                 <h1 className="heading1">Quiero recuperar mi contraseña</h1>
                 <Form onSubmit={handleSubmit}>
-                    <Form.Control
-                        type="email"
-                        placeholder="Enter email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        required
-                    />
-                    <button type="submit" className="button1 form-button">Envíame el enlace</button>
+                    <Row>
+                        <Col sm={12}>
+                            <Form.Control
+                                size="lg"
+                                type="email"
+                                placeholder="Enter email"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                                required
+                            />
+                        </Col>
+                        <Col>
+                            <button type="submit" className="button1 form-button mt-3">Envíame el enlace</button>
+                        </Col>
+                    </Row>
                 </Form>
-                {message && <div className="text-danger mt-3 border border-danger p-3">{message}</div>}
+                <Row>
+                    {message && <div className="text-danger mt-3 border border-danger p-3">{message}</div>}
+                </Row>
             </Container>
         </>
 
