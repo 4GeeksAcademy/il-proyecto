@@ -12,6 +12,8 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 
 # from models import Person
+from flask_jwt_extended import JWTManager
+
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
@@ -37,11 +39,13 @@ setup_admin(app)
 # add the admin
 setup_commands(app)
 
+# Handle/serialize errors like a JSON object
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+jwt = JWTManager(app)
+
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
-
-# Handle/serialize errors like a JSON object
-
 
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):

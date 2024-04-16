@@ -8,6 +8,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Image from 'react-bootstrap/Image';
+import Button from 'react-bootstrap/Button';
 
 /* App */
 import logo from "../../img/logo.png";
@@ -19,7 +20,7 @@ export const MainNavbar = () => {
 
 	return (
 
-		<Navbar className="bg-body-tertiary">
+		<Navbar className="bg-body-white">
 			<Container fluid>
 				<Navbar.Brand href="/" className="d-flex">
 					<img
@@ -38,7 +39,7 @@ export const MainNavbar = () => {
 								<>
 									<Image src={store.user.picture} width="22" height="22" alt="User" roundedCircle style={{ margin: '8px 5px' }} />
 									<Navbar.Text>Hola, {store.user.name}</Navbar.Text>
-									<Nav.Link onClick={actions.clearUser} href="/"> (Cerrar sesión) </Nav.Link>
+									<button onClick={() => actions.logout()} href="/"> (Cerrar sesión) </button>
 								</>
 							) : (
 								<Nav.Link href="/login" className="text-black">Iniciar sesión</Nav.Link>
