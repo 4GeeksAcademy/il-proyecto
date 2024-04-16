@@ -52,7 +52,7 @@ body {
 }
 
 .main-content {
-    margin: 0 15px 15px 15px;
+    margin: 0 15px 15px 26px;
 }
 
 
@@ -375,6 +375,16 @@ footer a:hover {
     text-align: center;
 }
 
-.cta-container .heading1, .cta-container .heading2  {
+.cta-container .heading1,
+.cta-container .heading2 {
     font-size: 55px;
+}
+
+
+/* ==========================================================================
+   NAVBAR
+   ========================================================================== */
+
+.navbar-nav {
+    font-family: var(--base-font-family);
 }

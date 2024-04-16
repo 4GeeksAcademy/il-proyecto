@@ -37,9 +37,9 @@ export const MainNavbar = () => {
 						{
 							store.user ? (
 								<>
-									<Image src={store.user.picture} width="22" height="22" alt="User" roundedCircle style={{ margin: '8px 5px' }} />
-									<Navbar.Text>Hola, {store.user.name}</Navbar.Text>
-									<button onClick={() => actions.logout()} href="/"> (Cerrar sesión) </button>
+									{/* <Image src={store.user.picture} width="22" height="22" alt="User" roundedCircle style={{ margin: '8px 5px' }} /> */}
+									<Navbar.Text className="text-body">Hola, <b>{store.user.name}</b></Navbar.Text>
+									<button className="btn btn-link text-black-50 text-decoration-none" onClick={() => actions.logout()} href="/"> ( Cerrar sesión ) </button>
 								</>
 							) : (
 								<Nav.Link href="/login" className="text-black">Iniciar sesión</Nav.Link>
