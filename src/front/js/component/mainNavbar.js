@@ -38,7 +38,7 @@ export const MainNavbar = () => {
 								<>
 									<Image src={store.user.picture} width="22" height="22" alt="User" roundedCircle style={{ margin: '8px 5px' }} />
 									<Navbar.Text>Hola, {store.user.name}</Navbar.Text>
-									<Nav.Link onClick={actions.clearUser} href="/"> (Cerrar sesión) </Nav.Link>
+									<Nav.Link onClick={() => actions.logout()} href="/"> (Cerrar sesión) </Nav.Link>
 								</>
 							) : (
 								<Nav.Link href="/login" className="text-black">Iniciar sesión</Nav.Link>

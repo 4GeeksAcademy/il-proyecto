@@ -42,15 +42,15 @@ def login():
         return jsonify({"msg": "Bad request"}), 401
     
     try:
-        print(type(email))
+        query_result.is_active = True
+        db.session.commit()
         access_token = create_access_token(identity=email)
         print("Token: ", access_token)
+        user_data = query_result.serialize() 
+        return jsonify(access_token=access_token, user=user_data)
     except Exception as e:
         return jsonify({"msg": "Error al crear el token de acceso", "error": str(e)}), 500
 
-    access_token = create_access_token(identity=email)
-    print("Token: ", access_token)  
-    return jsonify(access_token=access_token)
 
 # Protect a route with jwt_required, which will kick out requests
 # # without a valid JWT present.
@@ -64,3 +64,33 @@ def validate_token():
         return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404
      
     return jsonify({"is_logged": True }), 200
+
+@api.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    current_user_email = get_jwt_identity()
+    current_user = User.query.filter_by(email=current_user_email).first()
+    if current_user:
+        current_user.is_active = False
+        db.session.commit()
+    return jsonify({"message": "Logout successful"}), 200
+
+## Sign Up User
+@api.route("/signup", methods=["POST"])
+def signup():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    name= request.json.get("name", None)
+
+    query_result = User.query.filter_by(email=email).first()
+   
+    if query_result is None:
+
+        new_user = User(email=email, password=password, name=name)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({"msg": "New user created"}), 200
+    
+    else :
+        return jsonify({"msg": "User exist, try recover your password"}), 200
