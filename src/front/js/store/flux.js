@@ -8,6 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			user: null,
 			
 			location: [],
+
 		},
 
 
@@ -26,6 +27,121 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
 			saveUserLocation: async () => {
 				try {
 					if (navigator.geolocation) {
@@ -64,41 +180,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			
-			// saveUserLocation: async () => {
-			// 	try {
-			// 		if (navigator.geolocation) {
-			// 			navigator.geolocation.getCurrentPosition(async (position) => {
-			// 				const { latitude, longitude } = position.coords;
-			
-			// 				// Hacer una solicitud POST a la API para guardar la ubicación del usuario
-			// 				const response = await fetch('https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/api/location', {
-			// 					method: 'POST',
-			// 					headers: {
-			// 						'Content-Type': 'application/json'
-			// 					},
-			// 					body: JSON.stringify({ latitude, longitude })
-			// 				});
-			
-			// 				if (response.ok) {
-			// 					console.log('Ubicación guardada exitosamente');
-								
-			// 					// Desencadenar una actualización del mapa después de guardar la ubicación
-			// 					updateMap();
-			// 				} else {
-			// 					console.error('Error al guardar la ubicación:', response.statusText);
-			// 				}
-			// 			}, (error) => {
-			// 				console.error('Error al obtener la ubicación:', error.message);
-			// 			});
-			// 		} else {
-			// 			console.error('Geolocalización no es compatible con este navegador.');
-			// 		}
-			// 	} catch (error) {
-			// 		console.error('Error al guardar la ubicación:', error);
-			// 	}
-			// },
-
-
+		
 
 			  getAllLocations: async () => {
 				try {
@@ -135,72 +217,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			// getAllLocations: async () => {
-			// 	try {
-			// 		const storedDataLocation = sessionStorage.getItem("locationData");
-			
-			// 		if (storedDataLocation) {
-			// 			// Si hay datos almacenados en sessionStorage, usa esos datos
-			// 			setStore({ location: JSON.parse(storedDataLocation) });
-			// 		} else {
-			// 			// Si no hay datos almacenados, realiza una solicitud GET para obtener las ubicaciones
-			// 			const urlLocation = `https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/api/location/`;
-			// 			const response = await fetch(urlLocation, {
-			// 				method: 'GET'	
-			// 			});
-			
-			// 			if (!response.ok) {
-			// 				throw new Error(`Failed to fetch location data: ${response.status} ${response.statusText}`);
-			// 			}
-			
-			// 			const locationsData = await response.json();
-			
-			// 			// Actualiza el estado con las ubicaciones obtenidas
-			// 			setStore && setStore({ location: locationsData });
-			// 			console.log(locationsData);
-			// 			return true;
-			// 			// Guarda las ubicaciones en sessionStorage para futuros accesos
-			// 			sessionStorage.setItem("locationData", JSON.stringify(locationsData));
-			// 		// }
-			// 	} catch (error) {
-			// 		console.error('Error fetching or processing location data:', error);
-			// 		return false;
-			// 	}	
-			
-			// },
-			
-			
-			
-			  
-			
-
-			// getMessage: async () => {
-			// 	try{
-			// 		// fetching data from the backend
-			// 		const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-			// 		const data = await resp.json()
-			// 		setStore({ message: data.message })
-			// 		// don't forget to return something, that is how the async resolves
-			// 		return data;
-			// 	}catch(error){
-			// 		console.log("Error loading message from backend", error)
-			// 	}
-			// },
-			
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			}
 		}
 	};
 };
