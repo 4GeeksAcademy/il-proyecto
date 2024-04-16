@@ -1,7 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -11,6 +11,10 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import os
+
+# mail 
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
+from flask_mail import Message
 
 api = Blueprint('api', __name__)
 
@@ -86,12 +90,14 @@ def signup():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
     name= request.json.get("name", None)
+    surnames = request.json.get("surnames", None)
+    is_active= False
 
     query_result = User.query.filter_by(email=email).first()
    
     if query_result is None:
 
-        new_user = User(email=email, password=password, name=name)
+        new_user = User(email=email, password=password, name=name, surnames=surnames, is_active=is_active)
         db.session.add(new_user)
         db.session.commit()
 
@@ -135,3 +141,70 @@ def login_google():
     except ValueError:
         # Invalid token
         return jsonify({"msg": "Token de Google inválido"}), 401
+
+
+@api.route("/send_mail", methods=['GET'])
+def send_mail():
+    from app import mail
+    msg = Message("Hola desde Flask-Mail",
+                  sender="mymoodnbp@gmail.com",
+                  recipients=["natalia@funtsak.com"])
+    msg.body = "Este es el cuerpo del mensaje de correo electrónico."
+    mail.send(msg)
+    return "Mensaje enviado con éxito!"
+
+# @api.route('/send-mail/<email>')
+# def send_mail(email):
+#     email = 'natalia@funtsak.com'
+#     from app import mail
+#     msg = Message("Reset Your Password", sender="mymoodnbp@gmail.com", recipients=[email])
+#     # Usar render_template para generar el HTML del correo
+#     msg.html = render_template('email_template.html', name="John Doe", link="https://example.com/reset-password")
+#     print(msg.html)
+#     mail.send(msg)
+#     return "Email sent successfully!"
+
+def get_external_base_url():
+    # Puedes definir estas variables en tu configuración o archivo .env
+    default_host = 'verbose-capybara-pqj4vpg6jg2rj9q-3001.app.github.dev'
+    scheme = 'https'  # Cambiar a 'http' si es necesario
+    host = os.getenv('EXTERNAL_HOST_URL', default_host)
+    return f"{scheme}://{host}"
+
+@api.route('/reset-password', methods=['POST'])
+def reset_password_request():
+    from app import mail
+    email = request.json['email']
+    serializer = URLSafeTimedSerializer(current_app.config['JWT_SECRET_KEY'])
+
+    token = serializer.dumps(email, salt=current_app.config['SECURITY_PASSWORD_SALT'])
+    base_url = get_external_base_url()  # Obtiene la URL base externa
+    link = url_for('api.reset_password', token=token, _external=False)
+    full_link = f"{base_url}{link}"  # Construye la URL completa
+
+    msg = Message("Reset your MyMood Password",
+                  sender="mymoodbnp@gmail.com",
+                  recipients=[email])
+    
+    msg.body = f"Please click on the link to reset your password: {full_link}"
+    mail.send(msg)
+
+    return jsonify({'message': 'Please check your email for the password reset link.'}), 200
+
+
+@api.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    try:
+        serializer = URLSafeTimedSerializer(current_app.config['JWT_SECRET_KEY'])
+        email = serializer.loads(
+            token,
+            salt=current_app.config['SECURITY_PASSWORD_SALT'],
+            max_age=3600  # Token expires after 1 hour
+        )
+    except SignatureExpired:
+        return jsonify({"message": "The password reset link is expired."}), 400
+    except BadTimeSignature:
+        return jsonify({"message": "Invalid token. Please request a new password reset."}), 400
+
+    # Reset password logic here
+    return jsonify({"message": "Password has been reset successfully."}), 200

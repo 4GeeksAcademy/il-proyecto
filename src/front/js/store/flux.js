@@ -2,18 +2,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			], 
 			// MYMOOD
 			user: null
 		},
@@ -100,12 +88,55 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			
-
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
+			requestPasswordReset: async (email) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ email })
+					});
+					const data = await response.json();
+					if (response.ok) {
+						return { success: true, message: "Check your email for the password reset instructions." };
+					} else {
+						return { success: false, message: data.message || "An error occurred while trying to process your request." };
+					}
+				} catch (error) {
+					console.error("Error in requestPasswordReset:", error);
+					return { success: false, message: "An unexpected error occurred." };
+				}
 			},
 
+			signUp: async (name, surnames, email, password) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name,
+                            surnames,
+                            email,
+                            password
+                        })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        setStore({ user: data.user });
+                        return { status: true, msg: "User created successfully." };
+                    } else {
+                        return { status: false, msg: data.msg };
+                    }
+                } catch (error) {
+                    console.error("Error signing up:", error);
+                    return { status: false, msg: "Network error" };
+                }
+            },
+	
+			// Backend is running
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
@@ -117,20 +148,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}catch(error){
 					console.log("Error loading message from backend", error)
 				}
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
 			}
 		}
 	};

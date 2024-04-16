@@ -42,27 +42,6 @@ export const Login = () => {
 		}
 	};
 
-	// const handleGoogleSuccess = async (response) => {
-	// 	console.log(response);
-	// 	const tokenId = response.credential;
-	// 	const result = await fetch(`${process.env.BACKEND_URL}/api/login-google`, {
-	// 		method: 'POST',
-	// 		headers: { 'Content-Type': 'application/json' },
-	// 		body: JSON.stringify({ id_token: tokenId })
-	// 	});
-
-	// 	const data = await result.json();
-	// 	if (result.ok) {
-	// 		// Procesa el login exitoso
-	// 		console.log("Login successful:", data);
-	// 		sessionStorage.setItem('userToken', data.token);
-	// 		navigate('/');
-	// 	} else {
-	// 		console.error("Login failed:", data.message);
-	// 	}
-	// };
-
-
 	const handleFailure = (error) => {
 		console.log(error);
 		setError("Failed to log in. Please check your email and password.");
@@ -82,10 +61,10 @@ export const Login = () => {
 							<Form.Label>Contraseña</Form.Label>
 							<Form.Control type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
 						</Form.Group>
-						<a href="/" className="link">He olvidado mi contraseña</a>
+						<a href="/reset-password" className="link">He olvidado mi contraseña</a>
 						<button type="submit" className="button1 form-button">¡Entrar a Mymood!</button>
 					</Form>
-					{error && <div className="text-danger mt-3">{error}</div>}
+					{error && <div className="text-danger mt-3 border border-danger p-3">{error}</div>}
 				</Col>
 			</Row>
 
@@ -102,3 +81,4 @@ export const Login = () => {
 		</Container >
 	);
 };
+
