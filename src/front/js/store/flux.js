@@ -111,7 +111,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							// Verificar si la ubicación ya existe antes de guardarla
 							const existingLocation = store.location.results.find(loc => loc.latitude === latitude && loc.longitude === longitude);
 							if (existingLocation) {
-								console.log('La ubicación ya existe en la base de datos');
+								console.log('The location already exists in the database.');
 								return; // No guardar la ubicación nuevamente
 							}
 			
@@ -125,18 +125,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 							});
 			
 							if (response.ok) {
-								console.log('Ubicación guardada exitosamente');
+								console.log("Location saved successfully");
 							} else {
-								console.error('Error al guardar la ubicación:', response.statusText);
+								console.error('Error saving the location:', response.statusText);
 							}
 						}, (error) => {
-							console.error('Error al obtener la ubicación:', error.message);
+							console.error('Error getting the location:', error.message);
 						});
 					} else {
-						console.error('Geolocalización no es compatible con este navegador.');
+						console.error('Geolocation is not supported by this browser.');
 					}
 				} catch (error) {
-					console.error('Error al guardar la ubicación:', error);
+					console.error('Error saving location:', error);
 				}
 			},
 			
@@ -149,7 +149,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (storedDataLocation) {
 						// Si hay datos almacenados en sessionStorage, usa esos datos
 						setStore && setStore({ location: JSON.parse(storedDataLocation) });
-						console.log("Ubicaciones cargadas desde sessionStorage.");
+						console.log("Locations loaded from sessionStorage.");
 					} else {
 						// Si no hay datos almacenados, realiza una solicitud GET para obtener las ubicaciones
 						const urlLocation = `https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/api/location/`;
@@ -165,7 +165,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			
 						// Actualiza el estado con las ubicaciones obtenidas
 						setStore && setStore({ location: locationsData });
-						console.log("Ubicaciones cargadas desde la API.");
+						console.log("Locations loaded from the API.");
 			
 						// Guarda las ubicaciones en sessionStorage para futuros accesos
 						sessionStorage.setItem("locationData", JSON.stringify(locationsData));

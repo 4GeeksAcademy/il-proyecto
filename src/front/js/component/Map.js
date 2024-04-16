@@ -14,7 +14,6 @@ const MapComponent = () => {
     // Carga las ubicaciones al montar el componente
     actions.saveUserLocation();
     
-
     // Guarda la ubicación del usuario al cargar el componente
     actions.getAllLocations();
   }, []); // Ejecuta solo una vez al montar el componente
