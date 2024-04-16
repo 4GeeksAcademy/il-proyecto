@@ -11,6 +11,8 @@ import { Geolocation } from "./pages/geolocation";
 import injectContext from "./store/appContext";
 import { MainNavbar } from "./component/mainNavbar";
 import { Footer } from "./component/footer";
+import { Faqs } from "./pages/faqs";
+import { Legal } from "./pages/legal";
 
 
 //create your first component
@@ -22,7 +24,7 @@ const Layout = () => {
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
-        <div>
+        <div className="main-content">
             <BrowserRouter basename={basename}>                              
                     <MainNavbar />
                     <Routes>
@@ -31,6 +33,8 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Geolocation />} path="/geolocation"/>
                         <Route element={<Login />} path="/login" />
+                        <Route element={<Faqs />} path="/faqs" />
+                        <Route element={<Legal />} path="/legal" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />            
