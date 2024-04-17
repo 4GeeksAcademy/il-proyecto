@@ -20,7 +20,7 @@ from flask_mail import Mail
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
-app = Flask(__name__)
+app = Flask(__name__, template_folder='api/templates')
 app.url_map.strict_slashes = False
 
 # database condiguration
@@ -59,10 +59,6 @@ if app.config["JWT_SECRET_KEY"] is None or app.config['SECURITY_PASSWORD_SALT'] 
 
 jwt = JWTManager(app)
 mail = Mail(app)
-
-print("JWT Key Type:", type(app.config["JWT_SECRET_KEY"]))
-print("Salt Type:", type(app.config['SECURITY_PASSWORD_SALT']))
-print("Mail Server:", app.config['MAIL_SERVER'])
 
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
