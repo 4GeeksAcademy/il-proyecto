@@ -101,16 +101,14 @@ export const Login = () => {
 							<a variant="primary" onClick={handleShow} className="text-black text-end link">
 								He olvidado mi contraseña
 							</a>
-							<button type="submit" className="button1 form-button">¡Entrar a Mymood!</button>
-							<a variant="primary" href="/register" className="text-black text-center link">
-								¿No tienes cuenta? Regístrate
-							</a>
+							<button type="submit" className="button1 form-button mb-3">¡Entrar a Mymood!</button>
+							<p className="text-center" style={{ fontFamily: 'var(--base-font-family)' }}>¿No tienes cuenta? <a variant="primary" href="/singup" className="text-black">Regístrate </a></p>
 						</Form>
 						{error && <div className="text-danger mt-3 border border-danger p-3">{error}</div>}
 					</Col>
 				</Row>
 
-				<Row className="text-center mt-5 mb-5">
+				<Row className="text-center mt-3 mb-5">
 					<Col>
 						<p>O entrar con:</p>
 						<GoogleProvider>
