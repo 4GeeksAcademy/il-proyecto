@@ -43,10 +43,8 @@ setup_commands(app)
 
 # Handle/serialize errors like a JSON object
 # Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
-jwt = JWTManager(app)
-
-app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT')
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY").encode('utf-8')
+app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT').encode('utf-8')
 
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
@@ -54,7 +52,17 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
 app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
+
+# Example of handling non-existent environment variables safely
+if app.config["JWT_SECRET_KEY"] is None or app.config['SECURITY_PASSWORD_SALT'] is None:
+    raise ValueError("Key or salt not provided")
+
+jwt = JWTManager(app)
 mail = Mail(app)
+
+print("JWT Key Type:", type(app.config["JWT_SECRET_KEY"]))
+print("Salt Type:", type(app.config['SECURITY_PASSWORD_SALT']))
+print("Mail Server:", app.config['MAIL_SERVER'])
 
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')

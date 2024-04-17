@@ -102,6 +102,9 @@ export const Login = () => {
 								He olvidado mi contraseña
 							</a>
 							<button type="submit" className="button1 form-button">¡Entrar a Mymood!</button>
+							<a variant="primary" href="/register" className="text-black text-center link">
+								¿No tienes cuenta? Regístrate
+							</a>
 						</Form>
 						{error && <div className="text-danger mt-3 border border-danger p-3">{error}</div>}
 					</Col>

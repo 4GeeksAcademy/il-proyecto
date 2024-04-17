@@ -15,6 +15,8 @@ import os
 # mail 
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from flask_mail import Message
+from werkzeug.security import generate_password_hash
+
 
 api = Blueprint('api', __name__)
 
@@ -142,74 +144,67 @@ def login_google():
         # Invalid token
         return jsonify({"msg": "Token de Google inválido"}), 401
 
-
-@api.route("/send_mail", methods=['GET'])
-def send_mail():
-    from app import mail
-    msg = Message("Hola desde Flask-Mail",
-                  sender="mymoodnbp@gmail.com",
-                  recipients=["natalia@funtsak.com"])
-    msg.body = "Este es el cuerpo del mensaje de correo electrónico."
-    mail.send(msg)
-    return "Mensaje enviado con éxito!"
-
-# @api.route('/send-mail/<email>')
-# def send_mail(email):
-#     email = 'natalia@funtsak.com'
-#     from app import mail
-#     msg = Message("Reset Your Password", sender="mymoodnbp@gmail.com", recipients=[email])
-#     # Usar render_template para generar el HTML del correo
-#     msg.html = render_template('email_template.html', name="John Doe", link="https://example.com/reset-password")
-#     print(msg.html)
-#     mail.send(msg)
-#     return "Email sent successfully!"
-
 def get_external_base_url():
-    # Puedes definir estas variables en tu configuración o archivo .env
-    default_host = 'verbose-capybara-pqj4vpg6jg2rj9q-3001.app.github.dev'
-    scheme = 'https'  # Cambiar a 'http' si es necesario
+    default_host = os.getenv('FRONT_URL')
+    scheme = 'https' 
     host = os.getenv('EXTERNAL_HOST_URL', default_host)
     return f"{scheme}://{host}"
 
 @api.route('/reset-password', methods=['POST'])
 def reset_password_request():
-    from app import mail
     email = request.json['email']
-    user = User.query.filter_by(email=email).first()  # Check if user exists
-
+    user = User.query.filter_by(email=email).first()
     if not user:
-        # No user found with the provided email address
-        return jsonify({'message': 'No existe ninguna cuenta MyMood con ese e-mail.'}), 404
+        return jsonify({'message': 'No existe ninguna cuenta con ese email'}), 404
 
-    # User exists, proceed with password reset process
-    serializer = URLSafeTimedSerializer(current_app.config['JWT_SECRET_KEY'])
-    token = serializer.dumps(email, salt=current_app.config['SECURITY_PASSWORD_SALT'])
-    base_url = get_external_base_url()  # Obtain the external base URL
-    link = url_for('api.reset_password', token=token, _external=False)
-    full_link = f"{base_url}{link}"  # Construct the complete URL
+    token = user.get_reset_token()
+    send_reset_email(user, token)
 
-    msg = Message("MyMood: Recuperar contraseña",
-                  sender="mymoodbnp@gmail.com",
-                  recipients=[email])
-    msg.body = f"Por favor sigue el enlace para poder recuperar tu contraseña: {full_link}"
+    return jsonify({'message': 'Por favor revisa tu email para las instrucciones de reseteo de contraseña'}), 200
+
+def send_reset_email(user, token):
+    from app import mail
+    
+    base_url = get_external_base_url()  
+    link = url_for('api.reset_password_request', token=token, _external=False)
+    new_link = link.replace("/api", "")
+    full_link = f"{base_url}{new_link}"  
+    
+    # base_url = os.getenv('FRONT_URL').rstrip('/')  # Eliminar la barra final si existe
+    # full_link = f"{base_url}/reset-password/{token}"  # Construir la URL completa
+    # print(full_link)
+     
+    msg = Message('Recuperar contraseña',
+                  sender='mymoodbnp@gmail.com',
+                  recipients=[user.email])
+    msg.body = f'''Por favor sigue el enlace para poder recuperar tu contraseña: 
+    {full_link} 
+    Si no realizó esta solicitud, simplemente ignore este correo electrónico y no se realizarán cambios.'''
+    
     mail.send(msg)
+# @api.route('/reset-password/<token>', methods=['GET', 'POST'])
+# @api.route('/reset-password/<token>', methods=['POST'])
+# def reset_token(token):
+#     user = User.verify_reset_token(token)
+#     if not user:
+#         return jsonify({'message': 'That is an invalid or expired token'}), 400
+#     if request.method == 'POST':
+#         password = request.json['password']
+#         user.password = password  # Asegúrate de hashear la contraseña
+#         db.session.commit()
+#         return jsonify({'message': 'Your password has been updated!'}), 200
+#     return jsonify({'message': 'Invalid method'}), 405
 
-    return jsonify({'message': 'Por favor, revisa tu email para ver el enlace de recuperar contraseña.'}), 200
 
+@api.route('/reset-password/<token>', methods=["GET", "POST"])
+def reset_token(token):
+    user = User.verify_reset_token(token)
+    if not user:
+        return jsonify({'message': 'That is an invalid or expired token'}), 400
+    if request.method == 'POST':
+        password = request.json['password']
+        user.password = password 
+        db.session.commit()
+        return jsonify({'message': 'Your password has been updated!'}), 200
+    return jsonify({'message': 'Invalid method'}), 405
 
-@api.route('/reset-password/<token>', methods=['GET', 'POST'])
-def reset_password(token):
-    try:
-        serializer = URLSafeTimedSerializer(current_app.config['JWT_SECRET_KEY'])
-        email = serializer.loads(
-            token,
-            salt=current_app.config['SECURITY_PASSWORD_SALT'],
-            max_age=3600  # Token expires after 1 hour
-        )
-    except SignatureExpired:
-        return jsonify({"message": "The password reset link is expired."}), 400
-    except BadTimeSignature:
-        return jsonify({"message": "Invalid token. Please request a new password reset."}), 400
-
-    # Reset password logic here
-    return jsonify({"message": "Password has been reset successfully."}), 200

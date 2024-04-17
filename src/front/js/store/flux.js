@@ -1,3 +1,5 @@
+import ResetPassword from "../component/resetPassword";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -88,27 +90,62 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			
-			requestPasswordReset: async (email) => {
+			resetPassword: async (token, password) => {
 				try {
-					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password`, {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password/${token}`, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json'
 						},
-						body: JSON.stringify({ email })
+						body: JSON.stringify({ password })
 					});
-					const data = await response.json();
-					if (response.ok) {
-						return { success: true, message: "Check your email for the password reset instructions." };
-					} else {
-						return { success: false, message: data.message || "An error occurred while trying to process your request." };
+			
+					const data = await response.json(); // Parsear la respuesta como JSON
+			
+					if (!response.ok) {
+						let errorMessage = 'Hubo un error al restablecer la contraseña';
+						if (response.status === 400) {
+							errorMessage = 'La solicitud es incorrecta';
+						} else if (response.status === 404) {
+							errorMessage = 'No se encontró el recurso';
+						}
+						throw new Error(errorMessage);
 					}
+					return data; // Devolver los datos parseados
 				} catch (error) {
-					console.error("Error in requestPasswordReset:", error);
-					return { success: false, message: "An unexpected error occurred." };
+					console.error("Error reset password:", error);
+					return { ok: false, message: "Network error" };
 				}
 			},
+			
 
+			resetPassword: async (token, password) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password/${token}`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ password })
+					});
+			
+					if (!response.ok) {
+						let errorMessage = 'Hubo un error al restablecer la contraseña';
+						if (response.status === 400) {
+							errorMessage = 'La solicitud es incorrecta';
+						} else if (response.status === 404) {
+							errorMessage = 'No se encontró el recurso';
+						}
+						throw new Error(errorMessage);
+					}
+					return response;
+				} catch (error) {
+					console.error("Error reset password:", error);
+					return { ok: false, message: "Network error" };
+				}
+			},
+			
+			
 			signUp: async (name, surnames, email, password) => {
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/signup`, {

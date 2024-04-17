@@ -1,4 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask import current_app #<---HERE
+from itsdangerous import URLSafeTimedSerializer as Serializer
+# from itsdangerous import BadSignature, SignatureExpired
 
 db = SQLAlchemy()
 
@@ -18,6 +21,33 @@ class User(db.Model):
     mood_id = db.Column(db.Integer, db.ForeignKey('mood.id'))
     phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
 
+    def get_reset_token(self, expires_sec=84600):
+        serializer = Serializer(secret_key=current_app.config['SECRET_KEY'], salt=current_app.config['SECURITY_PASSWORD_SALT'])
+        return serializer.dumps({'user_id': self.id})
+    
+    # @staticmethod
+    # def verify_reset_token(token):
+    #     s = Serializer(current_app.config['SECRET_KEY'])
+    #     try:
+    #         user_id = s.loads(token, max_age=84600)['user_id']
+    #         print(user_id)
+    #     except:
+    #         return None
+    #     return User.query.get(user_id)
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token, salt=current_app.config['SECURITY_PASSWORD_SALT'], max_age=84600)
+            user_id = data.get('user_id')
+            if user_id:
+                user = User.query.get(user_id)
+                return user
+        except:
+            pass
+        return None
+
+    
     def __repr__(self):
         return '<Users %r>' % self.id
      
