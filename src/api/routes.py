@@ -174,9 +174,26 @@ def save_user_location():
         return {'message': 'Ubicación del usuario guardada correctamente.'}, 200
     else:
         return {'error': 'Datos de ubicación incompletos.'}, 400
+    
 
 
+@api.route('/location/<int:location_id>', methods=['DELETE'])
+def delete_location(location_id):
+    try:
+        # Verificar si la ubicación con el ID proporcionado existe en la base de datos
+        location = Location.query.get(location_id)
+        
+        if not location:
+            return jsonify({'error': 'Ubicación no encontrada'}), 404
+        
+        # Eliminar la ubicación de la base de datos
+        db.session.delete(location)
+        db.session.commit()
 
+        return jsonify({'message': 'Ubicación eliminada correctamente'}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 

@@ -102,43 +102,78 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
-			saveUserLocation: async () => {
+
+			saveUserLocation: async (latitude, longitude) => {
 				try {
-					if (navigator.geolocation) {
-						navigator.geolocation.getCurrentPosition(async (position) => {
-							const { latitude, longitude } = position.coords;
-			
-							// Verificar si la ubicación ya existe antes de guardarla
-							const existingLocation = store.location.results.find(loc => loc.latitude === latitude && loc.longitude === longitude);
-							if (existingLocation) {
-								console.log('The location already exists in the database.');
-								return; // No guardar la ubicación nuevamente
-							}
-			
-							// Hacer una solicitud POST a la API para guardar la ubicación del usuario
-							const response = await fetch('https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/api/location', {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json'
-								},
-								body: JSON.stringify({ latitude, longitude })
-							});
-			
-							if (response.ok) {
-								console.log("Location saved successfully");
-							} else {
-								console.error('Error saving the location:', response.statusText);
-							}
-						}, (error) => {
-							console.error('Error getting the location:', error.message);
-						});
-					} else {
-						console.error('Geolocation is not supported by this browser.');
-					}
+				  // Construir la URL de la API para guardar la ubicación del usuario
+				  const url = `${process.env.BACKEND_URL}/api/location`;
+			  
+				  // Datos de ubicación a enviar en la solicitud POST
+				  const locationData = {
+					latitude,
+					longitude
+				  };
+			  
+				  // Realizar la solicitud POST a la API utilizando fetch
+				  const response = await fetch(url, {
+					method: 'POST',
+					headers: {
+					  'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(locationData) // Convertir los datos a formato JSON
+				  });
+			  
+				  // Verificar si la respuesta es exitosa (código de estado 200-299)
+				  if (response.ok) {
+					console.log('Location saved successfully');
+					// Aquí puedes realizar otras acciones después de guardar la ubicación
+				  } else {
+					// Manejar errores si la solicitud no fue exitosa
+					throw new Error(`Error saving location: ${response.statusText}`);
+				  }
 				} catch (error) {
-					console.error('Error saving location:', error);
+				  console.error('Error saving location:', error.message);
+				  // Manejar errores de manera apropiada en tu aplicación
 				}
-			},
+			  },
+			  
+			// saveUserLocation: async () => {
+			// 	try {
+			// 		if (navigator.geolocation) {
+			// 			navigator.geolocation.getCurrentPosition(async (position) => {
+			// 				const { latitude, longitude } = position.coords;
+			
+			// 				// Verificar si la ubicación ya existe antes de guardarla
+			// 				const existingLocation = store.location.results.find(loc => loc.latitude === latitude && loc.longitude === longitude);
+			// 				if (existingLocation) {
+			// 					console.log('The location already exists in the database.');
+			// 					return; // No guardar la ubicación nuevamente
+			// 				}
+			
+			// 				// Hacer una solicitud POST a la API para guardar la ubicación del usuario
+			// 				const response = await fetch(process.env.BACKEND_URL + '/api/location', {
+			// 					method: 'POST',
+			// 					headers: {
+			// 						'Content-Type': 'application/json'
+			// 					},
+			// 					body: JSON.stringify({ latitude, longitude })
+			// 				});
+			
+			// 				if (response.ok) {
+			// 					console.log("Location saved successfully");
+			// 				} else {
+			// 					console.error('Error saving the location:', response.statusText);
+			// 				}
+			// 			}, (error) => {
+			// 				console.error('Error getting the location:', error.message);
+			// 			});
+			// 		} else {
+			// 			console.error('Geolocation is not supported by this browser.');
+			// 		}
+			// 	} catch (error) {
+			// 		console.error('Error saving location:', error);
+			// 	}
+			// },
 			
 		
 
@@ -152,7 +187,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log("Locations loaded from sessionStorage.");
 					} else {
 						// Si no hay datos almacenados, realiza una solicitud GET para obtener las ubicaciones
-						const urlLocation = `https://cuddly-happiness-7vvvx7wrjp64hppg-3001.app.github.dev/api/location/`;
+						const urlLocation = process.env.BACKEND_URL + `/api/location`;
 						const response = await fetch(urlLocation, {
 							method: 'GET'
 						});
@@ -176,6 +211,35 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
+
+
+			clearUserLocation:  () => {
+				return async (dispatch, getState) => {
+				  try {
+					const { user } = getState(); // Obtener el usuario actual del estado global
+					const userId = user.id;
+			  
+					// Realizar una solicitud al servidor para eliminar la ubicación del usuario
+					const response = await fetch(process.env.BACKEND_URL + `users/${userId}/location`, {
+					  method: 'DELETE',
+					  headers: {
+						'Content-Type': 'application/json',
+						// Puedes incluir otros encabezados necesarios aquí (por ejemplo, token de autenticación)
+					  },
+					});
+			  
+					if (!response.ok) {
+					  throw new Error('Error al eliminar la ubicación del usuario');
+					}
+			  
+					// Despachar una acción para limpiar la ubicación del usuario en el estado global (store)
+					dispatch({ type: 'CLEAR_USER_LOCATION' });
+				  } catch (error) {
+					console.error('Error al eliminar la ubicación del usuario:', error.message);
+					// Puedes manejar errores o mostrar mensajes de error aquí
+				  }
+				};
+			  },
 
 		}
 	};
