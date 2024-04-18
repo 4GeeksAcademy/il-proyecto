@@ -138,7 +138,7 @@ def login_google():
 
 
 
-@api.route('/location/', methods=['GET'])
+@api.route('/location', methods=['GET'])
 def get_all_location():
     query_results = Location.query.all()
     results = list(map(lambda item: item.serialize(), query_results))
@@ -157,23 +157,43 @@ def get_all_location():
     
 
 
-@api.route('/location', methods=['POST'])
+@api.route("/location", methods=["POST"])
 def save_user_location():
-    data = request.get_json()
-    if 'latitude' in data and 'longitude' in data:
-        latitude = data['latitude']
-        longitude = data['longitude']
+    latitude = request.json.get("latitude", None)
+    longitude = request.json.get("longitude", None)
+    
+    query_result = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
+     
+    if query_result is None:
 
-        # Crear una nueva instancia de Location con los datos recibidos
         new_location = Location(latitude=latitude, longitude=longitude)
-
-        # Agregar la nueva ubicación a la sesión de la base de datos y confirmar los cambios
         db.session.add(new_location)
         db.session.commit()
 
-        return {'message': 'Ubicación del usuario guardada correctamente.'}, 200
-    else:
-        return {'error': 'Datos de ubicación incompletos.'}, 400
+        return jsonify({"msg": "New location created"}), 200
+    
+    else :
+        return jsonify({"msg": "Location exist, try another location"}), 200
+
+
+
+# @api.route('/location', methods=['POST'])
+# def save_user_location():
+#     data = request.get_json()
+#     if 'latitude' in data and 'longitude' in data:
+#         latitude = data['latitude']
+#         longitude = data['longitude']
+
+#         # Crear una nueva instancia de Location con los datos recibidos
+#         new_location = Location(latitude=latitude, longitude=longitude)
+
+#         # Agregar la nueva ubicación a la sesión de la base de datos y confirmar los cambios
+#         db.session.add(new_location)
+#         db.session.commit()
+
+#         return {'message': 'Ubicación del usuario guardada correctamente.'}, 200
+#     else:
+#         return {'error': 'Datos de ubicación incompletos.'}, 400
     
 
 

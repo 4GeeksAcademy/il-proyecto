@@ -101,8 +101,9 @@ class Mood(db.Model):
 
 class UserMoodHistory(db.Model):
     __tablename__ = 'user_mood_history'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    date = db.Column(db.Date, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    date = db.Column(db.Date)
     mood_id = db.Column(db.Integer, db.ForeignKey('mood.id'))
     user = db.relationship('User', backref='user_mood_history')
     mood = db.relationship('Mood')

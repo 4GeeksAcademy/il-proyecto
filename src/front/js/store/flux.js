@@ -1,3 +1,5 @@
+import { get } from "firebase/database";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 
@@ -8,6 +10,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			user: null,
 
 			location: [],
+			
+			auth: false,
 
 		},
 
@@ -40,7 +44,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return false;
 					}
 					sessionStorage.setItem("userToken", data.access_token);
-					getActions().setUser(data.user);
+					// getActions().setUser(data.user);
+					setStore({...getStore(),auth: true}); 
 					return true;
 				}
 				catch (error) {
@@ -102,153 +107,67 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
+
 			saveUserLocation: async (latitude, longitude) => {
-				try {
-					const store = getStore(); // Obtener el estado actual (store)
-		
-					// Si la ubicación no existe en la base de datos, procede con la inserción
-					const url = `${process.env.BACKEND_URL}/api/location`;
-					const locationData = { latitude, longitude };
-
-					const response = await fetch(url, {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify(locationData)
-					});
-
-					// Esperar la respuesta del servidor antes de continuar
-					const responseData = await response.json();
-
-					// Verificar si la respuesta es exitosa (código de estado 200-299)
-					if (response.ok) {
-						// Actualizar el estado global solo si la ubicación no existe previamente
-						setStore(prevState => ({
-							...prevState,
-							location: [...prevState.location, locationData] // Agregar la nueva ubicación al estado
-						}));
-
-						console.log('Location saved successfully');
-						return true;
-					} else {
-						throw new Error(`Error saving location: ${response.statusText}`);
+				try {				
+					// Obtener todas las ubicaciones existentes
+					const getAllLocations = async () => {
+						try {
+							const urlLocation = `${process.env.BACKEND_URL}/api/location`;
+							const response = await fetch(urlLocation, { method: 'GET' });
+			
+							if (!response.ok) {
+								throw new Error(`Failed to fetch location data: ${response.status} ${response.statusText}`);
+							}
+			
+							const data = await response.json();
+							return data.results; // Devuelve solo la lista de ubicaciones
+						} catch (error) {
+							console.error('Error fetching location data:', error.message);
+							return []; // Devuelve una lista vacía en caso de error
+						}
+					};
+			
+					// Obtener todas las ubicaciones
+					const existingLocations = await getAllLocations();
+			
+					// Verificar si la ubicación ya existe en la lista de ubicaciones existentes
+					const isDuplicate = existingLocations.some(loc => loc.latitude === latitude && loc.longitude === longitude);
+			
+					if (isDuplicate) {
+						console.log('The location already exists in the database.');
+						return false; // No guardar la ubicación nuevamente si ya existe
 					}
+			
+					// Si la ubicación no existe, proceder con la solicitud POST para guardarla
+					const postUrl = `${process.env.BACKEND_URL}/api/location`;
+					const postResponse = await fetch(postUrl, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ latitude, longitude })
+					});
+			
+					if (!postResponse.ok) {
+						throw new Error(`Failed to save location: ${postResponse.status} ${postResponse.statusText}`);
+					}
+			
+					// Actualizar el estado global con la nueva ubicación guardada
+					const newLocation = { latitude, longitude };
+					setStore(prevState => ({
+						...prevState,
+						location: [...prevState.location, newLocation]
+					}));
+			
+					console.log('Location saved successfully');
+					return true; // Indicar que la ubicación se guardó con éxito
 				} catch (error) {
 					console.error('Error saving location:', error.message);
-					return false;
+					return false; // Indicar que hubo un error al guardar la ubicación
 				}
 			},
-
-
-			// saveUserLocation: async (latitude, longitude) => {
-			// 	try {
-			// 		const store = getStore(); // Obtener el estado actual (store)
-
-			// 		// Verificar si el estado y la propiedad location están definidos
-			// 		if (!store || !store.location) {
-			// 			console.error('Store or location property is undefined.');
-			// 			return false;
-			// 		}
-
-			// 		// Verificar si la ubicación ya existe en el estado antes de guardarla
-			// 		// const existingLocation = store.location.find(loc => loc.latitude === latitude && loc.longitude === longitude);
-			// 		// if (existingLocation) {
-			// 		// console.log('The location already exists in the database.');
-			// 		// return false; // No guardar la ubicación nuevamente
-			// 		// }
-			// 		// Verificar si la ubicación ya existe en el estado antes de guardarla
-			// 		const exists = store.location.some(loc => loc.results.latitude === latitude && loc.results.longitude === longitude);
-			// 		if (exists) {
-			// 			console.log('The location already exists in the database.');
-			// 			return false; // No guardar la ubicación nuevamente
-			// 		}
-
-
-			// 		// Construir la URL de la API para guardar la ubicación del usuario
-			// 		const url = `${process.env.BACKEND_URL}/api/location`;
-
-			// 		// Datos de ubicación a enviar en la solicitud POST
-			// 		const locationData = {
-			// 			latitude,
-			// 			longitude
-			// 		};
-
-			// 		// Realizar la solicitud POST a la API utilizando fetch y esperar la respuesta
-			// 		const response = await fetch(url, {
-			// 			method: 'POST',
-			// 			headers: {
-			// 				'Content-Type': 'application/json'
-			// 			},
-			// 			body: JSON.stringify(locationData) // Convertir los datos a formato JSON
-			// 		});
-
-			// 		// Esperar la respuesta del servidor antes de continuar
-			// 		const responseData = await response.json();
-
-			// 		// Verificar si la respuesta es exitosa (código de estado 200-299)
-			// 		if (response.ok) {
-			// 			// Actualizar el estado global solo si la ubicación no existe previamente
-			// 			setStore(prevState => ({
-			// 				...prevState,
-			// 				location: [...prevState.location, locationData] // Agregar la nueva ubicación al estado
-			// 			}));
-
-			// 			console.log('Location saved successfully');
-			// 			return true; // Indicar que la ubicación se guardó con éxito
-			// 		} else {
-			// 			// Manejar errores si la solicitud no fue exitosa
-			// 			throw new Error(`Error saving location: ${responseData.message || response.statusText}`);
-			// 		}
-			// 	} catch (error) {
-			// 		console.error('Error saving location:', error.message);
-			// 		return false; // Indicar que hubo un error al guardar la ubicación
-			// 	}
-			// },
-
-
-
-			// saveUserLocation: async (latitude, longitude) => {
-			// 	try {
-			// 	  // Construir la URL de la API para guardar la ubicación del usuario
-			// 	  const url = `${process.env.BACKEND_URL}/api/location`;
-
-			// 	  // Datos de ubicación a enviar en la solicitud POST
-			// 	  const locationData = {
-			// 		latitude,
-			// 		longitude
-			// 	  };
-
-			// 	//   Verificar si la ubicación ya existe antes de guardarla
-			// 		const existingLocation = getStore(store.location.results.find(loc => loc.latitude === latitude && loc.longitude === longitude));
-			// 		if (existingLocation) {
-			// 			console.log('The location already exists in the database.');
-			// 			return false; // No guardar la ubicación nuevamente
-			// 		}
-
-			// 	  // Realizar la solicitud POST a la API utilizando fetch
-			// 	  const response = await fetch(url, {
-			// 		method: 'POST',
-			// 		headers: {
-			// 		  'Content-Type': 'application/json'
-			// 		},
-			// 		body: JSON.stringify(locationData) // Convertir los datos a formato JSON
-			// 	  });
-
-			// 	  // Verificar si la respuesta es exitosa (código de estado 200-299)
-			// 	  if (response.ok) {
-			// 		setStore && setStore({ location: locationData });
-			// 		console.log('Location saved successfully');
-			// 		// Aquí puedes realizar otras acciones después de guardar la ubicación
-			// 	  } else {
-			// 		// Manejar errores si la solicitud no fue exitosa
-			// 		throw new Error(`Error saving location: ${response.statusText}`);
-			// 	  }
-			// 	} catch (error) {
-			// 	  console.error('Error saving location:', error.message);
-			// 	  // Manejar errores de manera apropiada en tu aplicación
-			// 	}
-			//   },
-
-
+			
 
 			getAllLocations: async () => {
 				try {
@@ -262,11 +181,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						throw new Error(`Failed to fetch location data: ${response.status} ${response.statusText}`);
 					}
 
-					const locationsData = await response.json();
+					const data = await response.json();
 
 					// Actualiza el estado con las ubicaciones obtenidas
-					setStore && setStore({ location: locationsData });
-					console.log("Locations loaded from the API.");
+					console.log(data);
+					setStore({ location: data });
+					console.log("Locations loaded from the API to store.");
 
 					return true;
 				} catch (error) {
@@ -276,43 +196,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
-			//   getAllLocations: async () => {
-			// 	try {
-			// 		const storedDataLocation = sessionStorage.getItem("locationData");
-
-			// 		if (storedDataLocation) {
-			// 			// Si hay datos almacenados en sessionStorage, usa esos datos
-			// 			setStore && setStore({ location: JSON.parse(storedDataLocation) });
-			// 			console.log("Locations loaded from sessionStorage.");
-			// 		} else {
-			// 			// Si no hay datos almacenados, realiza una solicitud GET para obtener las ubicaciones
-			// 			const urlLocation = process.env.BACKEND_URL + `/api/location`;
-			// 			const response = await fetch(urlLocation, {
-			// 				method: 'GET'
-			// 			});
-
-			// 			if (!response.ok) {
-			// 				throw new Error(`Failed to fetch location data: ${response.status} ${response.statusText}`);
-			// 			}
-
-			// 			const locationsData = await response.json();
-
-			// 			// Actualiza el estado con las ubicaciones obtenidas
-			// 			setStore && setStore({ location: locationsData });
-			// 			console.log("Locations loaded from the API.");
-
-			// 			// Guarda las ubicaciones en sessionStorage para futuros accesos
-			// 			sessionStorage.setItem("locationData", JSON.stringify(locationsData));
-			// 		}
-			// 		return true;
-			// 	} catch (error) {
-			// 		console.error('Error fetching or processing location data:', error);
-			// 		return false;
-			// 	}
-			// },
-
-
-
+			requestUserLocation: async () => {
+				try {
+					// Realizar una solicitud al navegador para obtener la ubicación del usuario
+					const position = await new Promise((resolve, reject) => {
+						navigator.geolocation.getCurrentPosition(resolve, reject);
+					});
+			
+					// Extraer la latitud y longitud de la ubicación obtenida
+					const latitude = position.coords.latitude;
+					const longitude = position.coords.longitude;
+			
+					// Guardar la ubicación en el estado global (store)
+					getActions().saveUserLocation(latitude, longitude),
+					getActions().getAllLocations(),
+					setStore(prevState => ({
+						...prevState,
+						location: [{ latitude, longitude }]
+						
+					}));
+					
+				} catch (error) {
+					console.error('Error getting user location:', error.message);
+					// Puedes manejar errores o mostrar mensajes de error aquí
+				}
+			},
+			
 
 
 			clearUserLocation: () => {

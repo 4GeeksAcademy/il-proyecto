@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Context } from '../store/appContext';
 import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
-import MapComponent from '../component/Map';
+import MapComponent from '../component/map';
 
 export const Geolocation = () => {
 	
