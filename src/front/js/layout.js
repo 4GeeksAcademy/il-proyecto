@@ -22,11 +22,11 @@ const Layout = () => {
     const basename = process.env.BASENAME || "";
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
-	
+
     return (
         <div className="main-content">
             <BrowserRouter basename={basename}>                              
-                    <MainNavbar isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
+                    <MainNavbar />
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
