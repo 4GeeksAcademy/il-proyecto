@@ -1,8 +1,6 @@
-
 import click
-import datetime  
 from .models import db, User, Location, Hobbie, Mood, UserMoodHistory, CategoryMood, Action, ResourceType, Resource, Chat, Phycologyst, Sessions
-
+from datetime import datetime, date, timedelta
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
 Flask commands are usefull to run cronjobs or tasks outside of the API but sill in integration 
@@ -38,17 +36,18 @@ def setup_commands(app):
     @app.cli.command("fill-db-with-example-data")
     def fill_db_with_example_data():
         """ Este comando rellenará la base de datos con datos de ejemplo. """
+          
 
         db.drop_all()
         db.create_all()
 
         try:
             users = [
-                User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", password="111111", is_active=False),
-                User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", password="222222", is_active=False),
-                User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", password="333333", is_active=False),
-                User(name="Natalia", surnames="L. Salas", age="40", email="natalia@funtsak.com", password="444444", is_active=False)
-            ] 
+                User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", password="111111", is_active=False, created_at=date.today()),
+                User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", password="222222", is_active=False, created_at=date.today()),
+                User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", password="333333", is_active=False, created_at=date.today()),
+                User(name="Natalia", surnames="L. Salas", age="40", email="natalia@funtsak.com", password="444444", is_active=False, created_at=date.today())
+            ]  
             db.session.add_all(users)
             db.session.commit() 
 
@@ -129,18 +128,18 @@ def setup_commands(app):
 
             # Historial de estados de ánimo de los usuarios
             user_mood_history_entries = [
-                UserMoodHistory(user_id=users[0].id, date=datetime.date.today() - datetime.timedelta(days=1), mood_id=moods[0].id),
-                UserMoodHistory(user_id=users[1].id, date=datetime.date.today() - datetime.timedelta(days=2), mood_id=moods[1].id),
-                UserMoodHistory(user_id=users[2].id, date=datetime.date.today() - datetime.timedelta(days=3), mood_id=moods[2].id)
+                UserMoodHistory(user_id=users[0].id, date=date.today() - timedelta(days=1), mood_id=moods[0].id),
+                UserMoodHistory(user_id=users[1].id, date=date.today() - timedelta(days=2), mood_id=moods[1].id),
+                UserMoodHistory(user_id=users[2].id, date=date.today() - timedelta(days=3), mood_id=moods[2].id)
             ]
             db.session.add_all(user_mood_history_entries)
             db.session.commit()
 
             # Chats entre usuarios
             chats = [
-                Chat(user_sender_id=users[0].id, user_reciver_id=users[1].id, message_text="¡Hola! ¿Cómo te sientes hoy?", time=datetime.datetime.now() - datetime.timedelta(hours=1)),
-                Chat(user_sender_id=users[1].id, user_reciver_id=users[0].id, message_text="Hola, me siento bastante bien, ¿y tú?", time=datetime.datetime.now() - datetime.timedelta(minutes=50)),
-                Chat(user_sender_id=users[0].id, user_reciver_id=users[1].id, message_text="También estoy bien, gracias por preguntar.", time=datetime.datetime.now() - datetime.timedelta(minutes=30)),
+                Chat(user_sender_id=users[0].id, user_reciver_id=users[1].id, message_text="¡Hola! ¿Cómo te sientes hoy?", time=datetime.now() - timedelta(hours=1)),
+                Chat(user_sender_id=users[1].id, user_reciver_id=users[0].id, message_text="Hola, me siento bastante bien, ¿y tú?", time=datetime.now() - timedelta(minutes=50)),
+                Chat(user_sender_id=users[0].id, user_reciver_id=users[1].id, message_text="También estoy bien, gracias por preguntar.", time=datetime.now() - timedelta(minutes=30)),
             ]
             db.session.add_all(chats)
             db.session.commit()

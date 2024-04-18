@@ -15,7 +15,7 @@ import os
 # mail 
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from flask_mail import Message
-
+from datetime import datetime
 
 api = Blueprint('api', __name__)
 
@@ -81,6 +81,7 @@ def validate_token():
 def logout():
     current_user_email = get_jwt_identity()
     current_user = User.query.filter_by(email=current_user_email).first()
+    print(current_user)
     if current_user:
         current_user.is_active = False
         db.session.commit()
@@ -94,12 +95,12 @@ def signup():
     name= request.json.get("name", None)
     surnames = request.json.get("surnames", None)
     is_active= False
-
+    created_at = datetime.now()
+    
     query_result = User.query.filter_by(email=email).first()
    
     if query_result is None:
-
-        new_user = User(email=email, password=password, name=name, surnames=surnames, is_active=is_active)
+        new_user = User(email=email, password=password, name=name, surnames=surnames, is_active=is_active, created_at=created_at)
         db.session.add(new_user)
         db.session.commit()
 

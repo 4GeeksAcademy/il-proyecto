@@ -79,7 +79,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 			logout: async () => {
-				console.log("Entramos hacer el logout.....");
 				const actions = getActions();
 				try {
 					const response = await fetch(process.env.BACKEND_URL + '/api/logout', {
@@ -89,7 +88,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 							'Authorization': 'Bearer ' + sessionStorage.getItem("userToken")
 						}
 					});
+
+					const data = await response.json();
+
 					if (response.ok) {
+						console.log("Logout successful:", data);
 						sessionStorage.removeItem("userToken");
 						sessionStorage.removeItem("userData");
 						setStore({ ...getStore(), auth: false })
@@ -112,8 +115,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: JSON.stringify({ password })
 					});
 
-					const data = await response.json(); 
-
 					if (!response.ok) {
 						let errorMessage = 'Hubo un error al restablecer la contraseña';
 						if (response.status === 400) {
@@ -123,38 +124,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 						throw new Error(errorMessage);
 					}
-					return data; 
+					return response;
 				} catch (error) {
 					console.error("Error reset password:", error);
 					return { ok: false, message: "Network error" };
 				}
 			},
-
-			// resetPassword: async (token, password) => {
-			// 	try {
-			// 		const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password/${token}`, {
-			// 			method: 'POST',
-			// 			headers: {
-			// 				'Content-Type': 'application/json'
-			// 			},
-			// 			body: JSON.stringify({ password })
-			// 		});
-
-			// 		if (!response.ok) {
-			// 			let errorMessage = 'Hubo un error al restablecer la contraseña';
-			// 			if (response.status === 400) {
-			// 				errorMessage = 'La solicitud es incorrecta';
-			// 			} else if (response.status === 404) {
-			// 				errorMessage = 'No se encontró el recurso';
-			// 			}
-			// 			throw new Error(errorMessage);
-			// 		}
-			// 		return response;
-			// 	} catch (error) {
-			// 		console.error("Error reset password:", error);
-			// 		return { ok: false, message: "Network error" };
-			// 	}
-			// },
 
 			signUp: async (name, surnames, email, password) => {
 				try {
@@ -210,12 +185,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					else {
 						sessionStorage.removeItem("userToken");
+						sessionStorage.removeItem("userData");
 						setStore({ ...getStore(), auth: false, user: null })
 						return false;
 					}
 				} catch (error) {
 					console.error('Token expired:', error);
-					sessionStorage.removeItem("token");
+					sessionStorage.removeItem("userToken");
+					sessionStorage.removeItem("userData");
 					setStore({ ...getStore(), auth: false, user: null })
 					return false;
 				}
@@ -237,7 +214,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         console.log("La cuenta se eliminó correctamente");
                         sessionStorage.removeItem("userToken");
                         sessionStorage.removeItem("userData");
-                        getActions().clearUser(); // Acceso correcto a actions
+                        getActions().clearUser(); 
                         setStore({ ...getStore(), auth: false, user: null });
                     } else {
                         console.log("Hubo un error al eliminar la cuenta:", data.error);
