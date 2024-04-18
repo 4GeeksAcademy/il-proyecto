@@ -1,0 +1,43 @@
+/* Estilos para dispositivos móviles */
+@media only screen and (max-width: 600px) {
+    .opciones {
+        font-size: 14px; /* Reducir el tamaño del texto de los botones */
+    }
+
+    .boton-movil {
+        padding: 5px 10px; /* Reducir el relleno de los botones */
+    }
+}
+
+.container {
+    background-color: #F9F4F0; /* Cambiar el color de fondo */
+    padding-top: 20px;
+    background-color: #F9F4F0; /* Color de fondo */
+    border: 1px solid black; /* Borde negro de 2px */
+    padding: 20px; /* Espacio interno */
+}
+
+.titulo {
+    color: #333; /* Color del texto */
+    margin-bottom: 20px;
+}
+
+.opciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.boton-movil {
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+@media (max-width: 767px) {
+    .boton-movil {
+        font-size: 12px; /* Ajusta el tamaño de fuente */
+        padding: 5px 10px; /* Ajusta el relleno */
+    }
+}

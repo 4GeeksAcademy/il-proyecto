@@ -24,7 +24,7 @@ export const Login = () => {
 		setError("");
 		let logged = await actions.login(email, password);
 		if (logged) {
-			navigate("/");
+			navigate("/choose-mood");
 		} else {
 			setError("Failed to log in. Please check your email and password.");
 		}
@@ -35,7 +35,7 @@ export const Login = () => {
 		console.log(response);
 		let loggedWithGoogle = await actions.loginGoogle(response);
 		if (loggedWithGoogle) {
-			navigate('/');
+			navigate('/choose-mood');
 		}
 		else {
 			setError("Failed to log in with Google. Please check your email and password.");

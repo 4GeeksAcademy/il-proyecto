@@ -13,7 +13,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			], 
+			],
 			// MYMOOD
 			user: null
 		},
@@ -24,7 +24,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			clearUser: () => {
 				setStore({ user: null });
-			},	
+			},
 
 
 			login: async (email, password) => {
@@ -45,7 +45,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return false;
 					}
 					sessionStorage.setItem("userToken", data.access_token);
-					getActions().setUser(data.user);  
+					getActions().setUser(data.user);
 					return true;
 				}
 				catch (error) {
@@ -62,7 +62,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ id_token: tokenId })
 				});
-		
+
 				const data = await result.json();
 				if (result.ok) {
 					// Procesa el login exitoso
@@ -76,7 +76,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
-			
+
 
 			logout: async () => {
 				console.log("Entramos hacer el logout.....");
@@ -91,7 +91,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					if (response.ok) {
 						sessionStorage.removeItem("userToken");
-						actions.clearUser(); 
+						actions.clearUser();
 					} else {
 						throw new Error('Logout failed');
 					}
@@ -99,7 +99,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error('Logout error:', error);
 				}
 			},
-			
+
 
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
@@ -107,14 +107,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			getMessage: async () => {
-				try{
+				try {
 					// fetching data from the backend
 					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
 					return data;
-				}catch(error){
+				} catch (error) {
 					console.log("Error loading message from backend", error)
 				}
 			},
@@ -131,9 +131,42 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
-			}
+			},
+
+			getCurrentUser : async () => {
+				try {
+					const response = await fetch('/api/current-user');
+					const data = await response.json();
+					return data.username;
+				} catch (error) {
+					console.error('Error al obtener el usuario actual:', error);
+					return null;
+				}
+			},
+
+			saveMood : async (mood) => {
+				try {
+					const response = await fetch('/api/save-mood', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ mood: mood })
+					});
+			
+					if (!response.ok) {
+						throw new Error('Error al guardar el estado de ánimo');
+					}
+			
+					console.log('Estado de ánimo guardado correctamente');
+				} catch (error) {
+					console.error('Error al guardar el estado de ánimo:', error);
+				}
+			},
+
 		}
 	};
 };
 
-export default getState;
+
+	export default getState;

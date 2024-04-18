@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
+from api.models import db, User, Mood
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -12,7 +12,14 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 import os
 
+from flask_session import Session
+from flask import session
+
+
+
 api = Blueprint('api', __name__)
+
+app = Flask(__name__)
 
 # Allow CORS requests to this API
 CORS(api)
@@ -66,8 +73,7 @@ def validate_token():
     current_user_data = User.query.filter_by(email=current_user.email).first()
 
     if  current_user_data == None:
-        return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404
-     
+        return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404 
     return jsonify({"is_logged": True }), 200
 
 @api.route('/logout', methods=['POST'])
@@ -88,7 +94,6 @@ def signup():
     name= request.json.get("name", None)
 
     query_result = User.query.filter_by(email=email).first()
-   
     if query_result is None:
 
         new_user = User(email=email, password=password, name=name)
@@ -135,3 +140,39 @@ def login_google():
     except ValueError:
         # Invalid token
         return jsonify({"msg": "Token de Google inválido"}), 401
+
+
+# codigo bárbara
+
+# traer que usuario esta registrado
+
+@app.route('/api/current-user', methods=['GET'])
+def get_current_user():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            return jsonify({'username': user.username}), 200
+    return jsonify({'error': 'Usuario no autenticado'}), 401
+
+
+# guardar estado de animo
+
+@app.route('/api/save-mood', methods=['POST'])
+def save_mood():
+    if request.method == 'POST':
+        data = request.get_json()
+        if 'mood' in data:
+            if 'user_id' in session:
+                user_id = session['user_id']
+                new_mood = Mood(mood=data['mood'], user_id=user_id)
+                db.session.add(new_mood)
+                db.session.commit()
+                return jsonify({'message': 'Estado de ánimo guardado correctamente'}), 200
+            else:
+                return jsonify({'error': 'Usuario no autenticado'}), 401
+        else:
+            return jsonify({'error': 'Falta el parámetro "mood" en la solicitud'}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
