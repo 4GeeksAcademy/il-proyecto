@@ -145,10 +145,6 @@ def login_google():
         return jsonify({"msg": "Token de Google inválido"}), 401
 
 def get_external_base_url():
-    # default_host = os.getenv('FRONT_URL')
-    # scheme = 'https' 
-    # host = os.getenv('EXTERNAL_HOST_URL', default_host)
-    # return f"{scheme}://{host}"
     default_host = os.getenv('FRONT_URL')
     return os.getenv('EXTERNAL_HOST_URL', default_host)
 
