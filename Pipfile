@@ -23,6 +23,7 @@ google-auth = "*"
 requests = "*"
 flask-mail = "*"
 itsdangerous = "*"
+bcrypt = "*"
 
 [requires]
 python_version = "3.10"

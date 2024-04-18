@@ -1,6 +1,8 @@
 import click
 from .models import db, User, Location, Hobbie, Mood, UserMoodHistory, CategoryMood, Action, ResourceType, Resource, Chat, Phycologyst, Sessions
 from datetime import datetime, date, timedelta
+import bcrypt
+
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
 Flask commands are usefull to run cronjobs or tasks outside of the API but sill in integration 
@@ -43,10 +45,18 @@ def setup_commands(app):
 
         try:
             users = [
-                User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", password="111111", is_active=False, created_at=date.today()),
-                User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", password="222222", is_active=False, created_at=date.today()),
-                User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", password="333333", is_active=False, created_at=date.today()),
-                User(name="Natalia", surnames="L. Salas", age="40", email="natalia@funtsak.com", password="444444", is_active=False, created_at=date.today())
+                User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", 
+                     password=bcrypt.hashpw("111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
+                     is_active=False, created_at=date.today()),
+                User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", 
+                     password=bcrypt.hashpw("222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
+                     is_active=False, created_at=date.today()),
+                User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", 
+                     password=bcrypt.hashpw("333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
+                     is_active=False, created_at=date.today()),
+                User(name="Natalia", surnames="L. Salas", age="40", email="natalia@funtsak.com", 
+                    password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
+                     is_active=False, created_at=date.today())
             ]  
             db.session.add_all(users)
             db.session.commit() 
