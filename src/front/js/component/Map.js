@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState,} from 'react';
+import React, { useEffect, useContext, useState, } from 'react';
 import { Context } from '../store/appContext';
 import { Modal, Button } from 'react-bootstrap';
 import customIconUrl from '../../img/emot-angry.png';
@@ -9,31 +9,48 @@ const MapComponent = () => {
   const { store, actions } = useContext(Context);
   const [showLocationModal, setShowLocationModal] = useState(true);
 
+
   const handleCloseLocationModal = () => {
     setShowLocationModal(false);
   };
 
   const requestLocation = async () => {
     try {
+      console.log('Requesting location...');
+      
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
-
+  
       const { latitude, longitude } = position.coords;
-
+  
+      console.log('Got location:', latitude, longitude);
+  
       // Llamar a la función saveUserLocation() para guardar la ubicación del usuario
+      actions.getAllLocations();
       actions.saveUserLocation(latitude, longitude);
-
+      
+      console.log('Getting all locations...');
+      console.log('Saving user location...');
+    
+  
       // Cerrar el modal después de obtener la ubicación exitosamente
       handleCloseLocationModal();
     } catch (error) {
-      console.error('Error getting location:', error.message);
+      console.log('Error getting location:');
     }
   };
+  
 
-  useEffect(() => {
-    actions.getAllLocations(); // Cargar las ubicaciones al montar el componente
-  }, []); // Ejecutar solo una vez al montar el componente
+
+  // useEffect(() => {
+  // actions.saveUserLocation();
+  // actions.getAllLocations(); 
+  
+  // console.log('Getting all locations...'); // Cargar las ubicaciones al montar el componente
+  // }, [store.location]); // Ejecutar solo una vez al montar el componente
+
+
 
   useEffect(() => {
     const map = L.map('map').setView([51.505, -0.09], 13);
@@ -89,9 +106,12 @@ const MapComponent = () => {
     };
 
     return () => {
+      
       map.remove();
-      delete window.handleClick;
       actions.clearUserLocation();
+      console.log('Componente desmontado. Ejecutando limpieza...');
+      delete window.handleClick;
+      
     };
   }, [store.location]); // Ejecutar cuando cambia store.location
 
