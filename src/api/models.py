@@ -1,4 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask import current_app #<---HERE
+from itsdangerous import URLSafeTimedSerializer as Serializer
+# from itsdangerous import BadSignature, SignatureExpired
 
 db = SQLAlchemy()
 
@@ -18,6 +21,24 @@ class User(db.Model):
     mood_id = db.Column(db.Integer, db.ForeignKey('mood.id'))
     phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
 
+    def get_reset_token(self, expires_sec=84600):
+        serializer = Serializer(secret_key=current_app.config['SECRET_KEY'], salt=current_app.config['SECURITY_PASSWORD_SALT'])
+        return serializer.dumps({'user_id': self.id})
+    
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token, salt=current_app.config['SECURITY_PASSWORD_SALT'], max_age=84600)
+            user_id = data.get('user_id')
+            if user_id:
+                user = User.query.get(user_id)
+                return user
+        except:
+            pass
+        return None
+
+    
     def __repr__(self):
         return '<Users %r>' % self.id
      
@@ -39,7 +60,7 @@ class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    users = db.relationship('User', backref='location', lazy=True)
+    users = db.relationship('User', backref='location', lazy=True, cascade="all, delete")
     
     def __repr__(self):
         return '<Location %r>' % self.id
@@ -55,7 +76,7 @@ class Hobbie(db.Model):
     __tablename__ = 'hobbie'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
-    users = db.relationship('User', backref='hobbie', lazy=True)
+    users = db.relationship('User', backref='hobbie', lazy=True, cascade="all, delete")
 
     def __repr__(self):
         return '<Hobbie %r>' % self.id
@@ -70,7 +91,7 @@ class CategoryMood(db.Model):
     __tablename__ = 'category_mood'
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(255))
-    moods = db.relationship('Mood', backref='category_mood', lazy=True, uselist=False)
+    moods = db.relationship('Mood', backref='category_mood', lazy=True, uselist=False, cascade="all, delete")
     
     def __repr__(self):
          return '<CategoryMood %r>' % self.id
@@ -87,7 +108,7 @@ class Mood(db.Model):
     mood = db.Column(db.String(255))
     category_id = db.Column(db.Integer, db.ForeignKey('category_mood.id'), unique=True)
     description = db.Column(db.String(255))
-    users = db.relationship('User', backref='mood', lazy=True)
+    users = db.relationship('User', backref='mood', lazy=True, cascade="all, delete")
     
     def __repr__(self):
         return '<Mood %r>' % self.id
@@ -101,19 +122,18 @@ class Mood(db.Model):
 
 class UserMoodHistory(db.Model):
     __tablename__ = 'user_mood_history'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    date = db.Column(db.Date, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    date = db.Column(db.Date)
     mood_id = db.Column(db.Integer, db.ForeignKey('mood.id'))
-    user = db.relationship('User', backref='user_mood_history')
-    mood = db.relationship('Mood')
+    user = db.relationship('User', backref='user_mood_history', cascade="all, delete")
+    mood = db.relationship('Mood', cascade="all, delete")
     
     def __repr__(self):
         return '<UserMoodHistory %r>' % self.id
 
     def serialize(self):
         return {
-            "user_id": self.user_id,
-            "date": self.date,
             "mood_id": self.mood_id,
         }
 
@@ -124,7 +144,7 @@ class Action(db.Model):
     description = db.Column(db.String(255))
     category_id = db.Column(db.Integer, db.ForeignKey('category_mood.id'))
 
-    category = db.relationship('CategoryMood', backref='actions')
+    category = db.relationship('CategoryMood', backref='actions', cascade="all, delete")
 
     def __repr__(self):
         return '<Action %r>' % self.id
@@ -158,8 +178,8 @@ class Resource(db.Model):
     url = db.Column(db.String(255))
     description = db.Column(db.String(255))
     phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
-    resource_type = db.relationship('ResourceType', backref='resource')
-    phycologyst = db.relationship('Phycologyst', backref='resource')
+    resource_type = db.relationship('ResourceType', backref='resource', cascade="all, delete")
+    phycologyst = db.relationship('Phycologyst', backref='resource', cascade="all, delete")
     
     def __repr__(self):
         return '<Resource %r>' % self.id
@@ -175,12 +195,13 @@ class Resource(db.Model):
 class Chat(db.Model):
     __tablename__ = 'chat'
     id = db.Column(db.Integer, primary_key=True)
-    user_sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_reciver_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_sender_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    user_reciver_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     message_text = db.Column(db.String(255))
     time = db.Column(db.DateTime)
-    sender = db.relationship('User', foreign_keys=[user_sender_id])
-    receiver = db.relationship('User', foreign_keys=[user_reciver_id])
+    sender = db.relationship('User', foreign_keys=[user_sender_id], cascade="all, delete", backref='sent_messages')
+    receiver = db.relationship('User', foreign_keys=[user_reciver_id], cascade="all, delete", backref='received_messages')
+
     
     def __repr__(self):
         return '<Chat %r>' % self.id
@@ -202,7 +223,7 @@ class Phycologyst(db.Model):
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     experience = db.Column(db.Integer)
-    users = db.relationship('User', backref='phycologyst', lazy=True)
+    users = db.relationship('User', backref='phycologyst', lazy=True, cascade="all, delete")
     
     def __repr__(self):
         return '<Phycologyst %r>' % self.id
@@ -221,8 +242,8 @@ class Sessions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    phycologyst = db.relationship('Phycologyst', backref='sessions')
-    user = db.relationship('User', backref='sessions')
+    phycologyst = db.relationship('Phycologyst', backref='sessions', cascade="all, delete")
+    user = db.relationship('User', backref='sessions', cascade="all, delete")
     
     def __repr__(self):
         return '<Sessions %r>' % self.id
@@ -232,6 +253,6 @@ class Sessions(db.Model):
         return {
             "id": self.id,
             "phycologyst_id": self.phycologyst_id,
-            "user_id": self.user_id,
+            "user_id": self.user_id
         }
 
