@@ -20,47 +20,34 @@ export const DeleteAccount = () => {
         e.preventDefault();
         setError("");
 
-        // Lógica para enviar el formulario y eliminar la cuenta
-        try {
-            let response = await fetch('/delete-account', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ reason, password })
-            });
-            if (response.ok) {
-                navigate("/"); // Redirigir al usuario a la página de inicio después de eliminar la cuenta
-            } else {
-                let data = await response.json();
-                setError(data.error);
-            }
-        } catch (error) {
-            setError("Error al eliminar la cuenta. Por favor, inténtalo de nuevo más tarde.");
-        }
+        const userDataString = sessionStorage.getItem('userData');
+        const userData = JSON.parse(userDataString);
+        const userId = userData.id; 
+        actions.deleteAccount(userId);
+        navigate("/");
     };
 
-    // const [otherReason, setOtherReason] = useState("");
+    const [otherReason, setOtherReason] = useState("");
 
-    // const handleReasonChange = (e) => {
-    //     setReason(e.target.value);
-    //     // Reiniciar el motivo "Otro" cada vez que se cambia la selección
-    //     if (e.target.value !== "Otro motivo") {
-    //         setOtherReason("");
-    //     }
-    // };
+    const handleReasonChange = (e) => {
+        setReason(e.target.value);
+        // Reiniciar el motivo "Otro" cada vez que se cambia la selección
+        if (e.target.value !== "Otro motivo") {
+            setOtherReason("");
+        }
+    };
 
     return (
         <Container fluid className="container-landingpage">
             <Row className="mt-3">
                 <Col>
                     <h1 className="heading1">Dar de baja</h1>
-                    {!store.user ? (
+                    {store.user ? (
                         <Form onSubmit={handleSubmit}>
-                             {/* <Form.Select aria-label="Default select example" onChange={handleReasonChange}> */}
+                            <Form.Select aria-label="Default select example" onChange={handleReasonChange}>
 
-                            <Form.Select aria-label="Default select example">
-                                <option>Selecciona una opción para eliminar tu cuenta</option>
+                                {/* <Form.Select aria-label="Default select example"> */}
+                                <option>Selecciona una opción para eliminar tu cuenta: {store.user.email}</option>
                                 <option value="Problemas para empezar">Problemas para empezar</option>
                                 <option value="No tengo tiempo/me desconcentra">No tengo tiempo/me desconcentra</option>
                                 <option value="He creado otra cuenta">He creado otra cuenta</option>
@@ -68,21 +55,21 @@ export const DeleteAccount = () => {
                                 <option value="Otro motivo">Otro motivo</option>
                             </Form.Select>
                             {/* Renderizar el TextArea si se selecciona "Otro motivo" */}
-                            {/* {reason === "Otro motivo" && (
-                                <Form.Group controlId="exampleForm.ControlTextarea1" clasName="mb-3">
+                            {reason === "Otro motivo" && (
+                                <Form.Group controlId="exampleForm.ControlTextarea1" className="mb-3">
                                     <Form.Label>Escribe el motivo</Form.Label>
                                     <Form.Control
                                         as="textarea"
-                                        rows={3}
+                                        rows={5}
                                         value={otherReason}
                                         onChange={(e) => setOtherReason(e.target.value)}
                                     />
                                 </Form.Group>
-                            )} */}
-                            <Form.Group className="mb-3" controlId="formBasicPassword">
+                            )}
+                            {/* <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label>Introduce tu contraseña para confirmar</Form.Label>
                                 <Form.Control type="password" placeholder="Contraseña" onChange={e => setPassword(e.target.value)} />
-                            </Form.Group>
+                            </Form.Group> */}
                             <button type="submit" className="button1 form-button mb-3">Eliminar cuenta</button>
                             {error && <div className="text-danger mt-3 border border-danger p-3">{error}</div>}
                         </Form>

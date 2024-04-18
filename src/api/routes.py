@@ -64,11 +64,12 @@ def login():
 
 # Protect a route with jwt_required, which will kick out requests
 # # without a valid JWT present.
-@api.route('/validate-token/', methods=['GET'])
+@api.route('/valid-token', methods=['GET'])
 @jwt_required()
 def validate_token():
-    current_user = get_jwt_identity()
-    current_user_data = User.query.filter_by(email=current_user.email).first()
+    current_user_email = get_jwt_identity()
+    
+    current_user_data = User.query.filter_by(email=current_user_email).first()
 
     if  current_user_data == None:
         return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404
@@ -208,24 +209,41 @@ def reset_token(token):
     return jsonify({'message': 'Invalid method'}), 405
 
 # Endpoint para eliminar la cuenta
-@api.route('/delete-account', methods=['POST'])
-def delete_account():
-    if not current_user.is_authenticated:
-        return jsonify({'error': 'Debes estar autenticado para eliminar tu cuenta'}), 401
+# @api.route('/delete-account', methods=['POST'])
+# def delete_account():
+#     if not current_user.is_authenticated:
+#         return jsonify({'error': 'Debes estar autenticado para eliminar tu cuenta'}), 401
 
-    # Obtener datos del formulario
-    reason = request.form.get('reason')
-    password = request.form.get('password')
+#     # Obtener datos del formulario
+#     reason = request.form.get('reason')
+#     password = request.form.get('password')
 
-    # Verificar que la contraseña proporcionada coincide con la contraseña del usuario
-    if not current_user.check_password(password):
-        return jsonify({'error': 'La contraseña no es correcta'}), 401
+#     # Verificar que la contraseña proporcionada coincide con la contraseña del usuario
+#     if not current_user.check_password(password):
+#         return jsonify({'error': 'La contraseña no es correcta'}), 401
 
-    # Eliminar la cuenta y sus registros relacionados
+#     # Eliminar la cuenta y sus registros relacionados
+#     try:
+#         db.session.delete(current_user)
+#         db.session.commit()
+#         return jsonify({'message': 'La cuenta se eliminó correctamente'}), 200
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({'error': 'Error al eliminar la cuenta'}), 500
+    
+@api.route('/delete-account/<int:user_id>', methods=['DELETE'])
+def delete_account(user_id):
     try:
-        db.session.delete(current_user)
-        db.session.commit()
-        return jsonify({'message': 'La cuenta se eliminó correctamente'}), 200
+        user_data = User.query.filter_by(id=user_id).first()
+        if user_data:
+            db.session.delete(user_data)
+            db.session.commit()
+            return jsonify({'message': 'La cuenta se eliminó correctamente'}), 200
+        else:
+            return jsonify({'error': 'Usuario no encontrado'}), 404
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Error al eliminar la cuenta'}), 500
+        return jsonify({'error': 'Error al eliminar la cuenta', 'details': str(e)}), 500
+    
+    
+# CASCADE SQLALQUEMY

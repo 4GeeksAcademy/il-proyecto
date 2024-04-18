@@ -188,7 +188,8 @@ button.form-button {
     margin-bottom: 1.7rem;
 }
 
-select.form-select {
+select.form-select 
+{
     border: 1px solid #000;
     border-radius: 0;
     margin-bottom: 22px;
@@ -198,6 +199,14 @@ select.form-select {
     font-weight: 100;
 }
 
+textarea.form-control {
+    border: 1px solid #000;
+    border-radius: 0;
+    margin-bottom: 22px;
+    font-family: var(--base-font-family);
+    font-size: 20px;
+    font-weight: 100;
+}
 
 
 /* ==========================================================================
