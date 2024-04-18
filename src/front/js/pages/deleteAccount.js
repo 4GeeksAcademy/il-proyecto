@@ -40,14 +40,25 @@ export const DeleteAccount = () => {
         }
     };
 
+    const [reason, setReason] = useState("");
+    const [otherReason, setOtherReason] = useState("");
+
+    const handleReasonChange = (e) => {
+        setReason(e.target.value);
+        // Reiniciar el motivo "Otro" cada vez que se cambia la selección
+        if (e.target.value !== "Otro motivo") {
+            setOtherReason("");
+        }
+    };
+
     return (
         <Container fluid className="container-landingpage">
             <Row className="mt-3">
                 <Col>
-					<h1 className="heading1">Dar de baja</h1>
+                    <h1 className="heading1">Dar de baja</h1>
                     {!store.user ? (
                         <Form onSubmit={handleSubmit}>
-                            <Form.Select aria-label="Default select example mb-3 border border-dark" onChange={e => setReason(e.target.value)}>
+                            <Form.Select aria-label="Default select example" onChange={handleReasonChange}>
                                 <option>Selecciona una opción para eliminar tu cuenta</option>
                                 <option value="Problemas para empezar">Problemas para empezar</option>
                                 <option value="No tengo tiempo/me desconcentra">No tengo tiempo/me desconcentra</option>
@@ -55,6 +66,18 @@ export const DeleteAccount = () => {
                                 <option value="No encuentro con quién conectar">No encuentro con quién conectar</option>
                                 <option value="Otro motivo">Otro motivo</option>
                             </Form.Select>
+                            {/* Renderizar el TextArea si se selecciona "Otro motivo" */}
+                            {reason === "Otro motivo" && (
+                                <Form.Group controlId="exampleForm.ControlTextarea1" clasName="mb-3">
+                                    <Form.Label>Escribe el motivo</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={otherReason}
+                                        onChange={(e) => setOtherReason(e.target.value)}
+                                    />
+                                </Form.Group>
+                            )}
                             <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label>Introduce tu contraseña para confirmar</Form.Label>
                                 <Form.Control type="password" placeholder="Contraseña" onChange={e => setPassword(e.target.value)} />
