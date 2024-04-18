@@ -162,13 +162,6 @@ def reset_password_request():
 
 def send_reset_email(user, token):
     from app import mail
-    
-    # base_url = get_external_base_url()  
-    # link = url_for('api.reset_password_request', token=token, _external=False)
-    # new_link = link.replace("/api", "")
-    # full_link = f"{base_url}{new_link}"  
-    # print(full_link)
-    
     base_host = get_external_base_url()  
     scheme = 'https'
     
@@ -204,29 +197,7 @@ def reset_token(token):
         return jsonify({'message': '¡Contraseña actualizada!'}), 200
     return jsonify({'message': 'Invalid method'}), 405
 
-# Endpoint para eliminar la cuenta
-# @api.route('/delete-account', methods=['POST'])
-# def delete_account():
-#     if not current_user.is_authenticated:
-#         return jsonify({'error': 'Debes estar autenticado para eliminar tu cuenta'}), 401
 
-#     # Obtener datos del formulario
-#     reason = request.form.get('reason')
-#     password = request.form.get('password')
-
-#     # Verificar que la contraseña proporcionada coincide con la contraseña del usuario
-#     if not current_user.check_password(password):
-#         return jsonify({'error': 'La contraseña no es correcta'}), 401
-
-#     # Eliminar la cuenta y sus registros relacionados
-#     try:
-#         db.session.delete(current_user)
-#         db.session.commit()
-#         return jsonify({'message': 'La cuenta se eliminó correctamente'}), 200
-#     except Exception as e:
-#         db.session.rollback()
-#         return jsonify({'error': 'Error al eliminar la cuenta'}), 500
-    
 @api.route('/delete-account/<int:user_id>', methods=['DELETE'])
 def delete_account(user_id):
     try:
@@ -241,5 +212,3 @@ def delete_account(user_id):
         db.session.rollback()
         return jsonify({'error': 'Error al eliminar la cuenta', 'details': str(e)}), 500
     
-    
-# CASCADE SQLALQUEMY
