@@ -10,6 +10,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Image from 'react-bootstrap/Image';
 import Button from 'react-bootstrap/Button';
 
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+
 /* App */
 import logo from "../../img/logo.png";
 
