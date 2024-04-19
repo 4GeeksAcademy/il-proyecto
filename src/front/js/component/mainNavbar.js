@@ -23,7 +23,7 @@ export const MainNavbar = () => {
     }, []);
 
     const handleLogout = () => {
-        actions.logout(); 
+        actions.logout();
     };
 
     return (
@@ -45,17 +45,18 @@ export const MainNavbar = () => {
                             <>
                                 <Navbar.Text className="text-body">Hola, <b>{store.user ? store.user.name : ""}</b></Navbar.Text>
                                 <Button variant="link" className="text-black-50 text-decoration-none" onClick={handleLogout}>Cerrar sesión</Button>
+                                <NavDropdown title="Menu" id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                                    <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
+                                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item href="#action/3.4">Link</NavDropdown.Item>
+                                </NavDropdown>
                             </>
                         ) : (
                             <Nav.Link href="/login" className="text-black">Iniciar sesión</Nav.Link>
                         )}
-                        <NavDropdown title="Menu" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Link</NavDropdown.Item>
-                        </NavDropdown>
+
                     </Nav>
                 </Navbar.Collapse>
             </Container>

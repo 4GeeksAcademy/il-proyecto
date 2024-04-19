@@ -15,6 +15,10 @@ import os
 # mail 
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from flask_mail import Message
+from datetime import datetime
+
+#hash password
+import bcrypt
 
 
 api = Blueprint('api', __name__)
@@ -33,33 +37,30 @@ def handle_hello():
 
 @api.route("/login", methods=['POST'])
 def login():
-    print("Received request: ", request.json)  
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
-    print("Email: ", email)  
-    print("Password: ", password) 
+    user = User.query.filter_by(email=email).first()
 
-    query_result = User.query.filter_by(email=email).first()
-    print("Query Result: ", query_result)  
-
-    if query_result is None:
+    if user: 
+        stored_password_hash = user.password  
+        if bcrypt.checkpw(password.encode('utf-8'), stored_password_hash.encode('utf-8')):
+            try:
+                user.is_active = True  
+                db.session.commit()
+                access_token = create_access_token(identity=email)
+                user_data = user.serialize()  # Cambié query_result a user
+                return jsonify(access_token=access_token, user=user_data)
+            except Exception as e:
+                return jsonify({"msg": "Error al crear el token de acceso", "error": str(e)}), 500
+        else: 
+            print("Invalid credentials")  
+            return jsonify({"msg": "Credenciales inválidas"}), 401
+    else:
         print("No user found") 
-        return jsonify({"msg": "Bad request"}), 401
-
-    if email != query_result.email or password != query_result.password:
-        print("Invalid credentials")  
-        return jsonify({"msg": "Bad request"}), 401
+        return jsonify({"msg": "Usuario no encontrado"}), 401
     
-    try:
-        query_result.is_active = True
-        db.session.commit()
-        access_token = create_access_token(identity=email)
-        print("Token: ", access_token)
-        user_data = query_result.serialize() 
-        return jsonify(access_token=access_token, user=user_data)
-    except Exception as e:
-        return jsonify({"msg": "Error al crear el token de acceso", "error": str(e)}), 500
+    
 
 
 # Protect a route with jwt_required, which will kick out requests
@@ -81,6 +82,7 @@ def validate_token():
 def logout():
     current_user_email = get_jwt_identity()
     current_user = User.query.filter_by(email=current_user_email).first()
+    print(current_user)
     if current_user:
         current_user.is_active = False
         db.session.commit()
@@ -90,16 +92,19 @@ def logout():
 @api.route("/signup", methods=["POST"])
 def signup():
     email = request.json.get("email", None)
+    
     password = request.json.get("password", None)
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
     name= request.json.get("name", None)
     surnames = request.json.get("surnames", None)
     is_active= False
-
+    created_at = datetime.now()
+    
     query_result = User.query.filter_by(email=email).first()
    
     if query_result is None:
-
-        new_user = User(email=email, password=password, name=name, surnames=surnames, is_active=is_active)
+        new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at)
         db.session.add(new_user)
         db.session.commit()
 
@@ -145,10 +150,6 @@ def login_google():
         return jsonify({"msg": "Token de Google inválido"}), 401
 
 def get_external_base_url():
-    # default_host = os.getenv('FRONT_URL')
-    # scheme = 'https' 
-    # host = os.getenv('EXTERNAL_HOST_URL', default_host)
-    # return f"{scheme}://{host}"
     default_host = os.getenv('FRONT_URL')
     return os.getenv('EXTERNAL_HOST_URL', default_host)
 
@@ -166,13 +167,6 @@ def reset_password_request():
 
 def send_reset_email(user, token):
     from app import mail
-    
-    # base_url = get_external_base_url()  
-    # link = url_for('api.reset_password_request', token=token, _external=False)
-    # new_link = link.replace("/api", "")
-    # full_link = f"{base_url}{new_link}"  
-    # print(full_link)
-    
     base_host = get_external_base_url()  
     scheme = 'https'
     
@@ -208,29 +202,7 @@ def reset_token(token):
         return jsonify({'message': '¡Contraseña actualizada!'}), 200
     return jsonify({'message': 'Invalid method'}), 405
 
-# Endpoint para eliminar la cuenta
-# @api.route('/delete-account', methods=['POST'])
-# def delete_account():
-#     if not current_user.is_authenticated:
-#         return jsonify({'error': 'Debes estar autenticado para eliminar tu cuenta'}), 401
 
-#     # Obtener datos del formulario
-#     reason = request.form.get('reason')
-#     password = request.form.get('password')
-
-#     # Verificar que la contraseña proporcionada coincide con la contraseña del usuario
-#     if not current_user.check_password(password):
-#         return jsonify({'error': 'La contraseña no es correcta'}), 401
-
-#     # Eliminar la cuenta y sus registros relacionados
-#     try:
-#         db.session.delete(current_user)
-#         db.session.commit()
-#         return jsonify({'message': 'La cuenta se eliminó correctamente'}), 200
-#     except Exception as e:
-#         db.session.rollback()
-#         return jsonify({'error': 'Error al eliminar la cuenta'}), 500
-    
 @api.route('/delete-account/<int:user_id>', methods=['DELETE'])
 def delete_account(user_id):
     try:
@@ -245,5 +217,3 @@ def delete_account(user_id):
         db.session.rollback()
         return jsonify({'error': 'Error al eliminar la cuenta', 'details': str(e)}), 500
     
-    
-# CASCADE SQLALQUEMY
