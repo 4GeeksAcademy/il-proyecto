@@ -1,5 +1,3 @@
-import { get } from "firebase/database";
-
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 
@@ -183,7 +181,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					const data = await response.json();
 
-					// Actualiza el estado con las ubicaciones obtenidas
+					// Actualiza el estado con las ubicaciones 
 					console.log(data);
 					setStore({ location: data });
 					console.log("Locations loaded from the API to store.");
@@ -198,16 +196,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			requestUserLocation: async () => {
 				try {
-					// Realizar una solicitud al navegador para obtener la ubicación del usuario
+					// obtener la ubicación del usuario
 					const position = await new Promise((resolve, reject) => {
 						navigator.geolocation.getCurrentPosition(resolve, reject);
 					});
 			
-					// Extraer la latitud y longitud de la ubicación obtenida
+					//  latitud y longitud de la ubicación obtenida
 					const latitude = position.coords.latitude;
 					const longitude = position.coords.longitude;
 			
-					// Guardar la ubicación en el estado global (store)
+					// ubicación en el estado global (store)
 					getActions().saveUserLocation(latitude, longitude),
 					getActions().getAllLocations(),
 					setStore(prevState => ({
@@ -218,39 +216,39 @@ const getState = ({ getStore, getActions, setStore }) => {
 					
 				} catch (error) {
 					console.error('Error getting user location:', error.message);
-					// Puedes manejar errores o mostrar mensajes de error aquí
+					
 				}
 			},
 			
 
 
-			clearUserLocation: () => {
-				return async (dispatch, getState) => {
-					try {
-						const { user } = getState(); // Obtener el usuario actual del estado global
-						const userId = user.id;
+			// clearUserLocation: () => {
+			// 	return async (dispatch, getState) => {
+			// 		try {
+			// 			const { user } = getState(); //  usuario actual del estado global
+			// 			const userId = user.id;
 
-						// Realizar una solicitud al servidor para eliminar la ubicación del usuario
-						const response = await fetch(process.env.BACKEND_URL + `users/${userId}/location`, {
-							method: 'DELETE',
-							headers: {
-								'Content-Type': 'application/json',
-								// Puedes incluir otros encabezados necesarios aquí (por ejemplo, token de autenticación)
-							},
-						});
+			// 			// solicitud  para eliminar la ubicación del usuario
+			// 			const response = await fetch(process.env.BACKEND_URL + `users/${userId}/location`, {
+			// 				method: 'DELETE',
+			// 				headers: {
+			// 					'Content-Type': 'application/json',
+			// 					// aqui token de autenticación
+			// 				},
+			// 			});
 
-						if (!response.ok) {
-							throw new Error('Error al eliminar la ubicación del usuario');
-						}
+			// 			if (!response.ok) {
+			// 				throw new Error('Error al eliminar la ubicación del usuario');
+			// 			}
 
-						// Despachar una acción para limpiar la ubicación del usuario en el estado global (store)
-						dispatch({ type: 'CLEAR_USER_LOCATION' });
-					} catch (error) {
-						console.error('Error al eliminar la ubicación del usuario:', error.message);
-						// Puedes manejar errores o mostrar mensajes de error aquí
-					}
-				};
-			},
+			// 			// Despachar una acción para limpiar la ubicación del usuario en el estado global (store)
+			// 			dispatch({ type: 'CLEAR_USER_LOCATION' });
+			// 		} catch (error) {
+			// 			console.error('Error al eliminar la ubicación del usuario:', error.message);
+			// 			
+			// 		}
+			// 	};
+			// },
 
 		}
 	};

@@ -1,3 +1,5 @@
+// por seguridad habría que usar require('dotenv').config(); para poder usar las variables de entorno y crear una con la url de firebase
+
 const defaultSize = [40, 40];
 const defaultAnchor = [20, 40];
 

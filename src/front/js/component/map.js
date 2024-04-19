@@ -1,11 +1,10 @@
 import React, { useEffect, useContext, useState, } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../store/appContext';
-import { Modal, Button } from 'react-bootstrap';
-import customIconUrl from '../../img/emot-angry.png';
+import { Modal } from 'react-bootstrap';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import map from '../../styles/map.css';
+import 'leaflet/dist/leaflet.css';
 import logo from "../../img/logo.png";
 import { iconList } from '../component/emojis';
 
@@ -14,7 +13,7 @@ const MapComponent = () => {
   const navigate = useNavigate();
   const [showLocationModal, setShowLocationModal] = useState(true);
 
-  
+
   // Cuando el usuario cierra el modal
   const handleCloseLocationModal = () => {
     setShowLocationModal(false);
@@ -33,7 +32,7 @@ const MapComponent = () => {
     const randomIndex = Math.floor(Math.random() * iconList.length);
     return iconList[randomIndex];
   };
-   
+    
 
   // pide localizacion al usuario
   const requestLocation = async () => {
@@ -46,7 +45,7 @@ const MapComponent = () => {
     }
   };
   
-  
+
   // Inicializa el mapa y la watermark
   const initializeMap = () => {
     const map = L.map('map');
@@ -82,26 +81,26 @@ const MapComponent = () => {
   };
 
 
-// marcadores mapa
-const addMarkersToMap = (map, location) => {
-  location.forEach(({ id, latitude, longitude }) => {
-    const selectedIcon = getRandomIcon();
-    const customIcon = L.icon({
-      iconUrl: selectedIcon.url,
-      iconSize: selectedIcon.size,
-      iconAnchor: selectedIcon.anchor,
-    });
+  // marcadores mapa
+  const addMarkersToMap = (map, location) => {
+    location.forEach(({ id, latitude, longitude }) => {
+      const selectedIcon = getRandomIcon();
+      const customIcon = L.icon({
+        iconUrl: selectedIcon.url,
+        iconSize: selectedIcon.size,
+        iconAnchor: selectedIcon.anchor,
+      });
 
-    const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(map);
-    const popupContent = `<div>
-      <h3>Ubicación ${id}</h3>
-      <p>Latitud: ${latitude}</p>
-      <p>Longitud: ${longitude}</p>
-      <button class="details-button" data-id="${id}">Ver detalles</button>
-    </div>`;
-    marker.bindPopup(popupContent);
-  });
-};
+      const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(map);
+      const popupContent = `<div>
+        <h3>Ubicación ${id}</h3>
+        <p>Latitud: ${latitude}</p>
+        <p>Longitud: ${longitude}</p>
+        <button class="details-button" data-id="${id}">Ver detalles</button>
+      </div>`;
+      marker.bindPopup(popupContent);
+    });
+  };
 
 
   //control watermark
@@ -117,7 +116,7 @@ const addMarkersToMap = (map, location) => {
 
       }
     });
-  
+
     L.control.watermark = function(opts) {
       return new L.Control.Watermark(opts);
     }
@@ -178,7 +177,6 @@ useEffect(() => {
           <button className='button-login' onClick={requestLocation}>
             Aceptar
           </button>
-          {/* Botón para que el usuario cierre el modal manualmente */}
           <button className='button-login' onClick={handleAcceptLocationModal}>
             Cancelar
           </button>
