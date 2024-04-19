@@ -8,18 +8,13 @@ import MoodEstresado from "../component/moodEstresado";
 import "/workspaces/il-proyecto/src/front/styles/chooseMood.css"; 
 
 export const ChooseMood = () => {
-    const { actions } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const [username, setUsername] = useState(null);
     const [botones, setBotones] = useState([]);
 
+
     useEffect(() => {
-        const fetchUsername = async () => {
-            try {
-                const username = await actions.getCurrentUser(); 
-                setUsername(username);
-            } catch (error) {
-                console.error('Error al obtener el usuario actual:', error);
-            }
+
 
             // orden aleatorio inicial de los botones
             const botonesIniciales = [
@@ -30,8 +25,6 @@ export const ChooseMood = () => {
                 <MoodEstresado mood="estresado" />
             ];
             setBotones(generarOrdenAleatorio(botonesIniciales));
-        };
-        fetchUsername();
     }, []);
 
     const handleButtonClick = async (estado) => {
@@ -55,13 +48,19 @@ export const ChooseMood = () => {
         return arrayCopia;
     };
 
+    console.log('vino')
+    console.log(sessionStorage.userData)
+
+    const name = JSON.parse(sessionStorage.userData).name;
+    console.log(name)
+
     return (
-        <div Container fluid className="container-landingpage">
+        <div className="container-fluid container-landingpage">
             <div className="row">
                 <div className="col-md-12">
                     <h1 className="heading1">
-                        {username ? <strong>{username}</strong> : null}
-                        <em>{username ? ', ' : null}¿cómo te sientes hoy?</em>
+                        {name ? <strong>{name}</strong> : null}
+                        <em>{name ? ', ' : null}¿cómo te sientes hoy?</em>
                     </h1>
                 </div>
             </div>

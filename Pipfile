@@ -21,6 +21,9 @@ typing-extensions = "*"
 flask-jwt-extended = "*"
 google-auth = "*"
 requests = "*"
+flask-mail = "*"
+itsdangerous = "*"
+bcrypt = "*"
 flask-session = "*"
 
 [requires]

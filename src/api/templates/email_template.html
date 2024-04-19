@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Mood Reset Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center; /* Centrado del contenido */
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FF5E41;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 0px;
+            border: 1px solid #000000;
+            box-shadow: 7px 7px 0px 0px #000000;
+        }
+
+        .button:hover {
+            background-color: #D2F752;
+        }
+        a {
+            color: #000000 !important;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mymood: Recuperar contraseña</h1>
+        </div>
+        <p>Si no realizó esta solicitud, simplemente ignore este correo electrónico y no se realizarán cambios.</p>
+        <p>Si es correcto, por favor siga el siguiente enlace para recuperar su contraseña:</p>
+        <p><a class="button" href="{{ full_link }}">Recuperar contraseña</a></p>
+    </div>
+</body>
+
+</html>

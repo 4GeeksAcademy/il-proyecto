@@ -14,7 +14,7 @@ export const Home = () => {
 		<>
 		<Container fluid className="container-landingpage">		
 			
-				<Row fluid className="align-items-center">
+				<Row className="align-items-center">
 					<Col xs={1} md={3} className="text-center align-items-center">
 					<div className="d-flex flex-column align-items-center">
 						<img src="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Home%2Flanding1.png?alt=media&token=e2f9a180-4252-490e-b050-295af756c1e9" alt="Image 1" className="img-fluid  image-top-left-container1" />
@@ -55,7 +55,7 @@ export const Home = () => {
 				</Row> */}
 			
 		
-				<Row fluid className="third-container-landingpage" >
+				<Row className="third-container-landingpage" >
 					<Col xs={12} sm="auto" md={8} className="text-left">
 						<h1 className="heading-thirdcontainer">Define tu estado con MyMood </h1>
 						<p className="base-paragrahp">Descubre, Conéctate, Comparte. En MyMood, creemos en el poder de la conexión y el apoyo mutuo para navegar por los altibajos emocionales de la vida.
@@ -71,7 +71,7 @@ export const Home = () => {
 				</Row>
 			
 			
-				<Row fluid className="fourth-container-landingpage">
+				<Row className="fourth-container-landingpage">
 					
 					<Col xs={12} md={3} className="d-flex justify-content-center align-items-center" >
 						<div className="d-flex flex-column align-items-center">
@@ -103,7 +103,7 @@ export const Home = () => {
 				</Row>
 			
 			
-				<Row fluid className="fiveth-container-landingpage" >
+				<Row className="fiveth-container-landingpage" >
 					<Col xs={12} md={7} className="text-left">
 						<h1 className="heading-fivethcontainer">Unidos en la diversidad emocional </h1>
 						<p className="base-paragrahp">MyMood te permite llevar un diario emocional para visualizar tu evolución. 

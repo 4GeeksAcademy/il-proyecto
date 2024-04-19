@@ -74,6 +74,7 @@
 	},
 	"dependencies": {
 		"@react-oauth/google": "^0.12.1",
+		"bcryptjs": "^2.4.3",
 		"bootstrap": "^5.3.3",
 		"firebase": "^10.9.0",
 		"gapi-script": "^1.2.0",
@@ -83,6 +84,7 @@
 		"react": "^16.8.4",
 		"react-bootstrap": "^2.10.2",
 		"react-dom": "^16.8.4",
+		"react-native-bcrypt": "^2.4.0",
 		"react-polyfills": "0.0.1",
 		"react-router-dom": "^6.22.3",
 		"react-scroll-to-top": "^3.0.0",

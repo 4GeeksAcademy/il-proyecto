@@ -17,22 +17,22 @@ export const Legal = () => {
 
     return (
         <Container fluid className="mt-3 mb-3 py-3 container-landingpage">
-            <div className="container-fluid landing-container">
+            <div>
                 <h1 className="heading1" id="legal">Aviso legal</h1>
                 <p>Le damos la bienvenida a nuestra web y le agradecemos su interés por leer las condiciones legales de nuestra web. Somos conscientes de que este tema puede no ser su preferido, pero es importante que conozca toda la información relativa a los términos y condiciones legales que definen las relaciones entre los usuarios y nuestra empresa, como responsable de esta web. Como usuario es importante que conozca estos términos antes de continuar su navegación.</p>
                 <p>Somos la empresa MY MOOD, SCOOP. (en adelante MYMOOD), como responsable de esta web, nos comprometemos a procesar la información de nuestros usuarios con plenas garantías y cumplir con los requisitos nacionales y europeos que regulan la recopilación y uso de los datos personales.</p>
                 <p>Esta web, por tanto, cumple rigurosamente con el Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo de 27 de abril de 2016 relativo a la protección de las personas físicas (RGPD), así como con la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y Comercio Electrónico (LSSICE ó LSSI).</p>
                 <p>En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y Comercio Electrónico, a continuación, se exponen los datos identificativos de MYMOOD: </p>
-                <p>
-                    <ul>
-                        <li>Titular: MY MOOD, SCOOP.</li>
-                        <li>NIF: F71282396</li>
-                        <li>Dirección: C/ Larrazko nº 93, oficina 229, 31013, Antsoain (Navarra).</li>
-                        <li>Teléfono: +34 948 278 189</li>
-                        <li>Dirección de correo electrónico: MYMOOD@MYMOOD.com</li>
 
-                    </ul>
-                </p>
+                <ul>
+                    <li>Titular: MY MOOD, SCOOP.</li>
+                    <li>NIF: 44646888M</li>
+                    <li>Dirección: Online</li>
+                    <li>Teléfono: +34 659 087 234</li>
+                    <li>Dirección de correo electrónico: mymood@mymood.com</li>
+
+                </ul>
+
                 <p>Inscripción Registral: Inscrita en el Registro Mercantil de Navarra, Tomo XXX, Folio XXX, Hoja NA-XXX.</p>
 
                 <p>
@@ -112,20 +112,19 @@ export const Legal = () => {
                 </p><br></br><p>Última actualización el 16 de abril de 2024</p>
                 <h1 className="heading1" id="policy">Política de privacidad</h1>
                 <p>
-                    Tu privacidad es importante para nosotros, y también lo es la transparencia acerca de cómo recopilamos, usamos y compartimos información sobre ti. Esta política tiene como objetivo ayudarte a comprender, principalmente:
-                    <ul>
-                        <li>Acceso a la web por parte de menores</li>
-                        <li>Quiénes somos</li>
-                        <li>Para qué tratamos tus datos</li>
-                        <li>Durante cuánto tiempo utilizamos la información recabada</li>
-                        <li>Cuál es la base legitimadora del tratamiento</li>
-                        <li>Cuál es la información que recopilamos sobre ti</li>
-                        <li>Con quien compartimos la información que recogemos</li>
-                        <li>Cómo almacenamos y protegemos la información que recopilamos</li>
-                        <li>Qué derechos tienes cuando nos facilitas tus datos</li>
-                        <li>Cómo gestionaremos los cambios en nuestra política de privacidad</li>
-                    </ul>
-                </p>
+                    Tu privacidad es importante para nosotros, y también lo es la transparencia acerca de cómo recopilamos, usamos y compartimos información sobre ti. Esta política tiene como objetivo ayudarte a comprender, principalmente:</p>
+                <ul>
+                    <li>Acceso a la web por parte de menores</li>
+                    <li>Quiénes somos</li>
+                    <li>Para qué tratamos tus datos</li>
+                    <li>Durante cuánto tiempo utilizamos la información recabada</li>
+                    <li>Cuál es la base legitimadora del tratamiento</li>
+                    <li>Cuál es la información que recopilamos sobre ti</li>
+                    <li>Con quien compartimos la información que recogemos</li>
+                    <li>Cómo almacenamos y protegemos la información que recopilamos</li>
+                    <li>Qué derechos tienes cuando nos facilitas tus datos</li>
+                    <li>Cómo gestionaremos los cambios en nuestra política de privacidad</li>
+                </ul>
 
                 <h2>1. Menores de edad</h2>
 
@@ -276,7 +275,7 @@ export const Legal = () => {
                 <p>&nbsp;</p>
 
 
-</div>
+            </div>
         </Container >
     );
 };
