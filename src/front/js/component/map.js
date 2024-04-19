@@ -7,25 +7,34 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import map from '../../styles/map.css';
 import logo from "../../img/logo.png";
-
+import { iconList } from '../component/emojis';
 
 const MapComponent = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const [showLocationModal, setShowLocationModal] = useState(true);
 
-
+  
   // Cuando el usuario cierra el modal
   const handleCloseLocationModal = () => {
     setShowLocationModal(false);
   };
+
 
   // Cuando el usuario acepta el modal, solicita la ubicación
   const handleAcceptLocationModal = () => {
     setShowLocationModal(false);
     requestLocation();
   };
-    
+
+
+  // icono aleatorio de la lista
+  const getRandomIcon = () => {
+    const randomIndex = Math.floor(Math.random() * iconList.length);
+    return iconList[randomIndex];
+  };
+   
+
   // pide localizacion al usuario
   const requestLocation = async () => {
     try {
@@ -37,9 +46,10 @@ const MapComponent = () => {
     }
   };
   
-  // Inicializa el mapa
+  
+  // Inicializa el mapa y la watermark
   const initializeMap = () => {
-    const map = L.map('map').setView([9.935, -84.09], 13);
+    const map = L.map('map');
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map);
@@ -64,29 +74,37 @@ const MapComponent = () => {
           radius: 8000,
         }).addTo(map);
       }, (error) => {
-        console.error('Error obteniendo la ubicación', error);
+        console.error('Error getting location', error);
       });
     } else {
-      console.log('Geolocalización no soportada en este navegador');
+      console.log('Geolocation not supported in this browser');
     }
   };
 
 
-  // marcadores mapa
-  const addMarkersToMap = (map, location, customIcon) => {
-    location.forEach(({ id, latitude, longitude }) => {
-      const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(map);
-      const popupContent = `<div>
-        <h3>Ubicación ${id}</h3>
-        <p>Latitud: ${latitude}</p>
-        <p>Longitud: ${longitude}</p>
-        <button class="details-button" data-id="${id}">Ver detalles</button>
-      </div>`;
-      marker.bindPopup(popupContent);
+// marcadores mapa
+const addMarkersToMap = (map, location) => {
+  location.forEach(({ id, latitude, longitude }) => {
+    const selectedIcon = getRandomIcon();
+    const customIcon = L.icon({
+      iconUrl: selectedIcon.url,
+      iconSize: selectedIcon.size,
+      iconAnchor: selectedIcon.anchor,
     });
-  };
+
+    const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(map);
+    const popupContent = `<div>
+      <h3>Ubicación ${id}</h3>
+      <p>Latitud: ${latitude}</p>
+      <p>Longitud: ${longitude}</p>
+      <button class="details-button" data-id="${id}">Ver detalles</button>
+    </div>`;
+    marker.bindPopup(popupContent);
+  });
+};
 
 
+  //control watermark
   const waterMark = () => {
     L.Control.Watermark = L.Control.extend({
       onAdd: function() {
@@ -114,12 +132,12 @@ useEffect(() => {
   handleGeolocation(map);
     
 
-  // Agrega un listener para el evento popupopen
+  // listener para el evento popupopen
   map.on('popupopen', (e) => {
-    // Busca el botón en el contenido del popup
+    // contenido del popup
     const button = e.popup._contentNode.querySelector('.details-button');
     if (button) {
-      // Agrega un listener de clic al botón
+      // listener de clic al botón
       button.addEventListener('click', () => {
         const id = button.getAttribute('data-id');
         navigate(`/details/${id}`);
@@ -127,17 +145,17 @@ useEffect(() => {
     }
   });
 
-  // Agrega los marcadores al mapa
+  //  agregar marcadores mapa
   if (store.location && Array.isArray(store.location.results) && store.location.results.length > 0) {
     console.log('Location data:', store.location.results); // Agrega esta línea
+    const selectedIcon = getRandomIcon();
     const customIcon = L.icon({
-      iconUrl: customIconUrl,
+      iconUrl: selectedIcon.url,
       iconSize: [40, 40],
       iconAnchor: [20, 40],
     });
 
     addMarkersToMap(map, store.location.results, customIcon);
-    waterMark();
   }
   
 
@@ -153,17 +171,17 @@ useEffect(() => {
       <div id="map" className='map-styles' style={{ height: '570px', width: '100%' }}></div>
       <Modal show={showLocationModal} onHide={handleCloseLocationModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Solicitar Geolocalización</Modal.Title>
+          <Modal.Title className='heading1'>Solicitar Geolocalización</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Este sitio web desea conocer tu ubicación para proporcionar servicios personalizados.</p>
-          <Button variant="primary" onClick={requestLocation}>
+          <p className='base-paragrahp'>Este sitio web desea conocer tu ubicación para proporcionar servicios personalizados.</p>
+          <button className='button-login' onClick={requestLocation}>
             Aceptar
-          </Button>
+          </button>
           {/* Botón para que el usuario cierre el modal manualmente */}
-          <Button variant="secondary" onClick={handleAcceptLocationModal}>
+          <button className='button-login' onClick={handleAcceptLocationModal}>
             Cancelar
-          </Button>
+          </button>
         </Modal.Body>
       </Modal>
     </>
