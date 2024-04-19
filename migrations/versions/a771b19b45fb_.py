@@ -1,14 +1,8 @@
 """empty message
 
-<<<<<<<< HEAD:migrations/versions/6c1379d18599_.py
-Revision ID: 6c1379d18599
+Revision ID: a771b19b45fb
 Revises: 
-Create Date: 2024-04-18 18:50:24.159842
-========
-Revision ID: 47aafbcee435
-Revises: 
-Create Date: 2024-04-18 18:56:16.185458
->>>>>>>> 6bbdf2a0d4e597fa65f5bce7dbc92cdaef7c7661:migrations/versions/47aafbcee435_.py
+Create Date: 2024-04-19 16:42:07.215898
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/6c1379d18599_.py
-revision = '6c1379d18599'
-========
-revision = '47aafbcee435'
->>>>>>>> 6bbdf2a0d4e597fa65f5bce7dbc92cdaef7c7661:migrations/versions/47aafbcee435_.py
+revision = 'a771b19b45fb'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -113,8 +103,8 @@ def upgrade():
     sa.Column('user_reciver_id', sa.Integer(), nullable=True),
     sa.Column('message_text', sa.String(length=255), nullable=True),
     sa.Column('time', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['user_reciver_id'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['user_sender_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['user_reciver_id'], ['users.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_sender_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('sessions',

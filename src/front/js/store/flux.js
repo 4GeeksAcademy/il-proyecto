@@ -10,7 +10,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			user: null,
 
 			location: [],
-			
+
 			auth: false,
 
 		},
@@ -18,7 +18,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 		actions: {
 			//mymood
-			setAuth: (auth) =>{
+			setAuth: (auth) => {
 				setStore({ ...getStore(), auth: auth });
 			},
 			setUser: (user) => {
@@ -87,7 +87,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 			logout: async () => {
-				console.log("Entramos hacer el logout.....");
 				const actions = getActions();
 				try {
 					const response = await fetch(process.env.BACKEND_URL + '/api/logout', {
@@ -97,7 +96,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 							'Authorization': 'Bearer ' + sessionStorage.getItem("userToken")
 						}
 					});
+
+					const data = await response.json();
+
 					if (response.ok) {
+						console.log("Logout successful:", data);
 						sessionStorage.removeItem("userToken");
 						sessionStorage.removeItem("userData");
 						setStore({ ...getStore(), auth: false })
@@ -120,8 +123,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: JSON.stringify({ password })
 					});
 
-					const data = await response.json(); 
-
 					if (!response.ok) {
 						let errorMessage = 'Hubo un error al restablecer la contraseña';
 						if (response.status === 400) {
@@ -131,38 +132,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 						throw new Error(errorMessage);
 					}
-					return data; 
+					return response;
 				} catch (error) {
 					console.error("Error reset password:", error);
 					return { ok: false, message: "Network error" };
 				}
 			},
-
-			// resetPassword: async (token, password) => {
-			// 	try {
-			// 		const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password/${token}`, {
-			// 			method: 'POST',
-			// 			headers: {
-			// 				'Content-Type': 'application/json'
-			// 			},
-			// 			body: JSON.stringify({ password })
-			// 		});
-
-			// 		if (!response.ok) {
-			// 			let errorMessage = 'Hubo un error al restablecer la contraseña';
-			// 			if (response.status === 400) {
-			// 				errorMessage = 'La solicitud es incorrecta';
-			// 			} else if (response.status === 404) {
-			// 				errorMessage = 'No se encontró el recurso';
-			// 			}
-			// 			throw new Error(errorMessage);
-			// 		}
-			// 		return response;
-			// 	} catch (error) {
-			// 		console.error("Error reset password:", error);
-			// 		return { ok: false, message: "Network error" };
-			// 	}
-			// },
 
 			signUp: async (name, surnames, email, password) => {
 				try {
@@ -218,12 +193,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					else {
 						sessionStorage.removeItem("userToken");
+						sessionStorage.removeItem("userData");
 						setStore({ ...getStore(), auth: false, user: null })
 						return false;
 					}
 				} catch (error) {
 					console.error('Token expired:', error);
-					sessionStorage.removeItem("token");
+					sessionStorage.removeItem("userToken");
+					sessionStorage.removeItem("userData");
 					setStore({ ...getStore(), auth: false, user: null })
 					return false;
 				}
@@ -240,21 +217,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 					});
 					const data = await response.json();
-					
+
 					if (response.ok) {
-                        console.log("La cuenta se eliminó correctamente");
-                        sessionStorage.removeItem("userToken");
-                        sessionStorage.removeItem("userData");
-                        getActions().clearUser(); // Acceso correcto a actions
-                        setStore({ ...getStore(), auth: false, user: null });
-                    } else {
-                        console.log("Hubo un error al eliminar la cuenta:", data.error);
-                    }
-                } catch (error) {
-                    console.log("Error deleting account from database", error);
-                }
+						console.log("La cuenta se eliminó correctamente");
+						sessionStorage.removeItem("userToken");
+						sessionStorage.removeItem("userData");
+						getActions().clearUser();
+						setStore({ ...getStore(), auth: false, user: null });
+					} else {
+						console.log("Hubo un error al eliminar la cuenta:", data.error);
+					}
+				} catch (error) {
+					console.log("Error deleting account from database", error);
+				}
 			},
-			
+
 			// Backend is running
 			getMessage: async () => {
 				try {
@@ -268,68 +245,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
-			
-			saveUserLocation: async (latitude, longitude) => {
-				try {				
-					// Obtener todas las ubicaciones existentes
-					const getAllLocations = async () => {
-						try {
-							const urlLocation = `${process.env.BACKEND_URL}/api/location`;
-							const response = await fetch(urlLocation, { method: 'GET' });
-			
-							if (!response.ok) {
-								throw new Error(`Failed to fetch location data: ${response.status} ${response.statusText}`);
-							}
-			
-							const data = await response.json();
-							return data.results; // Devuelve solo la lista de ubicaciones
-						} catch (error) {
-							console.error('Error fetching location data:', error.message);
-							return []; // Devuelve una lista vacía en caso de error
-						}
-					};
-			
-					// Obtener todas las ubicaciones
-					const existingLocations = await getAllLocations();
-			
-					// Verificar si la ubicación ya existe en la lista de ubicaciones existentes
-					const isDuplicate = existingLocations.some(loc => loc.latitude === latitude && loc.longitude === longitude);
-			
-					if (isDuplicate) {
-						console.log('The location already exists in the database.');
-						return false; // No guardar la ubicación nuevamente si ya existe
-					}
-			
-					// Si la ubicación no existe, proceder con la solicitud POST para guardarla
-					const postUrl = `${process.env.BACKEND_URL}/api/location`;
-					const postResponse = await fetch(postUrl, {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify({ latitude, longitude })
-					});
-			
-					if (!postResponse.ok) {
-						throw new Error(`Failed to save location: ${postResponse.status} ${postResponse.statusText}`);
-					}
-			
-					// Actualizar el estado global con la nueva ubicación guardada
-					const newLocation = { latitude, longitude };
-					setStore(prevState => ({
-						...prevState,
-						location: [...prevState.location, newLocation]
-					}));
-			
-					console.log('Location saved successfully');
-					return true; // Indicar que la ubicación se guardó con éxito
-				} catch (error) {
-					console.error('Error saving location:', error.message);
-					return false; // Indicar que hubo un error al guardar la ubicación
-				}
-			},
-
-
 
 
 			getAllLocations: async () => {
@@ -359,32 +274,134 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
+			updateLocation: async (latitude, longitude) => {
+				try {
+					// Construir la URL de la solicitud POST
+					const postUrl = `${process.env.BACKEND_URL}/api/location`;
+
+					// Realizar la solicitud POST al servidor
+					const postResponse = await fetch(postUrl, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ latitude, longitude })
+					});
+
+					// Verificar si la solicitud POST fue exitosa
+					if (!postResponse.ok) {
+						throw new Error(`Failed to save location: ${postResponse.status} ${postResponse.statusText}`);
+					}
+
+					// Si la solicitud POST fue exitosa, actualizar el estado global con la nueva ubicación
+					const newLocation = { latitude, longitude };
+					setStore(prevState => ({
+						...prevState,
+						location: [...prevState.location, newLocation]
+					}));
+					console.log('Location saved successfully');
+
+				} catch (error) {
+					console.error('Error saving location:', error);
+				}
+			},
+
+
+			userLocation: async (latitude, longitude) => {
+				try {
+					// Guarda la ubicación en el usuario
+					// Obtener la cadena JSON de sessionStorage
+					const userDataString = sessionStorage.userData;
+					// Parsear la cadena JSON a un objeto JavaScript
+					const userData = JSON.parse(userDataString);
+					// Obtener el ID del usuario del objeto userData
+					const userId = userData.id;
+					console.log("user" + userId);
+					const urlLocation = process.env.BACKEND_URL + `/api/location-user`;
+					const response = await fetch(urlLocation, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ user_id: userId, latitude, longitude }),
+					});
+
+					if (!response.ok) {
+						throw new Error(`Error al obtener los datos de ubicación: ${response.status} ${response.statusText}`);
+					}
+
+					const data = await response.json();
+
+					// Actualiza el estado con las ubicaciones
+					console.log(data);
+					setStore(prevState => ({
+						...prevState,
+						location: [...prevState.location, data]
+					}));
+					
+					console.log("Ubicaciones cargadas desde la API al almacenamiento.");
+					return true
+
+				} catch (error) {
+					console.error('Error fetching or processing location data:', error);
+					return false;
+				}
+			},
+
+
+			saveUserLocation: async (latitude, longitude) => {
+				try {
+
+					// Obtener todas las ubicaciones
+					const existingLocations = await getActions().getAllLocations();
+					const dataBaseLocation = getStore().location;
+
+					// // Verificar si la ubicación ya existe en la lista de ubicaciones existentes
+					const isDuplicate = dataBaseLocation.results.some(loc => loc.latitude === latitude && loc.longitude === longitude);
+
+					if (isDuplicate) {
+						console.log('La ubicación ya existe en la base de datos.');
+						getActions().userLocation(latitude, longitude);
+						return true;
+					} else {
+						getActions().updateLocation(latitude, longitude);
+						getActions().userLocation(latitude, longitude);
+						return true; // Indicar que la ubicación se guardó con éxito
+					}
+				} catch (error) {
+					console.error('Error saving location:', error.message);
+					return false; // Indicar que hubo un error al guardar la ubicación
+				}
+			},
+
+
+
 			requestUserLocation: async () => {
 				try {
 					// obtener la ubicación del usuario
 					const position = await new Promise((resolve, reject) => {
 						navigator.geolocation.getCurrentPosition(resolve, reject);
 					});
-			
+
 					//  latitud y longitud de la ubicación obtenida
 					const latitude = position.coords.latitude;
 					const longitude = position.coords.longitude;
-			
+
 					// ubicación en el estado global (store)
 					getActions().saveUserLocation(latitude, longitude),
-					getActions().getAllLocations(),
-					setStore(prevState => ({
-						...prevState,
-						location: [{ latitude, longitude }]
-						
-					}));
-					
+						getActions().getAllLocations(),
+						setStore(prevState => ({
+							...prevState,
+							location: [{ latitude, longitude }]
+
+						}));
+
 				} catch (error) {
 					console.error('Error getting user location:', error.message);
-					
+
 				}
 			},
-			
+
 
 
 			// clearUserLocation: () => {
