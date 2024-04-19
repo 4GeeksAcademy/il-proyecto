@@ -15,12 +15,14 @@ from api.commands import setup_commands
 # from models import Person
 from flask_jwt_extended import JWTManager
 
+# send emails
+from flask_mail import Mail
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
-app = Flask(__name__)
-# CORS(app) 
+
+app = Flask(__name__, template_folder='api/templates')
 app.url_map.strict_slashes = False
 
 # database condiguration
@@ -43,8 +45,22 @@ setup_commands(app)
 
 # Handle/serialize errors like a JSON object
 # Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY").encode('utf-8')
+app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT').encode('utf-8')
+
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
+
+# Example of handling non-existent environment variables safely
+if app.config["JWT_SECRET_KEY"] is None or app.config['SECURITY_PASSWORD_SALT'] is None:
+    raise ValueError("Key or salt not provided")
+
 jwt = JWTManager(app)
+mail = Mail(app)
 
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
@@ -54,8 +70,6 @@ def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
 # generate sitemap with all your endpoints
-
-
 @app.route('/')
 def sitemap():
     if ENV == "development":
