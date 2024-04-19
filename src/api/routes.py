@@ -224,7 +224,20 @@ def delete_account(user_id):
         db.session.rollback()
         return jsonify({'error': 'Error al eliminar la cuenta', 'details': str(e)}), 500
 
-   
+
+
+
+
+
+
+@api.route('/user', methods=['GET'])
+def get_all_users():
+    query_results = User.query.filter(User.is_active == True).all()
+    results = list(map(lambda item: item.serialize(), query_results))
+    return jsonify(results), 200
+ 
+ 
+
     
 @api.route('/location', methods=['GET'])
 # @jwt_required()
@@ -288,8 +301,6 @@ def location_user():
     
     else :
         return jsonify({"msg": "User doesn't exist", "user": user_id}), 200
-
-
 
 # @api.route('/location/<int:location_id>', methods=['DELETE'])
 # def delete_location(location_id):

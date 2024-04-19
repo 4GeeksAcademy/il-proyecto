@@ -310,12 +310,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			userLocation: async (latitude, longitude) => {
 				try {
 					// Guarda la ubicación en el usuario
-					// Obtener la cadena JSON de sessionStorage
-					const userDataString = sessionStorage.userData;
-					// Parsear la cadena JSON a un objeto JavaScript
-					const userData = JSON.parse(userDataString);
-					// Obtener el ID del usuario del objeto userData
-					const userId = userData.id;
+					const userId = JSON.parse(sessionStorage.userData).id;
 					console.log("user" + userId);
 					const urlLocation = process.env.BACKEND_URL + `/api/location-user`;
 					const response = await fetch(urlLocation, {
@@ -402,6 +397,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			getUserActiveFromDatabase: async () => {
+				try {
+				  const response = await fetch(process.env.BACKEND_URL + '/api/user', {
+					method: 'GET',
+					headers: {
+					  'Content-Type': 'application/json',
+					},
+				  });
+			  
+				  if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				  }
+			  
+				  let users = await response.json();
+			  
+				  // Filtrar solo los usuarios activos
+				  users = users.filter(user => user.is_active);
+			  
+				  setStore({ users: users });
+				  console.log(users);
+				  return true;
+				} catch (error) {
+				  console.error(error);
+				  return [];
+				}
+			  }
 
 
 			// clearUserLocation: () => {
