@@ -1,10 +1,22 @@
 #map {
-    border: 1px solid #000000;
+    border: 1px solid #FF5E41;
     width: 100%;
     margin: 0 auto;
-    height: 400px;
+    height: 800px;
 }
 
 .map-app{
     background-color: var(--option4-color);
+}
+
+
+.map-heading {
+    font-family: var(--base-font-family);
+    font-size: 40px;
+    color: var(--heading-color);
+    font-style: italic;
+    letter-spacing: 0.08px;
+    background: var(--option1-color);
+    border: 1px solid #000000;
+   
 }

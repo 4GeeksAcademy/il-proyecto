@@ -17,7 +17,7 @@ export const Geolocation = () => {
 					</Row>
  					<Row>
  						<Col>
- 							<h1 className='text-center' style={{background: "yellow"}}>¡Averigua como se siente tu alrededor!</h1>
+ 							<h1 className='text-center map-heading'>¡Averigua como se siente tu alrededor!</h1>
 
  						</Col>
  					</Row>

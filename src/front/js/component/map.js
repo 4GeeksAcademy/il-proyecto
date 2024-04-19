@@ -5,6 +5,8 @@ import { Modal, Button } from 'react-bootstrap';
 import customIconUrl from '../../img/emot-angry.png';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import map from '../../styles/map.css';
+import logo from "../../img/logo.png";
 
 
 const MapComponent = () => {
@@ -38,9 +40,13 @@ const MapComponent = () => {
   // Inicializa el mapa
   const initializeMap = () => {
     const map = L.map('map').setView([9.935, -84.09], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map);
+
+    // Agrega la marca de agua después de que el mapa se haya inicializado
+    L.control.watermark({ position: 'bottomright' }).addTo(map);
+
     return map;
   };
 
@@ -52,10 +58,10 @@ const MapComponent = () => {
         const { latitude, longitude } = position.coords;
         map.setView([latitude, longitude], 11);
         L.circle([latitude, longitude], {
-          color: 'blue',
-          fillColor: 'blue',
-          fillOpacity: 0.1,
-          radius: 5000,
+          color: '#FF86D2',
+          fillColor: '#FF86D2',
+          fillOpacity: 0.19,
+          radius: 8000,
         }).addTo(map);
       }, (error) => {
         console.error('Error obteniendo la ubicación', error);
@@ -80,12 +86,33 @@ const MapComponent = () => {
     });
   };
 
+
+  const waterMark = () => {
+    L.Control.Watermark = L.Control.extend({
+      onAdd: function() {
+        var img = L.DomUtil.create('img');
+        img.src = logo;
+        img.style.width = '200px';
+        return img;
+      },
+      onRemove: function() {
+
+      }
+    });
+  
+    L.control.watermark = function(opts) {
+      return new L.Control.Watermark(opts);
+    }
+  }
+
   
 
 // inicializar el mapa y manejar la geolocalización
 useEffect(() => {
+  waterMark();
   const map = initializeMap();
   handleGeolocation(map);
+    
 
   // Agrega un listener para el evento popupopen
   map.on('popupopen', (e) => {
@@ -110,7 +137,9 @@ useEffect(() => {
     });
 
     addMarkersToMap(map, store.location.results, customIcon);
+    waterMark();
   }
+  
 
   return () => {
     map.remove();
@@ -121,7 +150,7 @@ useEffect(() => {
 
   return (
     <>
-      <div id="map" style={{ height: '570px', width: '100%' }}></div>
+      <div id="map" className='map-styles' style={{ height: '570px', width: '100%' }}></div>
       <Modal show={showLocationModal} onHide={handleCloseLocationModal}>
         <Modal.Header closeButton>
           <Modal.Title>Solicitar Geolocalización</Modal.Title>
@@ -143,28 +172,3 @@ useEffect(() => {
 
 export default MapComponent;
 
-
-// const requestLocation = async () => {
-//   try {
-    // console.log('Requesting location...');
-    
-    // const position = await new Promise((resolve, reject) => {
-    //   navigator.geolocation.getCurrentPosition(resolve, reject);
-    // });
-
-    // const { latitude, longitude } = position.coords;
-
-    // console.log('Got location:', latitude, longitude);
-    
-    // // Llamar a la función saveUserLocation() para guardar la ubicación del usuario
-    // await actions.saveUserLocation(latitude, longitude);
-    // await actions.getAllLocations();
-    // console.log('Getting all locations...');
-    // console.log('Saving user location...');
-    // await actions.requestUserLocation();
-    // Cerrar el modal después de obtener la ubicación exitosamente
-    // handleCloseLocationModal();
-//   } catch (error) {
-//     console.log('Error getting location:');
-//   }
-// };
