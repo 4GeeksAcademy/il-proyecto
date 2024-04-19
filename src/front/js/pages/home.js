@@ -40,7 +40,7 @@ export const Home = () => {
 					Diseñada pensando en la juventud, nuestra plataforma es más que una simple red social;
 					es un refugio seguro donde puedes expresar tus emociones, encontrar comprensión y acceder a recursos que enriquecen tu bienestar mental."
                     buttonText="Únete a Mymood ¡Hoy!"
-                    buttonUrl="/geolocation"
+                    buttonUrl="/login"
                 />
 
 				{/* <Row fluid  className="text-center second-container-landingpage" >
