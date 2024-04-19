@@ -9,7 +9,7 @@ export const Geolocation = () => {
 
   return (
 	
-    	<Container fluid className="map-app">
+    	<Container fluid className="map-page">
  					<Row>
  						<Col>
 							<h1 className='button1'>¿ Sabes que hay muchas personas que se sienten igual que tú ?</h1>
