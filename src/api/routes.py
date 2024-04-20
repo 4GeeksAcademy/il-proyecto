@@ -173,6 +173,7 @@ def reset_password_request():
 
     return jsonify({'message': 'Por favor revisa tu email para las instrucciones de reseteo de contraseña'}), 200
 
+
 def send_reset_email(user, token):
     from app import mail
     base_host = get_external_base_url()  
@@ -197,6 +198,7 @@ def send_reset_email(user, token):
     msg.html = render_template('email_template.html', full_link=full_link)
         
     mail.send(msg)
+
 
 @api.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_token(token):
@@ -283,27 +285,6 @@ def save_user_location():
         return jsonify({"msg": "Location exist, try another location"}), 200
 
 
-# @api.route('/location-user', methods=['POST'])
-# def user_location():
-#     try:
-#         data = request.get_json()
-#         user_id = data['user_id']
-#         latitude = data['latitude']
-#         longitude = data['longitude']
-
-#         location = Location(user_id=user_id, latitude=latitude, longitude=longitude)
-#         db.session.add(location)
-#         db.session.commit()
-
-#         return jsonify({
-#             'id': location.id,
-#             'user_id': location.user_id,
-#             'latitude': location.latitude,
-#             'longitude': location.longitude
-#         }), 201
-    
-#     except Exception as e:
-#         return jsonify({'message': str(e)}), 500
 
 @api.route("/location-user", methods=["POST"])
 def location_user():
