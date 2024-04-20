@@ -16,6 +16,7 @@ import { Legal } from "./pages/legal";
 import  ResetPassword  from "./component/resetPassword";
 import { SignUp } from "./pages/singup";
 import { DeleteAccount } from "./pages/deleteAccount";
+import { ChooseMood } from "./pages/chooseMood";
 
 
 //create your first component
@@ -40,6 +41,8 @@ const Layout = () => {
 ¡                       <Route element={<ResetPassword />} path="/reset-password" />
                         <Route element={<SignUp />} path="/singup" />
                         <Route element={<DeleteAccount />} path="/delete-account" />
+                        <Route element={<ChooseMood />} path="/chooseMood" />
+                        <Route element={<Demo />} path="/demo" />
                         <Route element={<Geolocation />} path="/geolocation"/>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>

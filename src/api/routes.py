@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import random, math
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location
+from api.models import db, User, Location, Mood
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -22,7 +22,14 @@ from datetime import datetime
 import bcrypt
 
 
+from flask_session import Session
+from flask import session
+
+
+
 api = Blueprint('api', __name__)
+
+app = Flask(__name__)
 
 # Allow CORS requests to this API
 CORS(api)
@@ -74,8 +81,7 @@ def validate_token():
     current_user_data = User.query.filter_by(email=current_user_email).first()
 
     if  current_user_data == None:
-        return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404
-     
+        return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404 
     return jsonify({"is_logged": True }), 200
 
 
@@ -104,7 +110,6 @@ def signup():
     created_at = datetime.now()
     
     query_result = User.query.filter_by(email=email).first()
-   
     if query_result is None:
         new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at)
         db.session.add(new_user)
@@ -113,7 +118,7 @@ def signup():
         return jsonify({"msg": "New user created"}), 200
     
     else :
-        return jsonify({"msg": "User exist, try recover your password"}), 200
+        return jsonify({"msg": "Ya existe un usuario con este mail, recupera tu contraseña."}), 401
     
     
 
@@ -207,7 +212,8 @@ def reset_token(token):
         return jsonify({'message': 'El token no es válido o ha expirado'}), 400
     if request.method == 'POST':
         password = request.json['password']
-        user.password = password 
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        user.password = hashed_password 
         db.session.commit()
         return jsonify({'message': '¡Contraseña actualizada!'}), 200
     return jsonify({'message': 'Invalid method'}), 405
@@ -226,6 +232,9 @@ def delete_account(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Error al eliminar la cuenta', 'details': str(e)}), 500
+
+
+
 
 
 
@@ -338,3 +347,4 @@ def active_user_locations():
     
 #     except Exception as e:
 #         return jsonify({'error': str(e)}), 500
+    
