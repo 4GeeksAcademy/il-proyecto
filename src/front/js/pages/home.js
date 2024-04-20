@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../store/appContext";
+import React from "react";
+import { Link } from "react-router-dom";
 import "../../styles/index.css";
 import "../../styles/landing.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -32,7 +32,7 @@ export const Home = () => {
                 	</div>
 					</Col>
 				</Row>
-			
+
 				<CallToAction
                     title1="Dónde los sentimientos"
                     title2="se comparten"
@@ -40,7 +40,7 @@ export const Home = () => {
 					Diseñada pensando en la juventud, nuestra plataforma es más que una simple red social;
 					es un refugio seguro donde puedes expresar tus emociones, encontrar comprensión y acceder a recursos que enriquecen tu bienestar mental."
                     buttonText="Únete a Mymood ¡Hoy!"
-                    buttonUrl="/singup"
+                    buttonUrl="/login"
                 />
 
 				{/* <Row fluid  className="text-center second-container-landingpage" >
@@ -50,7 +50,9 @@ export const Home = () => {
 							Diseñada pensando en la juventud, nuestra plataforma es más que una simple red social;
 							es un refugio seguro donde puedes expresar tus emociones, encontrar comprensión y acceder a recursos que enriquecen tu bienestar mental.
 						</p> <br /><br /><br />
+						<Link to="/geolocation">
 						<button className="button1 button-second-container-landingpage"> Únete a Mymood ¡hoy!</button>
+						</Link>
 					</Col>
 				</Row> */}
 			

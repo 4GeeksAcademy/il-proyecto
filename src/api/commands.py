@@ -44,19 +44,34 @@ def setup_commands(app):
         db.create_all()
 
         try:
+            
+            locations = [
+                Location(latitude=40.4167, longitude=-3.7033), #(Puerta del Sol)
+                Location(latitude=40.4150, longitude=-3.6833), #(Parque del Retiro)
+                Location(latitude=40.4155, longitude=-3.7079), #(Plaza Mayor)
+                Location(latitude=40.4240, longitude=-3.7174), #(Templo de Debod)
+                Location(latitude=40.4170, longitude=-3.7133), #(Palacio Real de Madrid)
+                Location(latitude=40.4530, longitude=-3.6883), #(Estadio Santiago Bernabéu)
+                Location(latitude=40.4155, longitude=-3.7094), #(Mercado de San Miguel)
+                Location(latitude=40.4075, longitude=-3.7079), #(El Rastro)
+                Location(latitude=40.4139, longitude=-3.6922) #(Museo Nacional del Prado)
+            ]
+            db.session.add_all(locations)
+            db.session.commit() 
+
             users = [
                 User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", 
                      password=bcrypt.hashpw("111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
                      is_active=False, created_at=date.today()),
                 User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", 
                      password=bcrypt.hashpw("222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                     is_active=False, created_at=date.today()),
+                     is_active=True, created_at=date.today(),location_id=locations[0].id),
                 User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", 
                      password=bcrypt.hashpw("333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                     is_active=False, created_at=date.today()),
+                     is_active=True, created_at=date.today(),location_id=locations[1].id),
                 User(name="Natalia", surnames="L. Salas", age="40", email="natalia@funtsak.com", 
                     password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                     is_active=False, created_at=date.today())
+                     is_active=True, created_at=date.today(),location_id=locations[3].id)
             ]  
             db.session.add_all(users)
             db.session.commit() 
@@ -111,20 +126,6 @@ def setup_commands(app):
 
             db.session.add_all(resources)
             db.session.commit()  
-
-            locations = [
-                Location(latitude=40.4167, longitude=-3.7033), #(Puerta del Sol)
-                Location(latitude=40.4150, longitude=-3.6833), #(Parque del Retiro)
-                Location(latitude=40.4155, longitude=-3.7079), #(Plaza Mayor)
-                Location(latitude=40.4240, longitude=-3.7174), #(Templo de Debod)
-                Location(latitude=40.4170, longitude=-3.7133), #(Palacio Real de Madrid)
-                Location(latitude=40.4530, longitude=-3.6883), #(Estadio Santiago Bernabéu)
-                Location(latitude=40.4155, longitude=-3.7094), #(Mercado de San Miguel)
-                Location(latitude=40.4075, longitude=-3.7079), #(El Rastro)
-                Location(latitude=40.4139, longitude=-3.6922) #(Museo Nacional del Prado)
-            ]
-            db.session.add_all(locations)
-            db.session.commit() 
             
             # Acciones relacionadas con las categorías de estados de ánimo
             actions = [

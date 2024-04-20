@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 
@@ -17,6 +18,7 @@ import logo from "../../img/logo.png";
 
 export const MainNavbar = () => {
     const { store, actions } = useContext(Context);
+	const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -24,6 +26,7 @@ export const MainNavbar = () => {
 
     const handleLogout = () => {
         actions.logout();
+		navigate("/");
     };
 
     return (
@@ -46,7 +49,7 @@ export const MainNavbar = () => {
                                 <Navbar.Text className="text-body">Hola, <b>{store.user ? store.user.name : ""}</b></Navbar.Text>
                                 <Button variant="link" className="text-black-50 text-decoration-none" onClick={handleLogout}>Cerrar sesión</Button>
                                 <NavDropdown title="Menu" id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                                    <NavDropdown.Item href="/geolocation">Mapa</NavDropdown.Item>
                                     <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
                                     <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
                                     <NavDropdown.Divider />
