@@ -209,7 +209,8 @@ def reset_token(token):
         return jsonify({'message': 'El token no es válido o ha expirado'}), 400
     if request.method == 'POST':
         password = request.json['password']
-        user.password = password 
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        user.password = hashed_password 
         db.session.commit()
         return jsonify({'message': '¡Contraseña actualizada!'}), 200
     return jsonify({'message': 'Invalid method'}), 405
