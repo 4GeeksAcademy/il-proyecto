@@ -301,6 +301,28 @@ def location_user():
     
     else :
         return jsonify({"msg": "User doesn't exist", "user": user_id}), 200
+    
+
+
+@api.route('/users/active_locations', methods=['GET'])
+def active_user_locations():
+    active_users = User.query.filter_by(is_active=True).all()
+
+    active_locations = []
+
+    for user in active_users:
+        if user.location_id:
+            location = Location.query.get(user.location_id)
+            if location:
+                active_locations.append({
+                    'latitude': location.latitude,
+                    'longitude': location.longitude
+                })
+      
+    return jsonify({'active_locations': active_locations})
+
+
+
 
 # @api.route('/location/<int:location_id>', methods=['DELETE'])
 # def delete_location(location_id):
