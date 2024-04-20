@@ -234,19 +234,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// Backend is running
 			getMessage: async () => {
-				try {
+				try  {
 					// fetching data from the backend
 					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
 					return data;
-				} catch (error) {
+				}  catch  (error)  {
 					console.log("Error loading message from backend", error)
 				}
 			},
 
 
+<<<<<<< HEAD
+
+			saveMood : async (mood) => {
+				try {
+					const response = await fetch('/api/save-mood', {
+=======
 			getAllLocations: async () => {
 				try {
 					// Realiza una solicitud GET para obtener las ubicaciones
@@ -281,10 +287,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					// Realizar la solicitud POST al servidor
 					const postResponse = await fetch(postUrl, {
+>>>>>>> develop
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json'
 						},
+<<<<<<< HEAD
+						body: JSON.stringify({ mood: mood })
+					});
+			
+					if (!response.ok) {
+						throw new Error('Error al guardar el estado de ánimo');
+					}
+			
+					console.log('Estado de ánimo guardado correctamente');
+				} catch (error) {
+					console.error('Error al guardar el estado de ánimo:', error);
+				}
+			},
+
+=======
 						body: JSON.stringify({ latitude, longitude })
 					});
 
@@ -453,8 +475,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 	};
 			// },
 
+>>>>>>> develop
 		}
 	};
 };
 
-export default getState;
+
+	export default getState;

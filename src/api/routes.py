@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location
+from api.models import db, User, Location, Mood
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -21,7 +21,14 @@ from datetime import datetime
 import bcrypt
 
 
+from flask_session import Session
+from flask import session
+
+
+
 api = Blueprint('api', __name__)
+
+app = Flask(__name__)
 
 # Allow CORS requests to this API
 CORS(api)
@@ -73,8 +80,7 @@ def validate_token():
     current_user_data = User.query.filter_by(email=current_user_email).first()
 
     if  current_user_data == None:
-        return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404
-     
+        return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404 
     return jsonify({"is_logged": True }), 200
 
 
@@ -103,7 +109,6 @@ def signup():
     created_at = datetime.now()
     
     query_result = User.query.filter_by(email=email).first()
-   
     if query_result is None:
         new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at)
         db.session.add(new_user)
@@ -229,7 +234,6 @@ def delete_account(user_id):
 
 
 
-
 @api.route('/user', methods=['GET'])
 def get_all_users():
     query_results = User.query.filter(User.is_active == True).all()
@@ -341,3 +345,4 @@ def active_user_locations():
     
 #     except Exception as e:
 #         return jsonify({'error': str(e)}), 500
+    
