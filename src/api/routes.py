@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+import random, math
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
 from api.models import db, User, Location, Mood
 from api.utils import generate_sitemap, APIException
@@ -177,6 +178,7 @@ def reset_password_request():
 
     return jsonify({'message': 'Por favor revisa tu email para las instrucciones de reseteo de contraseña'}), 200
 
+
 def send_reset_email(user, token):
     from app import mail
     base_host = get_external_base_url()  
@@ -201,6 +203,7 @@ def send_reset_email(user, token):
     msg.html = render_template('email_template.html', full_link=full_link)
         
     mail.send(msg)
+
 
 @api.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_token(token):
@@ -242,7 +245,6 @@ def get_all_users():
     return jsonify(results), 200
  
  
-
     
 @api.route('/location', methods=['GET'])
 # @jwt_required()
@@ -309,22 +311,21 @@ def location_user():
     
 
 
+
 @api.route('/users/active_locations', methods=['GET'])
 def active_user_locations():
-    active_users = User.query.filter_by(is_active=True).all()
+    # Obtener los usuarios activos y sus ubicaciones en una sola consulta
+    active_users = db.session.query(User, Location).join(Location, User.location_id == Location.id).filter(User.is_active == True).all()
 
-    active_locations = []
+    # Usar list comprehension para generar la lista de ubicaciones ofuscadas
+    active_locations = [{
+        'latitude': max(min(user.location.latitude + random.uniform(-2.0, 2.0) / (111.0 - 0.5 * math.sin(2 * math.radians(user.location.latitude))), 90.0), -90.0),
+        'longitude': max(min(user.location.longitude + random.uniform(-2.0, 2.0) / (111.0 * math.cos(math.radians(user.location.latitude))), 180.0), -180.0)
+    } for user, location in active_users if user.location_id]
 
-    for user in active_users:
-        if user.location_id:
-            location = Location.query.get(user.location_id)
-            if location:
-                active_locations.append({
-                    'latitude': location.latitude,
-                    'longitude': location.longitude
-                })
-      
-    return jsonify({'active_locations': active_locations})
+    # Enviar la lista de ubicaciones ofuscadas como respuesta JSON
+    return jsonify({'active_locations': active_locations}), 200
+
 
 
 

@@ -13,6 +13,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			auth: false,
 
+			activeUserLocations: [],
+
 		},
 
 
@@ -378,6 +380,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					} else {
 						getActions().updateLocation(latitude, longitude);
 						getActions().userLocation(latitude, longitude);
+						getActions().getActiveUserLocations();
 						return true; // Indicar que la ubicación se guardó con éxito
 					}
 				} catch (error) {
@@ -439,7 +442,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  console.error(error);
 				  return [];
 				}
-			  }
+			  },
+
+
+			  
+			  getActiveUserLocations: async () => {
+				try {
+				  const response = await fetch(process.env.BACKEND_URL + '/api/users/active_locations');
+				  
+				  if (!response.ok) {
+					throw new Error('Error al obtener las ubicaciones de usuarios activos. Código de estado: ' + response.status);
+				  }
+			  
+				  const locations = await response.json();
+			  
+				  if (!locations || !locations.active_locations || !Array.isArray(locations.active_locations)) {
+					throw new Error('Respuesta de ubicaciones de usuarios activos inválida.');
+				  }
+				  
+				  // Actualizar el estado con las ubicaciones de usuarios activos
+				  setStore({ activeUserLocations: locations.active_locations });
+				  
+				  console.log('Ubicaciones de usuarios activos actualizadas correctamente.');
+				} catch (error) {
+				  console.error('Error al obtener las ubicaciones de usuarios activos:', error.message);
+				  // Puedes agregar lógica adicional aquí, como mostrar un mensaje de error al usuario
+				}
+			  },
 
 
 			// clearUserLocation: () => {
