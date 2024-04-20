@@ -229,10 +229,6 @@ def delete_account(user_id):
 
 
 
-
-
-
-
 @api.route('/user', methods=['GET'])
 def get_all_users():
     query_results = User.query.filter(User.is_active == True).all()
@@ -240,7 +236,6 @@ def get_all_users():
     return jsonify(results), 200
  
  
-
     
 @api.route('/location', methods=['GET'])
 # @jwt_required()
