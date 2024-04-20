@@ -15,7 +15,6 @@ export const ChooseMood = () => {
 
     useEffect(() => {
 
-
             // orden aleatorio inicial de los botones
             const botonesIniciales = [
                 <MoodFeliz mood="feliz" />,
@@ -32,7 +31,7 @@ export const ChooseMood = () => {
             await actions.saveMood(estado); 
             console.log('Estado de ánimo guardado correctamente');
             // Redirigir a la página "demo"
-            window.location.href = "/demo";
+            window.location.href = "/map";
         } catch (error) {
             console.error('Error al guardar el estado de ánimo:', error);
         }
