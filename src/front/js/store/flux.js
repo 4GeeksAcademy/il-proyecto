@@ -246,13 +246,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-
-<<<<<<< HEAD
-
 			saveMood : async (mood) => {
-				try {
-					const response = await fetch('/api/save-mood', {
-=======
+                try {
+                    const response = await fetch('/api/save-mood', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ mood: mood })
+                    });
+                    if (!response.ok) {
+                        throw new Error('Error al guardar el estado de ánimo');
+                    }
+                    console.log('Estado de ánimo guardado correctamente');
+                } catch (error) {
+                    console.error('Error al guardar el estado de ánimo:', error);
+                }
+            },
+
 			getAllLocations: async () => {
 				try {
 					// Realiza una solicitud GET para obtener las ubicaciones
@@ -287,26 +298,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					// Realizar la solicitud POST al servidor
 					const postResponse = await fetch(postUrl, {
->>>>>>> develop
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json'
 						},
-<<<<<<< HEAD
-						body: JSON.stringify({ mood: mood })
-					});
-			
-					if (!response.ok) {
-						throw new Error('Error al guardar el estado de ánimo');
-					}
-			
-					console.log('Estado de ánimo guardado correctamente');
-				} catch (error) {
-					console.error('Error al guardar el estado de ánimo:', error);
-				}
-			},
-
-=======
 						body: JSON.stringify({ latitude, longitude })
 					});
 
@@ -475,8 +470,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 	};
 			// },
 
->>>>>>> develop
 		}
+
 	};
 };
 

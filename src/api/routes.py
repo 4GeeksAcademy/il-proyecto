@@ -117,7 +117,7 @@ def signup():
         return jsonify({"msg": "New user created"}), 200
     
     else :
-        return jsonify({"msg": "User exist, try recover your password"}), 200
+        return jsonify({"msg": "Ya existe un usuario con este mail, recupera tu contraseña."}), 401
     
     
 

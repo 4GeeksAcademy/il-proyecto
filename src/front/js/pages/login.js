@@ -33,7 +33,7 @@ export const Login = () => {
 		setError("");
 		let logged = await actions.login(email, password);
 		if (logged) {
-			navigate("/choosMood");
+			navigate("/chooseMood");
 		} else {
 			setError("Failed to log in. Please check your email and password.");
 		}
