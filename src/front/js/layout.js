@@ -6,6 +6,8 @@ import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import { Login } from "./pages/login";
+import { Geolocation } from "./pages/geolocation";
+
 import injectContext from "./store/appContext";
 import { MainNavbar } from "./component/mainNavbar";
 import { Footer } from "./component/footer";
@@ -15,6 +17,7 @@ import  ResetPassword  from "./component/resetPassword";
 import { SignUp } from "./pages/singup";
 import { DeleteAccount } from "./pages/deleteAccount";
 import { ChooseMood } from "./pages/chooseMood";
+
 
 //create your first component
 const Layout = () => {
@@ -38,8 +41,12 @@ const Layout = () => {
 ¡                       <Route element={<ResetPassword />} path="/reset-password" />
                         <Route element={<SignUp />} path="/singup" />
                         <Route element={<DeleteAccount />} path="/delete-account" />
+<<<<<<< HEAD
                         <Route element={<ChooseMood />} path="/chooseMood" />
                         <Route element={<Demo />} path="/demo" />
+=======
+                        <Route element={<Geolocation />} path="/geolocation"/>
+>>>>>>> develop
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />            

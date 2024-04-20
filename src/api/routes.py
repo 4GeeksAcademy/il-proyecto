@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Mood
+from api.models import db, User, Location, Mood
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -83,6 +83,7 @@ def validate_token():
         return jsonify({"msg": "User doesn't exists", "is_logged": False}), 404 
     return jsonify({"is_logged": True }), 200
 
+
 @api.route('/logout', methods=['POST'])
 @jwt_required()
 def logout():
@@ -154,6 +155,12 @@ def login_google():
         # Invalid token
         return jsonify({"msg": "Token de Google inválido"}), 401
 
+
+
+
+
+
+
 def get_external_base_url():
     default_host = os.getenv('FRONT_URL')
     return os.getenv('EXTERNAL_HOST_URL', default_host)
@@ -221,41 +228,121 @@ def delete_account(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Error al eliminar la cuenta', 'details': str(e)}), 500
+
+
+
+
+
+
+@api.route('/user', methods=['GET'])
+def get_all_users():
+    query_results = User.query.filter(User.is_active == True).all()
+    results = list(map(lambda item: item.serialize(), query_results))
+    return jsonify(results), 200
+ 
+ 
+
+    
+@api.route('/location', methods=['GET'])
+# @jwt_required()
+def get_all_location():
+    # current_user = get_jwt_identity()
+    # print(current_user)
+    # if current_user:
+        query_results = Location.query.all()
+        results = list(map(lambda item: item.serialize(), query_results))
+
+    
+        print(query_results)
+        
+        if results != []:
+            response_body = {
+            "msg": "OK",
+            "results": results
+        }
+            return jsonify(response_body), 200
+        
+        else:
+            return jsonify({"msg": "There aren't any location yet"}), 404
     
 
-# codigo bárbara
 
-# traer que usuario esta registrado
+@api.route("/location", methods=["POST"])
+def save_user_location():
+    latitude = request.json.get("latitude", None)
+    longitude = request.json.get("longitude", None)
+    
+    query_result = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
+     
+    if query_result is None:
 
-@api.route('/api/current-user', methods=['GET'])
-def get_current_user():
-    if 'user_id' in session:
-        user_id = session['user_id']
-        user = User.query.filter_by(id=user_id).first()
-        if user:
-            return jsonify({'username': user.username}), 200
-        else:
-            return jsonify({'error': 'Usuario no encontrado'}), 404
-    return jsonify({'error': 'Usuario no autenticado'}), 401
+        new_location = Location(latitude=latitude, longitude=longitude)
+        db.session.add(new_location)
+        db.session.commit()
+
+        return jsonify({"msg": "New location created"}), 200
+    
+    else :
+        return jsonify({"msg": "Location exist, try another location"}), 200
 
 
-# guardar estado de animo
 
-@api.route('/api/save-mood', methods=['POST'])
-def save_mood():
-    if request.method == 'POST':
-        data = request.get_json()
-        if 'mood' in data:
-            if 'user_id' in session:
-                user_id = session['user_id']
-                new_mood = Mood(mood=data['mood'], user_id=user_id)
-                db.session.add(new_mood)
-                db.session.commit()
-                return jsonify({'message': 'Estado de ánimo guardado correctamente'}), 200
-            else:
-                return jsonify({'error': 'Usuario no autenticado'}), 401
-        else:
-            return jsonify({'error': 'Falta el parámetro "mood" en la solicitud'}), 400
+@api.route("/location-user", methods=["POST"])
+def location_user():
+    user_id  = request.json.get("user_id", None)
+    latitude = request.json.get("latitude", None)
+    longitude = request.json.get("longitude", None)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    location_result = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
+
+    user_result = User.query.filter_by(id=user_id).first()
+     
+    if user_result:
+        user_result.location_id = location_result.id             
+        db.session.commit()
+
+        return jsonify({"msg": "User location saved", "user": user_id}), 200
+    
+    else :
+        return jsonify({"msg": "User doesn't exist", "user": user_id}), 200
+    
+
+
+@api.route('/users/active_locations', methods=['GET'])
+def active_user_locations():
+    active_users = User.query.filter_by(is_active=True).all()
+
+    active_locations = []
+
+    for user in active_users:
+        if user.location_id:
+            location = Location.query.get(user.location_id)
+            if location:
+                active_locations.append({
+                    'latitude': location.latitude,
+                    'longitude': location.longitude
+                })
+      
+    return jsonify({'active_locations': active_locations})
+
+
+
+
+# @api.route('/location/<int:location_id>', methods=['DELETE'])
+# def delete_location(location_id):
+#     try:
+#         # Verificar si la ubicación con el ID proporcionado existe en la base de datos
+#         location = Location.query.get(location_id)
+        
+#         if not location:
+#             return jsonify({'error': 'Ubicación no encontrada'}), 404
+        
+#         # Eliminar la ubicación de la base de datos
+#         db.session.delete(location)
+#         db.session.commit()
+
+#         return jsonify({'message': 'Ubicación eliminada correctamente'}), 200
+    
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+    
