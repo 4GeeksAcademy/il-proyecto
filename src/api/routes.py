@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+import random, math
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
 from api.models import db, User, Location
 from api.utils import generate_sitemap, APIException
@@ -282,6 +283,27 @@ def save_user_location():
         return jsonify({"msg": "Location exist, try another location"}), 200
 
 
+# @api.route('/location-user', methods=['POST'])
+# def user_location():
+#     try:
+#         data = request.get_json()
+#         user_id = data['user_id']
+#         latitude = data['latitude']
+#         longitude = data['longitude']
+
+#         location = Location(user_id=user_id, latitude=latitude, longitude=longitude)
+#         db.session.add(location)
+#         db.session.commit()
+
+#         return jsonify({
+#             'id': location.id,
+#             'user_id': location.user_id,
+#             'latitude': location.latitude,
+#             'longitude': location.longitude
+#         }), 201
+    
+#     except Exception as e:
+#         return jsonify({'message': str(e)}), 500
 
 @api.route("/location-user", methods=["POST"])
 def location_user():
@@ -304,22 +326,21 @@ def location_user():
     
 
 
+
 @api.route('/users/active_locations', methods=['GET'])
 def active_user_locations():
-    active_users = User.query.filter_by(is_active=True).all()
+    # Obtener los usuarios activos y sus ubicaciones en una sola consulta
+    active_users = db.session.query(User, Location).join(Location, User.location_id == Location.id).filter(User.is_active == True).all()
 
-    active_locations = []
+    # Usar list comprehension para generar la lista de ubicaciones ofuscadas
+    active_locations = [{
+        'latitude': max(min(user.location.latitude + random.uniform(-2.0, 2.0) / (111.0 - 0.5 * math.sin(2 * math.radians(user.location.latitude))), 90.0), -90.0),
+        'longitude': max(min(user.location.longitude + random.uniform(-2.0, 2.0) / (111.0 * math.cos(math.radians(user.location.latitude))), 180.0), -180.0)
+    } for user, location in active_users if user.location_id]
 
-    for user in active_users:
-        if user.location_id:
-            location = Location.query.get(user.location_id)
-            if location:
-                active_locations.append({
-                    'latitude': location.latitude,
-                    'longitude': location.longitude
-                })
-      
-    return jsonify({'active_locations': active_locations})
+    # Enviar la lista de ubicaciones ofuscadas como respuesta JSON
+    return jsonify({'active_locations': active_locations}), 200
+
 
 
 
