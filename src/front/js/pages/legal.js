@@ -17,6 +17,7 @@ export const Legal = () => {
 
     return (
         <Container fluid className="mt-3 mb-3 py-3 container-landingpage">
+            <Container>
             <div>
                 <h1 className="heading1" id="legal">Aviso legal</h1>
                 <p>Le damos la bienvenida a nuestra web y le agradecemos su interés por leer las condiciones legales de nuestra web. Somos conscientes de que este tema puede no ser su preferido, pero es importante que conozca toda la información relativa a los términos y condiciones legales que definen las relaciones entre los usuarios y nuestra empresa, como responsable de esta web. Como usuario es importante que conozca estos términos antes de continuar su navegación.</p>
@@ -276,6 +277,7 @@ export const Legal = () => {
 
 
             </div>
+            </Container>
         </Container >
     );
 };

@@ -38,7 +38,8 @@ export const DeleteAccount = () => {
     };
 
     return (
-        <Container fluid className="container-landingpage">
+        <Container fluid className="container-landingpage vh-100">
+            <Container>
             <Row className="mt-3">
                 <Col>
                     <h1 className="heading1">Dar de baja</h1>
@@ -85,6 +86,7 @@ export const DeleteAccount = () => {
                     )}
                 </Col>
             </Row>
+            </Container>
         </Container >
     );
 };

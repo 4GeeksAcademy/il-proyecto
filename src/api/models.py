@@ -93,6 +93,7 @@ class CategoryMood(db.Model):
     category = db.Column(db.String(255))
     description = db.Column(db.String(255))
     moods = db.relationship('Mood', backref='category_mood', lazy=True, uselist=False, cascade="all, delete")
+    icon_url = db.Column(db.String(255))
     
     def __repr__(self):
          return '<CategoryMood %r>' % self.id
@@ -101,7 +102,8 @@ class CategoryMood(db.Model):
         return {
             "id": self.id,
             "category": self.category,
-            "description": self.description
+            "description": self.description,
+            "icon_url": self.icon_url
         }
 
 class Mood(db.Model):
@@ -164,6 +166,7 @@ class ResourceType(db.Model):
     __tablename__ = 'resource_type'
     id = db.Column(db.Integer, primary_key=True)
     resource_type = db.Column(db.String(255))
+    icon_url = db.Column(db.String(255))
     
     def __repr__(self):
         return '<ResourceType %r>' % self.id
@@ -172,6 +175,7 @@ class ResourceType(db.Model):
         return {
             "id": self.id,
             "resource_type": self.resource_type,
+            "icon_url": self.icon_url
         }
 
 class Resource(db.Model):
@@ -233,6 +237,7 @@ class Phycologyst(db.Model):
     biography = db.Column(db.String(1000))
     web = db.Column(db.String(255))
     users = db.relationship('User', backref='phycologyst', lazy=True, cascade="all, delete")
+    profile_url = db.Column(db.String(255))
     
     def __repr__(self):
         return '<Phycologyst %r>' % self.id
@@ -246,7 +251,8 @@ class Phycologyst(db.Model):
             "experience": self.experience,
             "collegiate_number": self.collegiate_number,
             "biography": self.biography,
-            "web": self.web
+            "web": self.web,
+            "profile_url" : self.profile_url
         }
 
 class Sessions(db.Model):
