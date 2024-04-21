@@ -1,0 +1,153 @@
+
+h1 { font-size: var(--h1-size);}
+h2 { font-size: var(--h2-size);}
+h3 { font-size: var(--h3-size);}
+h4 { font-size: var(--h4-size);}
+h5 { font-size: var(--h5-size);}
+h6 { font-size: var(--h6-size);}
+p { font-size: var(--p-size);}
+/* ==========================================================================
+   USER PROFILE
+   ========================================================================== */
+
+.img-mood {
+    max-width: 100px;
+    max-height: auto;
+}
+
+/* ==========================================================================
+   PROFILE INFO
+   ========================================================================== */
+
+.user-info-profile, .card {
+    border-radius: 0;
+    border: 1px solid var(--base-color-text);
+    color: white;
+    background-color: var(--option67-color);
+}
+
+.user-info-profile .list-group > .list-group-item {
+    color:white;
+    background-color: var(--option67-color);
+}
+.card>.list-group:last-child, .card>.list-group:first-child, .list-group-item:first-child  {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+
+/* ==========================================================================
+   ACTIONS
+   ========================================================================== */
+
+:focus-visible {
+    outline: var(--base-color-text) auto 1px;
+    outline-color: var(--base-color-text);
+    outline-style: var(--base-color-text);
+    outline-width: 1px;
+}
+.actions-buttons {
+    width: 100%;
+    border-color: 1px solid var(--base-color-text);
+    border-radius: 0;
+}
+.actions-buttons button {
+    text-align: left;
+    color:var(--base-color-text);
+    border-color: 1px solid var(--base-color-text);
+
+}
+
+.actions-buttons button:nth-child(3n+1) {
+    background-color: var(--option1-color); 
+}
+
+.actions-buttons button:nth-child(3n+2) {
+    background-color: var(--option2-color);
+}
+
+.actions-buttons button:nth-child(3n+3) {
+    background-color: var(--option3-color);
+}
+
+
+/* ==========================================================================
+   RESOURCES
+   ========================================================================== */
+.resources {
+    display: flex; /* Establece un contenedor Flex */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en la siguiente línea si no hay espacio */
+    gap: 10px; /* Espacio entre columnas y filas */
+}
+
+.resources ul {
+    display: flex; /* Aplica Flexbox a la lista */
+    flex-direction: column; /* Organiza los elementos de la lista en una columna */
+    flex-wrap: wrap; /* Permite el ajuste de elementos */
+    max-height: 100%; /* Establece una altura máxima para la columna */
+}
+
+.resources ul li {
+    width: 100%; /* Los elementos de la lista ocuparán el ancho total de la columna */
+}
+
+/* Estilos adicionales para garantizar que el contenido no se desborde y esté bien alineado */
+.resources ul li::before {
+    overflow: hidden; /* Evita que el contenido se desborde */
+    white-space: nowrap; /* Evita que el texto se ajuste y se mantenga en una sola línea */
+    text-overflow: ellipsis; /* Añade puntos suspensivos si el texto se desborda */
+}
+
+
+.resources ul {
+    list-style: none; /* Elimina los bullets predeterminados */
+    padding-left: 0; /* Remueve el padding por defecto */
+    margin-left:0;
+}
+
+.resources li {
+    padding-left: 0px; /* Espacio para el ícono */
+    background-repeat: no-repeat; /* El ícono no se repite */
+    background-position: 0 center; /* Posiciona el ícono al inicio y al centro verticalmente */
+    margin-bottom: 10px; /* Espacio entre ítems de lista */
+    line-height: 24px; /* Altura de línea para centrar el texto con el ícono */
+}
+
+.resources li.articulo::before {
+    content: ''; /* Necesario para generar el pseudo-elemento */
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Farticle.png?alt=media&token=c7baed85-7d3b-4f7a-abd2-f47bbea5a372');
+    display: inline-block; /* Hace que el pseudo-elemento sea en línea */
+    width: 22px; /* Ancho del ícono */
+    height: 22px; /* Altura del ícono */
+    margin-right: 16px; /* Espacio entre el ícono y el texto */
+    vertical-align: middle; /* Alinea verticalmente con el texto */
+    background-size: cover; /* Asegura que la imagen cubra todo el área asignada */
+}
+
+.resources li.video::before {
+    content: '';
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fvideo.png?alt=media&token=21e95df2-7c85-4df1-a08e-848f2ef1ddf9');
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-right: 16px;
+    vertical-align: middle;
+    background-size: cover;
+}
+
+.resources li.podcast::before {
+    content: '';
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fpodcast.png?alt=media&token=d0ea6e38-b4a2-4816-8488-1a4e99de627e');
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-right: 16px;
+    vertical-align: middle;
+    background-size: cover;
+}
+
+
+.title {
+    font-family: var(--base-font-family);
+    font-size: var(--h3);
+}
