@@ -2,6 +2,7 @@ import click
 from .models import db, User, Location, Hobbie, Mood, UserMoodHistory, CategoryMood, Action, ResourceType, Resource, Chat, Phycologyst, Sessions
 from datetime import datetime, date, timedelta
 import bcrypt
+import random
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
@@ -59,92 +60,287 @@ def setup_commands(app):
             db.session.add_all(locations)
             db.session.commit() 
 
-            users = [
-                User(name="Bárbara", surnames="Puyol", age="30", email="barbara@mymood.com", 
-                     password=bcrypt.hashpw("111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                     is_active=False, created_at=date.today()),
-                User(name="Pedro", surnames="Berruezo", age="30", email="pedro@mymood.com", 
-                     password=bcrypt.hashpw("222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                     is_active=True, created_at=date.today(),location_id=locations[0].id),
-                User(name="Natalia", surnames="L. Salas", age="40", email="nat@mymood.com", 
-                     password=bcrypt.hashpw("333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                     is_active=True, created_at=date.today(),location_id=locations[1].id),
-                User(name="Natalia", surnames="L. Salas", age="40", email="natalia@funtsak.com", 
-                    password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                     is_active=True, created_at=date.today(),location_id=locations[3].id)
-            ]  
-            db.session.add_all(users)
-            db.session.commit() 
-
             categories = [
-                CategoryMood(category="Feliz/Contento"),
-                CategoryMood(category="Triste/Deprimido"),
-                CategoryMood(category="Ansioso/Estresado"),
-                CategoryMood(category="Enojado/Frustrado")
+                CategoryMood(category="Normal", description="Estado de equilibrio emocional, bienestar, o satisfacción con la vida y las circunstancias actuales."),
+                CategoryMood(category="Leve", description="Estado de malestar o incomodidad que son más bien situacionales y no indican un patrón constante de pensamiento negativo."),
+                CategoryMood(category="Moderado", description="Estado de ansiedad o tristeza que muestran un nivel de afectación personal más profundo, pero todavía gestionable en muchos casos."),
+                CategoryMood(category="Severo", description="Estados que indican una lucha significativa con pensamientos negativos, donde la capacidad de funcionar en la vida diaria está claramente afectada."),
+                CategoryMood(category="Extremo", description="Estados que reflejan pensamientos de desesperanza absoluta, ideación suicida o un estado mental que requiere intervención inmediata.")
             ]
             db.session.add_all(categories)
             db.session.commit() 
             
-            moods = [
-                Mood(mood="Alegre", description="Me siento lleno de energía", category_id=categories[0].id),
-                Mood(mood="Melancólico", description="Un poco triste hoy", category_id=categories[1].id),
-                Mood(mood="Agobiado", description="Demasiadas cosas en la cabeza", category_id=categories[2].id),
-                Mood(mood="Irritado", description="Todo me molesta", category_id=categories[3].id)
+            # Acciones relacionadas con las categorías de estados de ánimo
+            all_categories = CategoryMood.query.all()
+            if not all_categories:
+                print("No categories found. Please load categories first.")
+                return
+
+            actions = []
+
+            # Actions for Normal Category
+            actions.extend([
+                Action(action="Explora más", description="Enlace a artículos sobre desarrollo personal y bienestar.", category_id=categories[0].id),
+                Action(action="Conéctate con amigos", description="Acceso directo para compartir estados o iniciar chats con amigos.", category_id=categories[0].id),
+                Action(action="Regístrate a un evento", description="Sugerencias de eventos locales para promover la socialización.", category_id=categories[0].id),
+                Action(action="Valora tu día", description="Herramienta de diario para documentar lo que te hizo sentir bien.", category_id=categories[0].id),
+            ])
+
+            # Actions for Leve Category
+            actions.extend([
+                Action(action="Toma un respiro", description="Ejercicios de respiración y relajación.", category_id=categories[1].id),
+                Action(action="Habla con alguien", description="Enlace a un chat grupal o foro de la comunidad.", category_id=categories[1].id),
+                Action(action="Escucha música", description="Playlist recomendada para mejorar el ánimo.", category_id=categories[1].id),
+                Action(action="Levántate y muévete", description="Incentivos para hacer una pequeña actividad física.", category_id=categories[1].id),
+            ])
+
+            # Actions for Moderado Category
+            actions.extend([
+                Action(action="Explora tus emociones", description="Guías para entender mejor tus sentimientos.", category_id=categories[2].id),
+                Action(action="Busca soporte", description="Acceso a una lista de terapeutas y consejeros.", category_id=categories[2].id),
+                Action(action="Únete a un grupo de apoyo", description="Enlace a grupos de soporte en línea.", category_id=categories[2].id),
+                Action(action="Meditación guiada", description="Sesiones de meditación para aliviar la ansiedad.", category_id=categories[2].id),
+            ])
+
+            # Actions for Severo Category
+            actions.extend([
+                Action(action="Urgente: Habla ahora", description="Botón de contacto directo con un psicólogo.", category_id=categories[3].id),
+                Action(action="Técnicas de manejo del estrés", description="Consejos y técnicas para gestionar el estrés.", category_id=categories[3].id),
+                Action(action="Plan de acción personalizado", description="Crear un plan de acción para días difíciles.", category_id=categories[3].id),
+                Action(action="Historias de éxito", description="Testimonios de personas que han superado dificultades similares.", category_id=categories[3].id),
+            ])
+
+            # Actions for Extremo Category
+            actions.extend([
+                Action(action="Llama a un amigo", description="Función rápida para contactar a un amigo o familiar.", category_id=categories[4].id),
+                Action(action="Contacto de emergencia", description="Botón para llamar a líneas de ayuda profesional.", category_id=categories[4].id),
+                Action(action="Habla con un experto ahora", description="Acceso inmediato a consejería de emergencia.", category_id=categories[4].id),
+                Action(action="Recuerda esto", description="Mensajes y afirmaciones de esperanza y soporte vital.", category_id=categories[4].id),
+            ])
+
+            # Add all actions to the session and commit
+            db.session.add_all(actions)
+            db.session.commit()
+                        
+            # Primero definimos todas las frases de estado de ánimo por categoría
+            moods = []
+            mood_descriptions = [
+                ("Normal", [
+                    "Hoy me siento con las pilas puestas.",
+                    "Todo marchando según el plan, ¿estoy soñando?",
+                    "Contento con el rumbo de las cosas, rareza nivel: unicornio.",
+                    "Un día normal, nada fuera de lo común.",
+                    "En paz con el mundo, espero que dure.",
+                    "Disfrutando de la vida, ¿quién dijo que no se podía?",
+                    "Optimista hasta más no poder, que venga lo que sea.",
+                    "Energía al máximo, ¿dónde está la fiesta?",
+                    "Todo bajo control, por ahora...",
+                    "Satisfecho con mi situación, ¡vamos por más!"
+                ]),
+                ("Leve", [
+                    "Hoy todo me parece un montón, ¿más café tal vez?",
+                    "No estoy seguro de cómo manejar esto, ¿algún voluntario?",
+                    "Cansado... y eso que el día apenas comienza.",
+                    "Ya quiero que sea fin de semana, ¿alguien más?",
+                    "Esto de ser adulto no es como lo pintan.",
+                    "Frustrado con las pequeñas cosas, típico.",
+                    "Un poco nervioso con lo que viene, cruzando dedos.",
+                    "Esperando mejoras como quien espera el estreno de su serie favorita.",
+                    "No veo el final de mis pendientes, ¿será eterno?",
+                    "Sintiéndome solo, ¿hola, eco?"
+                ]),
+                ("Moderado", [
+                    "Siento que todo me supera, ¿dónde está el botón de pausa?",
+                    "Levantarse de la cama es la misión más difícil.",
+                    "Pensando en lo peor, pero esperando lo mejor.",
+                    "¿Alguien más se siente incomprendido?",
+                    "Perdiendo interés... ni las series me animan.",
+                    "Atrapado en mi rutina, send help.",
+                    "Todo es un desafío, incluso lo más simple.",
+                    "A veces, simplemente quiero desaparecer.",
+                    "Vacío por dentro, como mi nevera en fin de mes.",
+                    "Mi vida parece un GPS sin señal, sin dirección."
+                ]),
+                ("Severo", [
+                    "Sin salida visible, ¿alguien ve la luz?",
+                    "Obsesionado con mis errores, playlist triste en repeat.",
+                    "Viviendo con miedo, y no precisamente a las películas de terror.",
+                    "Mi vida es un caos de esos que no se ordenan ni con tutorial de YouTube.",
+                    "Solo, como el '1' en el día del amigo.",
+                    "Tristeza profunda diaria, necesito un cambio de canal.",
+                    "Mis pensamientos oscuros no me dan tregua.",
+                    "Al borde... del próximo capítulo de mi telenovela de drama personal.",
+                    "Sin energía, incluso el café me falla.",
+                    "¿Para qué salir de la cama? El suelo está sobrevalorado."
+                ]),
+                ("Extremo", [
+                    "No quiero seguir, punto final.",
+                    "Mejor sin mí, o eso parece.",
+                    "Sin salidas, en un laberinto sin final.",
+                    "Pensando en hacerme daño, alerta roja.",
+                    "Sería mejor no existir, pensamiento recurrente.",
+                    "¿Qué sentido tiene seguir? Buscando razones...",
+                    "Esto no mejora, cada día más gris.",
+                    "Cansado de luchar contra viento y marea.",
+                    "Dudando si podré aguantar otro día más.",
+                    "Al final de mi cuerda, literalmente."
+                ])
             ]
+
+            for category_name, texts in mood_descriptions:
+                category = CategoryMood.query.filter_by(category=category_name).first()
+                if category:
+                    for text in texts:
+                        mood = Mood(mood=text, category_id=category.id)
+                        moods.append(mood)
+
             db.session.add_all(moods)
-            db.session.commit()  
-            
-            hobbies = [
-                Hobbie(name="Fotografía"),
-                Hobbie(name="Ciclismo"),
-                Hobbie(name="Dibujo"),
-                Hobbie(name="Programación")
+            db.session.commit()
+
+            hobbies_list = [
+                "Leer",
+                "Escribir",
+                "Pintar",
+                "Dibujar",
+                "Cocinar",
+                "Bailar",
+                "Hacer senderismo",
+                "Jardinería",
+                "Practicar yoga",
+                "Meditar",
+                "Fotografía",
+                "Escuchar música",
+                "Tocar un instrumento musical",
+                "Cantar",
+                "Ciclismo",
+                "Natación",
+                "Ver películas",
+                "Tejer",
+                "Hacer manualidades",
+                "Jugar videojuegos"
             ]
-            db.session.add_all(hobbies)
+
+            # Creación de objetos Hobbie para cada hobby en la lista
+            hobbies_objects = [Hobbie(name=hobby) for hobby in hobbies_list]
+
+            db.session.add_all(hobbies_objects)
+            db.session.commit()
+            
+            users = [
+                User(name="Bárbara", surnames="Puyol", age=30, email="barbara@mymood.com", 
+                    password=bcrypt.hashpw("111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20)),
+
+                User(name="Pedro", surnames="Berruezo", age=30, email="pedro@mymood.com", 
+                    password=bcrypt.hashpw("222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), location_id=1),  # assuming locations[0].id is 1
+
+                User(name="Natalia", surnames="L. Salas", age=40, email="nat@mymood.com", 
+                    password=bcrypt.hashpw("333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), location_id=2),  # assuming locations[1].id is 2
+
+                User(name="Natalia", surnames="L. Salas", age=40, email="natalia@funtsak.com", 
+                    password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), location_id=4)  # assuming locations[3].id is 4
+            ]
+            db.session.add_all(users)
             db.session.commit()
             
             psychologists = [
-                Phycologyst(name="Ana", surnames="Pérez", email="ana@mymood.com", password="secure", experience=5),
-                Phycologyst(name="Carlos", surnames="Gómez", email="carlos@mymood.com", password="secure", experience=7)
+                Phycologyst(name="Ana", surnames="Martínez López", email="ana.martinez@example.com", password=bcrypt.hashpw("p111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=5, collegiate_number="COL-001", biography="Ana Martínez es una psicóloga especializada en ansiedad y depresión. Con un enfoque empático y personalizado, Ana ayuda a sus pacientes a navegar por los desafíos emocionales y a encontrar estrategias efectivas para mejorar su bienestar emocional.", web="https://anamartineztherapy.com"),
+                Phycologyst(name="Carlos", surnames="García Navarro", email="carlos.garcia@example.com", password=bcrypt.hashpw("p222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=3, collegiate_number="COL-002", biography="Carlos García practica la terapia cognitivo conductual, ofreciendo a sus pacientes herramientas para cambiar patrones de pensamiento negativos y comportamientos disruptivos que afectan su vida diaria. Su enfoque es claro y estructurado, buscando resultados medibles y duraderos.", web="https://carlosgarciapsy.com"),
+                Phycologyst(name="Elena", surnames="Ruiz Díaz", email="elena.ruiz@example.com", password=bcrypt.hashpw("p333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=8, collegiate_number="COL-003", biography="Elena Ruiz es experta en mindfulness y terapia de pareja. Combina técnicas modernas de atención plena con terapia de conversación para ayudar a las parejas a mejorar su comunicación y a individuos a vivir más presentes y satisfechos con sus vidas.", web="https://elenaruiztherapy.com"),
+                Phycologyst(name="David", surnames="Jiménez Soto", email="david.jimenez@example.com", password=bcrypt.hashpw("p444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=10, collegiate_number="COL-004", biography="David Jiménez es un psicólogo con diez años de experiencia en el manejo de estrés y conflictos laborales. Su práctica se centra en ayudar a profesionales a desarrollar habilidades de manejo de estrés y a encontrar un equilibrio saludable entre el trabajo y la vida personal.", web="https://davidjimenezpsy.com"),
+                Phycologyst(name="Laura", surnames="Moreno Casas", email="laura.moreno@example.com", password=bcrypt.hashpw("p555555".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=2, collegiate_number="COL-005", biography="Laura Moreno se especializa en psicología juvenil y escolar, proporcionando apoyo a jóvenes que enfrentan problemas académicos y emocionales. Su enfoque integrativo busca conectar con los estudiantes para fomentar un entorno educativo saludable y positivo.", web="https://lauramoreno.com"),
+                Phycologyst(name="Raúl", surnames="Alvarez Fernández", email="raul.alvarez@example.com", password=bcrypt.hashpw("p666666".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=7, collegiate_number="COL-006", biography="Raúl Alvarez trabaja con atletas y equipos deportivos para mejorar su rendimiento a través de la psicología deportiva. Utilizando técnicas de psicología positiva, Raúl ayuda a sus clientes a alcanzar sus máximos potenciales mientras mantienen una actitud mental fuerte y saludable.", web="https://raulalvarezsports.com"),
+                Phycologyst(name="Sofía", surnames="Pérez Gómez", email="sofia.perez@example.com", password=bcrypt.hashpw("p777777".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=9, collegiate_number="COL-007", biography="Sofía Pérez ofrece terapias alternativas y holísticas, integrando métodos tradicionales y modernos para tratar el bienestar emocional de sus pacientes. Su práctica está dedicada a aquellos que buscan un enfoque más natural y holístico para la salud mental.", web="https://sofiapereztherapy.com"),
+                Phycologyst(name="Marcos", surnames="Vidal Lozano", email="marcos.vidal@example.com", password=bcrypt.hashpw("p888888".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=4, collegiate_number="COL-008", biography="Marcos Vidal es un terapeuta familiar que utiliza un enfoque integrativo para ayudar a las familias a resolver conflictos internos y a mejorar sus relaciones interpersonales. Su trabajo está basado en la comprensión y el respeto mutuo, promoviendo un ambiente familiar saludable.", web="https://marcosvidaltherapy.com"),
+                Phycologyst(name="Julia", surnames="Ortiz Castillo", email="julia.ortiz@example.com", password=bcrypt.hashpw("p999999".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=6, collegiate_number="COL-009", biography="Julia Ortiz ha dedicado su carrera a trabajar con individuos que sufren trastornos de la alimentación. Su enfoque compasivo y basado en la evidencia proporciona a sus pacientes las herramientas necesarias para reconstruir una relación saludable con la comida y con sus cuerpos.", web="https://juliaortiz.com"),
+                Phycologyst(name="Fernando", surnames="Morales Cruz", email="fernando.morales@example.com", password=bcrypt.hashpw("p101010".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=12, collegiate_number="COL-010", biography="Con más de una década de experiencia, Fernando Morales es un experto en trastornos de personalidad. Su metodología clínica busca entender profundamente las complejidades de sus pacientes y desarrollar estrategias personalizadas de tratamiento.", web="https://fernandomoralespsy.com"),
+                Phycologyst(name="Irene", surnames="Gil Martín", email="irene.gil@example.com", password=bcrypt.hashpw("p111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=11, collegiate_number="COL-011", biography="Irene Gil es conocida por su trabajo en psicología infantil, ayudando a niños y a sus familias a superar desafíos de aprendizaje y desarrollo emocional. Su enfoque es cálido y acogedor, creando un espacio seguro para que los niños exploren sus emociones.", web="https://irenepsychology.com"),
+                Phycologyst(name="Óscar", surnames="Sánchez Rey", email="oscar.sanchez@example.com", password=bcrypt.hashpw("p121212".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=5, collegiate_number="COL-012", biography="Óscar Sánchez se especializa en orientación vocacional, ayudando a jóvenes y adultos a encontrar sus caminos profesionales mediante técnicas de coaching y asesoramiento psicológico. Su objetivo es clarificar vocaciones y maximizar el potencial profesional de sus clientes.", web="https://oscarsancheztherapy.com"),
+                Phycologyst(name="Teresa", surnames="González Luna", email="teresa.gonzalez@example.com", password=bcrypt.hashpw("p131313".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), experience=15, collegiate_number="COL-013", biography="Teresa González tiene una amplia experiencia en psicología geriátrica, dedicándose a mejorar la calidad de vida de los ancianos. Su práctica se centra en abordar las preocupaciones emocionales y cognitivas asociadas con el envejecimiento, ofreciendo apoyo y comprensión.", web="https://teresagonzalez.com")
             ]
             db.session.add_all(psychologists)
-            db.session.commit()  
+            db.session.commit()
                
+           
             resource_types = [
                 ResourceType(resource_type="Artículo"),
                 ResourceType(resource_type="Vídeo"),
-                ResourceType(resource_type="Imagen"),
                 ResourceType(resource_type="Podcast")
             ]
             db.session.add_all(resource_types)
             db.session.commit()  
             
-            resources = [
-                Resource(resource_type_id=resource_types[0].id, url="https://example.com/articulo1", description="Cómo manejar el estrés", phycologyst_id=psychologists[0].id),
-                Resource(resource_type_id=resource_types[1].id, url="https://example.com/video1", description="Meditación para principiantes", phycologyst_id=psychologists[1].id)
-            ]
+            #añadimos recursos a la base de datos
+            # Creando diferentes timestamps para cada recurso para mostrar variedad en los "últimos añadidos"
+            base_time = datetime.now()
 
-            db.session.add_all(resources)
-            db.session.commit()  
-            
-            # Acciones relacionadas con las categorías de estados de ánimo
-            actions = [
-                Action(action="Hablar con un amigo", description="Compartir tus sentimientos puede ayudar a ver las cosas desde otra perspectiva.", category_id=categories[0].id),  # Feliz/Contento
-                Action(action="Escribir en un diario", description="Escribir tus pensamientos puede ayudarte a comprenderlos mejor.", category_id=categories[1].id),  # Triste/Deprimido
-                Action(action="Meditación", description="La meditación puede ayudarte a calmar tu mente.", category_id=categories[2].id),  # Ansioso/Estresado
-                Action(action="Ejercicio físico", description="El ejercicio puede ayudar a liberar la tensión acumulada.", category_id=categories[3].id)  # Enojado/Frustrado
+            podcasts = [
+                Resource(resource_type_id=3, url="https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk", title="Mental Illness Happy Hour", description="Paul Gilmartin hosts a weekly podcast that interviews comedians, artists, friends, and the occasional doctor about mental health issues and much more.", phycologyst_id=1, created_at=base_time - timedelta(days=2)),
+                Resource(resource_type_id=3, url="https://open.spotify.com/show/2D4fDau7Kc5iQb4eUqmOR0", title="The Anxiety Guy Podcast", description="Former professional tennis player and leading anxiety expert Dennis Simsek discusses life with anxiety, panic attacks, and health anxiety.", phycologyst_id=2, created_at=base_time - timedelta(days=3)),
+                Resource(resource_type_id=3, url="https://open.spotify.com/show/7jQV4EcpvsV9UcukCZ3j3A", title="The Hilarious World of Depression", description="A show about clinical depression with laughs? Comedian John Moe talks to fellow comedians who have dealt with this sad part of life.", phycologyst_id=3, created_at=base_time - timedelta(days=5)),
+                Resource(resource_type_id=3, url="https://open.spotify.com/show/4XPl3uEEL9hvqMkoZrzbx5", title="All In The Mind", description="An exploration of all things mental, All in the Mind is about the brain and behaviour, and the fascinating connections between them.", phycologyst_id=4, created_at=base_time - timedelta(days=1)),
+                Resource(resource_type_id=3, url="https://open.spotify.com/show/6SzvjB6jhHnh4o7zA5Vx2Y", title="Anxiety Slayer", description="Award-winning Anxiety Slayer podcast is a leading resource for anyone who wants to soothe anxiety and live a more peaceful life.", phycologyst_id=5, created_at=datetime.now())
             ]
-            db.session.add_all(actions)
+            db.session.add_all(podcasts)
+            db.session.commit()
+
+            videos = [
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=IW-9eOPAWdA", title="Understanding Depression", description="Clinical Psychologist Ali Mattu provides a comprehensive overview of clinical depression, its causes, and treatments.", phycologyst_id=6, created_at=datetime.now()),
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=F2hc2FLOdhI", title="What is Anxiety?", description="This video by the World Health Organization explains what anxiety is, its symptoms, and how to seek help.", phycologyst_id=7, created_at=base_time - timedelta(days=2, hours=2)),
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=GOK1tKFFIQI", title="The Science of Well-Being", description="Yale Professor Laurie Santos discusses the psychology of happiness and provides tips on how to live a happier life.", phycologyst_id=8, created_at=base_time - timedelta(days=3, hours=1)),
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=tzNq-H-r1TI", title="How to manage stress", description="This TEDx talk explores various stress management techniques and the science behind them.", phycologyst_id=9, created_at=base_time - timedelta(days=4)),
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=nCrjevx3-Js", title="Mindfulness for Beginners", description="An introductory guide to mindfulness meditation, offering practical steps for beginners to follow.", phycologyst_id=10, created_at=base_time - timedelta(days=5, hours=2))
+            ]
+            db.session.add_all(videos)
+            db.session.commit()
+            
+            articles = [
+                Resource(resource_type_id=1, url="https://www.psicoactiva.com/blog/como-mejorar-la-autoestima/", title="Cómo mejorar la autoestima", description="Una guía completa sobre cómo construir la confianza en uno mismo y mejorar la autoestima con estrategias prácticas y basadas en la evidencia.", phycologyst_id=1, created_at=base_time - timedelta(days=1, minutes=30)),
+                Resource(resource_type_id=1, url="https://www.clinicbarcelona.org/noticias/ansiedad-como-detectarla-y-afrontarla", title="Ansiedad: cómo detectarla y afrontarla", description="Este artículo ofrece varias estrategias de afrontamiento para la ansiedad, ayudando a los lectores a entender y manejar su ansiedad de manera más efectiva.", phycologyst_id=2, created_at=base_time - timedelta(days=2, minutes=25)),
+                Resource(resource_type_id=1, url="https://www.mentalhealth.org.uk/a-to-z/d/depression", title="Los efectos de la depresión en el cuerpo", description="Un vistazo a cómo la depresión afecta físicamente el cuerpo, explorando las conexiones entre la salud mental y física.", phycologyst_id=3, created_at=base_time - timedelta(days=3, minutes=20)),
+                Resource(resource_type_id=1, url="https://medlineplus.gov/spanish/ency/article/003211.htm", title="Problemas de salud relacionados con el estrés", description="Medline Plus enumera varios problemas de salud comunes asociados con el estrés y cómo resolverlos.", phycologyst_id=4, created_at=base_time - timedelta(days=4, minutes=15)),
+                Resource(resource_type_id=1, url="https://www.redalyc.org/pdf/1805/180521538001.pdf", title="Meditación mindfulness para la ansiedad", description="Un estudio que discute cómo la meditación mindfulness puede ayudar significativamente a reducir los niveles de ansiedad.", phycologyst_id=5, created_at=base_time - timedelta(days=5, minutes=10)),
+                Resource(resource_type_id=1, url="https://www.who.int/es/news-room/fact-sheets/detail/depression", title="Qué saber sobre la depresión", description="La Organización Mundial de la Salud proporciona una visión detallada de la depresión, incluyendo síntomas, tratamientos y diferentes tipos.", phycologyst_id=6, created_at=base_time - timedelta(days=1, minutes=30)),
+                Resource(resource_type_id=1, url="https://espanol.nami.org/About-Mental-Illness/Mental-Health-Conditions/Depression", title="¿Qué es la Depresión?", description="La Asociación Nacional de Salud Mental define la depresión, sus síntomas, riesgos y opciones de tratamiento.", phycologyst_id=7, created_at=datetime.now()),
+                Resource(resource_type_id=1, url="https://www.infosalus.com/salud-investigacion/noticia-claves-entender-sindrome-burnout-20190606175327.html", title="Claves para entender el síndrome de 'burnout'", description="Explora el concepto de 'burnout', sus causas, síntomas y cómo manejar este tipo de estrés laboral.", phycologyst_id=8, created_at=datetime.now()),
+                Resource(resource_type_id=1, url="https://www.fundacioncadah.org/web/articulo/la-meditacion-como-herramienta-para-el-tratamiento-del-tdah.html", title="Meditación como tratamiento para el TDAH", description="Discute el uso de la meditación como herramienta efectiva para manejar los síntomas del TDAH en niños y adultos.", phycologyst_id=9, created_at=datetime.now()),
+                Resource(resource_type_id=1, url="https://www.psicoactiva.com/blog/estrategias-para-el-manejo-del-estres/", title="Estrategias para el manejo del estrés", description="Este artículo proporciona técnicas prácticas y consejos para gestionar el estrés diario y mejorar el bienestar emocional.", phycologyst_id=10, created_at=base_time - timedelta(days=1, minutes=30)),
+            ]
+            
+            db.session.add_all(articles)
             db.session.commit()
 
             # Historial de estados de ánimo de los usuarios
             user_mood_history_entries = [
-                UserMoodHistory(user_id=users[0].id, date=date.today() - timedelta(days=1), mood_id=moods[0].id),
-                UserMoodHistory(user_id=users[1].id, date=date.today() - timedelta(days=2), mood_id=moods[1].id),
-                UserMoodHistory(user_id=users[2].id, date=date.today() - timedelta(days=3), mood_id=moods[2].id)
+                # Entries for User 1
+                UserMoodHistory(user_id=users[0].id, date=date.today() - timedelta(days=4), mood_id=moods[0].id),
+                UserMoodHistory(user_id=users[0].id, date=date.today() - timedelta(days=3), mood_id=moods[1].id),
+                UserMoodHistory(user_id=users[0].id, date=date.today() - timedelta(days=2), mood_id=moods[2].id),
+                UserMoodHistory(user_id=users[0].id, date=date.today() - timedelta(days=1), mood_id=moods[3].id),  # Severo
+
+                # Entries for User 2
+                UserMoodHistory(user_id=users[1].id, date=date.today() - timedelta(days=3), mood_id=moods[1].id),
+                UserMoodHistory(user_id=users[1].id, date=date.today() - timedelta(days=2), mood_id=moods[2].id),
+                UserMoodHistory(user_id=users[1].id, date=date.today() - timedelta(days=1), mood_id=moods[3].id),  # Severo
+                UserMoodHistory(user_id=users[1].id, date=date.today(), mood_id=moods[3].id),  # Severo
+
+                # Entries for User 3
+                UserMoodHistory(user_id=users[2].id, date=date.today() - timedelta(days=1), mood_id=moods[0].id),
+                UserMoodHistory(user_id=users[2].id, date=date.today(), mood_id=moods[3].id),  # Severo
+
+                # Entries for User 4
+                UserMoodHistory(user_id=users[3].id, date=date.today() - timedelta(days=4), mood_id=moods[4].id),  # Extremo
+                UserMoodHistory(user_id=users[3].id, date=date.today() - timedelta(days=3), mood_id=moods[4].id),  # Extremo
+                UserMoodHistory(user_id=users[3].id, date=date.today() - timedelta(days=2), mood_id=moods[4].id),  # Extremo
+                UserMoodHistory(user_id=users[3].id, date=date.today() - timedelta(days=1), mood_id=moods[4].id)   # Extremo
             ]
+
             db.session.add_all(user_mood_history_entries)
             db.session.commit()
+
 
             # Chats entre usuarios
             chats = [
@@ -153,6 +349,39 @@ def setup_commands(app):
                 Chat(user_sender_id=users[0].id, user_reciver_id=users[1].id, message_text="También estoy bien, gracias por preguntar.", time=datetime.now() - timedelta(minutes=30)),
             ]
             db.session.add_all(chats)
+            db.session.commit()
+            
+            
+            all_psychologists = Phycologyst.query.all()
+            all_users = User.query.all()
+
+            # Asegurarse de que hay suficientes psicólogos para asignar como se desea
+            if len(all_psychologists) < len(all_users) + 1:  # +1 porque uno recibe dos psicólogos
+                print("No hay suficientes psicólogos para asignar según los requerimientos.")
+                return
+                    
+            used_psychologists_indices = []
+            
+            if len(all_users) >= 3:
+                chosen_indices = random.sample(range(len(all_psychologists)), 2)
+                used_psychologists_indices.extend(chosen_indices)
+                for index in chosen_indices:
+                    new_session = Sessions(phycologyst_id=all_psychologists[index].id, user_id=all_users[2].id)
+                    db.session.add(new_session)
+                    print(f'Assigned {all_psychologists[index].name} to {all_users[2].name}')
+            
+            for i, user in enumerate(all_users):
+                if i != 2:  # Evitar el tercer usuario
+                    available_indices = [idx for idx in range(len(all_psychologists)) if idx not in used_psychologists_indices]
+                    if not available_indices:
+                        print("No hay más psicólogos disponibles para asignar.")
+                        break
+                    chosen_index = random.choice(available_indices)
+                    used_psychologists_indices.append(chosen_index)
+                    new_session = Sessions(phycologyst_id=all_psychologists[chosen_index].id, user_id=user.id)
+                    db.session.add(new_session)
+                    print(f'Assigned {all_psychologists[chosen_index].name} to {user.name}')
+
             db.session.commit()
             
             print("La base de datos ha sido poblada con datos de ejemplo.")
