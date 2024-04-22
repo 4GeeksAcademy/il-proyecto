@@ -24,7 +24,7 @@ import { Resources } from "./pages/resources";
 
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
-    const authToken = sessionStorage.getItem('userToken');; // Obtén el token de autenticación del almacenamiento local
+    const authToken = sessionStorage.getItem('userToken'); // Obtén el token de autenticación del almacenamiento local
 
     const isAuthenticated = authToken !== null; // El usuario está autenticado si hay un token de autenticación
 
@@ -54,11 +54,11 @@ const Layout = () => {
                     <Routes>                      
                         <Route element={<Home />} path="/" />                       
                         <Route element={<Login />} path="/login" />
-                        <Route element={<PrivateRoute><Faqs /></PrivateRoute>} path="/faqs" />
-                        <Route element={<PrivateRoute><Legal /></PrivateRoute>} path="/legal" />
+                        <Route element={<Faqs />} path="/faqs" />
+                        <Route element={<Legal />} path="/legal" />
                         <Route element={<PrivateRoute><ResetPassword /></PrivateRoute>} path="/reset-password" />
-                        <Route element={<PrivateRoute><SignUp /></PrivateRoute>} path="/singup" />
-                        <Route element={<PrivateRoute><DeleteAccount /></PrivateRoute>} path="/delete-account" />
+                        <Route element={<SignUp />} path="/singup" />
+                        <Route element={<DeleteAccount />} path="/delete-account" />
                         <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/chooseMood" />
                         <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
                         <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/user-profile"/>
