@@ -38,12 +38,12 @@ const MapComponent = () => {
   // pide localizacion al usuario
   const requestLocation = async () => {
     try {
-     
+      //obtiene todas las localizaciones activas
+      await actions.getAllActiveLocations();
       //guarda la ubicación del usuario
       await actions.requestUserLocation();
       await actions.saveUserLocation();
-      //obtiene todas las localizaciones activas
-      await actions.getAllActiveLocations();
+      
 
             // Cerrar el modal después de obtener la ubicación exitosamente
       handleCloseLocationModal();
@@ -137,9 +137,7 @@ const addMarkersToMap = (map, locations) => {
 useEffect(() => {
   waterMark();
 
-  // actions.getUserActiveFromDatabase();
-  // actions.getActiveUserLocations();
-
+ 
   console.log("user locations active", store.location);
   const map = initializeMap();
   handleGeolocation(map);
@@ -171,11 +169,11 @@ useEffect(() => {
 
   return () => {
     map.remove();
-    actions.clearUserLocation();
+    // actions.clearUserLocation();
   };
   
     
-}, [store.location, hasAcceptedModal]);  // Este efecto se ejecuta cada vez que cambia store.location
+}, [store.location]);  // Este efecto se ejecuta cada vez que cambia store.location
 
 
   return (
@@ -202,16 +200,3 @@ useEffect(() => {
 export default MapComponent;
 
 
-
-  // //  agregar marcadores mapa
-  // if (store.location && Array.isArray(store.location.results) && store.location.results.length > 0) {
-  //   console.log('Location data:', store.location.results); // Agrega esta línea
-  //   const selectedIcon = getRandomIcon();
-  //   const customIcon = L.icon({
-  //     iconUrl: selectedIcon.url,
-  //     iconSize: [40, 40],
-  //     iconAnchor: [20, 40],
-  //   });
-
-  //   addMarkersToMap(map, store.location.results, customIcon);
-  // }

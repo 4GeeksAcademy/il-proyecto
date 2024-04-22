@@ -374,37 +374,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-
-
-			clearUserLocation: async () => {
-				const { user, location } = getStore();
-				const userId = JSON.parse(sessionStorage.userData).id;
-			
-				// Encuentra el usuario con el id correspondiente
-				const userLocation = location.find(loc => loc.id === userId);
-			
-				// Comprueba si el usuario y su ubicación existen
-				if (userLocation && userLocation.location) {
-					const locationId = userLocation.location.id;
-					const response = await fetch(process.env.BACKEND_URL + `api/user/location/${locationId}`, {
-						method: 'DELETE',
-						headers: {
-							'Content-Type': 'application/json',
-							'Authorization': `Bearer ${user.token}`,
-						},
-					});
-					await handleFetchError(response);
-			
-					// Filtrar el array de ubicaciones para excluir la ubicación del usuario actual
-					const updatedLocations = location.filter(loc => loc.id !== userId || (loc.id === userId && !loc.location));
-			
-					setStore({ location: updatedLocations });
-				} else {
-					console.error(`No location found for user with id ${userId}`);
-				}
-			},
-
-
 		}
 
 	};
