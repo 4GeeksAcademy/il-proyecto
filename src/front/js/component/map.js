@@ -14,6 +14,7 @@ const MapComponent = () => {
   const [showLocationModal, setShowLocationModal] = useState(true);
   const [hasAcceptedModal, setHasAcceptedModal] = useState(false);
 
+
   // Cuando el usuario cierra el modal
   const handleCloseLocationModal = () => {
     setShowLocationModal(false);
@@ -43,9 +44,7 @@ const MapComponent = () => {
       //guarda la ubicación del usuario
       await actions.requestUserLocation();
       await actions.saveUserLocation();
-      
-
-            // Cerrar el modal después de obtener la ubicación exitosamente
+      //cerrar modal
       handleCloseLocationModal();
     } catch (error) {
       console.log('Error getting location:');
@@ -53,7 +52,7 @@ const MapComponent = () => {
   };
   
 
-  // Inicializa el mapa y la watermark
+  // Inicializa el mapa y la posicion de watermark
   const initializeMap = () => {
     const map = L.map('map');
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
@@ -88,7 +87,7 @@ const MapComponent = () => {
   };
 
 
-
+  // Agrega marcadores al mapa
 const addMarkersToMap = (map, locations) => {
   locations.forEach((user) => {
       // Comprueba si el objeto location existe y si la latitud y la longitud están definidas
@@ -130,15 +129,12 @@ const addMarkersToMap = (map, locations) => {
       return new L.Control.Watermark(opts);
     }
   }
-
  
 
 // inicializar el mapa y manejar la geolocalización
 useEffect(() => {
   waterMark();
 
- 
-  console.log("user locations active", store.location);
   const map = initializeMap();
   handleGeolocation(map);
   
@@ -168,8 +164,7 @@ useEffect(() => {
 }
 
   return () => {
-    map.remove();
-    // actions.clearUserLocation();
+    map.remove(); 
   };
   
     
@@ -184,7 +179,7 @@ useEffect(() => {
           <Modal.Title className='heading1'>Solicitar Geolocalización</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className='base-paragrahp'>Este sitio web desea conocer tu ubicación para proporcionar servicios personalizados.</p>
+          <p className='base-paragrahp'>Este sitio web desea conocer tu ubicación aproximada para proporcionar servicios personalizados. No te preocupes, no es tu ubicación real. </p>
           <button className='button-login' onClick={handleAcceptLocationModal}>
             Aceptar
           </button>

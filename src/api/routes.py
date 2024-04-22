@@ -236,13 +236,14 @@ def delete_account(user_id):
 
 
 
+
 # trae todas las localizaciones de la base de datos( para pruebas )    
 @api.route('/location', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_all_location():
-    # current_user = get_jwt_identity()
+    current_user = get_jwt_identity()
     # print(current_user)
-    # if current_user:
+    if current_user:
         query_results = Location.query.all()
         results = list(map(lambda item: item.serialize(), query_results))
 
@@ -260,8 +261,9 @@ def get_all_location():
             return jsonify({"msg": "There aren't any location yet"}), 404
     
 
-
+# trae todas las localizaciones de los usuarios activos
 @api.route('/users/active-locations', methods=['GET'])
+@jwt_required()
 def get_active_users_locations():
     # Obtén todos los usuarios activos
     active_users = User.query.filter_by(is_active=True).all()
@@ -285,41 +287,10 @@ def get_active_users_locations():
         return jsonify({"msg": "No active users found"}), 404
     
 
-#asigna la localizacion al usuario
 
-# @api.route("/user/location", methods=["POST"])
-# def save_user_location():
-#     # Obtener datos de la solicitud
-#     user_id = request.json.get("user_id")
-#     latitude = request.json.get("latitude")
-#     longitude = request.json.get("longitude")
-
-#     # Validar datos recibidos
-#     if user_id is None or latitude is None or longitude is None:
-#         return jsonify({"error": "Invalid request data"}), 400
-    
-    
-
-#     # Buscar la ubicación existente o crear una nueva
-#     location = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
-#     if not location:
-#         # Si la ubicación no existe, crea una nueva
-#         location = Location(latitude=latitude, longitude=longitude)
-#         db.session.add(location)
-#         db.session.commit()  # Guardar la nueva ubicación en la base de datos
-
-#     # Buscar al usuario por su ID
-#     user = User.query.filter_by(id=user_id).first()
-#     if user:
-#         # Asignar el ID de la ubicación al usuario
-#         user.location_id = location.id
-#         db.session.commit()  # Guardar el cambio en la base de datos
-#         return jsonify({"msg": "Location assigned to user successfully", "user": user_id}), 200
-#     else:
-#         return jsonify({"error": "User not found", "user": user_id}), 404
-    
-
+# Guardar la ubicación de un usuario activo con un ruido aleatorio
 @api.route("/user/location", methods=["POST"])
+@jwt_required()
 def save_user_location():
     # Obtener datos de la solicitud
     user_id = request.json.get("user_id")
@@ -353,16 +324,3 @@ def save_user_location():
 
     return jsonify({"msg": "Location assigned to user successfully", "user": user_id}), 200
         
-
-
-# @api.route("/user/location", methods=["DELETE"])
-# def delete_user_location():
-#     user_id = request.json.get("user_id", None)
-#     user = User.query.filter_by(id=user_id).first()
-#     if user and user.location_id:
-#         location = Location.query.filter_by(id=user.location_id).first()
-#         db.session.delete(location)
-#         db.session.commit()
-#         return jsonify({"msg": "User location deleted", "user": user_id}), 200
-#     else:
-#         return jsonify({"msg": "No location found for user", "user": user_id}), 404

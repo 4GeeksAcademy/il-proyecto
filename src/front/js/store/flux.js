@@ -266,11 +266,19 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 	
+
 			getAllActiveLocations: async () => {
 				try {
 					const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`; 
+			
+					// Obtén el token JWT del sessionStorage
+					const token = sessionStorage.getItem('userToken');
+								
 					const response = await fetch(urlActiveLocations, {
-						method: 'GET'
+						method: 'GET',
+						headers: {
+							'Authorization': `Bearer  ${token}`
+						}
 					});
 			
 					if (!response.ok) {
@@ -301,12 +309,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const latitude = position.coords.latitude;
 					const longitude = position.coords.longitude;
 			
-					console.log("Latitud: " + latitude);
-					console.log("Longitud: " + longitude);
-			
+					// Guarda la ubicación en el usuario
+					const token = sessionStorage.getItem('userToken');
+
 					// Guarda la ubicación en el usuario
 					const userId = JSON.parse(sessionStorage.userData).id;
+			
 					console.log("Id de usuario: " + userId);
+
 					const urlLocation = process.env.BACKEND_URL + `/api/user/location`;
 					console.log("URL de la API: " + urlLocation);
 			
@@ -316,7 +326,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const response = await fetch(urlLocation, {
 						method: 'POST',
 						headers: {
-							'Content-Type': 'application/json'
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
 						},
 						body: requestBody,
 					});
