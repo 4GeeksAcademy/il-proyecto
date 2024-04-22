@@ -12,6 +12,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			auth: false,
 
+			resources: [],
+
 		},
 
 		actions: {
@@ -378,6 +380,45 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				}
 			},
+
+			getAllResources: async() => {
+				try {
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/resources`; 
+			
+					// Obtén el token JWT del sessionStorage
+					// const token = sessionStorage.getItem('userToken');
+								
+					const response = await fetch(urlActiveLocations, {
+						method: 'GET',
+						// headers: {
+						// 	'Authorization': `Bearer  ${token}`
+						// }
+					});
+			
+					if (!response.ok) {
+						throw new Error(`Failed to fetch active location data: ${response.status} ${response.statusText}`);
+					}
+			
+					const data = await response.json();
+			
+					// Actualizar el estado con las ubicaciones de los usuarios activos
+					console.log(data);
+					setStore({ ...getStore(), resources: data.results });
+	
+					console.log(getStore().resources);
+					console.log("Resources loaded from the API to store.");
+			
+					return true;
+				} catch (error) {
+					console.error('Error fetching or processing resources data:', error);
+					return false;
+				}
+			},
+
+			
+
+
+
 		}
 	};
 };

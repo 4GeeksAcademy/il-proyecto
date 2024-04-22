@@ -4,7 +4,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 import random, math, os
 from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location, Mood
+from api.models import db, User, Location, Mood, Resource, ResourceType
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -318,3 +318,30 @@ def save_user_location():
 
     return jsonify({"msg": "Location assigned to user successfully", "user": user_id}), 200
         
+
+# trae todas los resources de la base de datos 
+@api.route('/resources', methods=['GET'])
+# @jwt_required()
+def get_all_resources():
+    # current_user = get_jwt_identity()
+    # print(current_user)
+    # if current_user:
+        resource_results = Resource.query.all()
+        # type_results = ResourceType.query.all()
+        # print(type_results)
+        results = list(map(lambda item: item.serialize(), resource_results))
+  
+             
+        if results != []:
+            response_body = {
+            "msg": "OK",
+            "results": results
+        }
+            return jsonify(response_body), 200
+        
+        else:
+
+            return jsonify({"msg": "There aren't any location yet"}), 404
+        
+
+
