@@ -44,6 +44,7 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+
 @api.route("/login", methods=['POST'])
 def login():
     email = request.json.get("email", None)
@@ -70,8 +71,6 @@ def login():
         return jsonify({"msg": "Usuario no encontrado"}), 401
     
     
-
-
 # Protect a route with jwt_required, which will kick out requests
 # # without a valid JWT present.
 @api.route('/valid-token', methods=['GET'])
@@ -96,6 +95,7 @@ def logout():
         current_user.is_active = False
         db.session.commit()
     return jsonify({"message": "Logout successful"}), 200
+
 
 ## Sign Up User
 @api.route("/signup", methods=["POST"])
@@ -122,7 +122,6 @@ def signup():
         return jsonify({"msg": "Ya existe un usuario con este mail, recupera tu contraseña."}), 401
     
     
-
 @api.route('/login-google', methods=['POST'])
 def login_google():
     token = request.json.get('id_token')
@@ -156,10 +155,6 @@ def login_google():
     except ValueError:
         # Invalid token
         return jsonify({"msg": "Token de Google inválido"}), 401
-
-
-
-
 
 
 
@@ -233,7 +228,6 @@ def delete_account(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Error al eliminar la cuenta', 'details': str(e)}), 500
-
 
 
 

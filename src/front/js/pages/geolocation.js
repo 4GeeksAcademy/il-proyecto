@@ -5,9 +5,7 @@ import MapComponent from '../component/map';
 
 export const Geolocation = () => {
 	
-
-  return (
-	
+  return (	
     	<Container fluid className="map-page">
 			<Row>
 				<Col>
@@ -23,7 +21,6 @@ export const Geolocation = () => {
 				<MapComponent />
 			</Container>
         </Container>
-	
   );
 };
 

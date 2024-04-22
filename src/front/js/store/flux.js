@@ -3,7 +3,6 @@ import ResetPassword from "../component/resetPassword";
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 
-
 		store: {
 			message: null,
 
@@ -13,18 +12,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			auth: false,
 
-
 		},
-
 
 		actions: {
 			//mymood
 			setAuth: (auth) => {
 				setStore({ ...getStore(), auth: auth });
 			},
+
 			setUser: (user) => {
 				setStore({ ...getStore(), user: user });
 			},
+
 			clearUser: () => {
 				setStore({ ...getStore(), user: null });
 			},
@@ -85,7 +84,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
-
 
 			logout: async () => {
 				const actions = getActions();
@@ -265,8 +263,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-	
-
 			getAllActiveLocations: async () => {
 				try {
 					const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`; 
@@ -298,7 +294,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
-
 
 			saveUserLocation: async () => {
 				try {
@@ -358,7 +353,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-
 			requestUserLocation: async () => {
 				try {
 					// obtener la ubicación del usuario
@@ -384,9 +378,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				}
 			},
-
 		}
-
 	};
 };
 

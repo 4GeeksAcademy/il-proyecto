@@ -15,28 +15,25 @@ const MapComponent = () => {
   const [hasAcceptedModal, setHasAcceptedModal] = useState(false);
 
 
-  // Cuando el usuario cierra el modal
+// Cuando el usuario cierra el modal
   const handleCloseLocationModal = () => {
     setShowLocationModal(false);
   };
 
-
-  // Cuando el usuario acepta el modal, solicita la ubicación
+// Cuando el usuario acepta el modal, solicita la ubicación
   const handleAcceptLocationModal = () => {
     setShowLocationModal(false);
     setHasAcceptedModal(true);
     requestLocation();
   };
 
-
-  // icono aleatorio de la lista
+// icono aleatorio de la lista
   const getRandomIcon = () => {
     const randomIndex = Math.floor(Math.random() * iconList.length);
     return iconList[randomIndex];
-  };
-    
+  };  
 
-  // pide localizacion al usuario
+// pide localizacion al usuario
   const requestLocation = async () => {
     try {
       //obtiene todas las localizaciones activas
@@ -51,8 +48,7 @@ const MapComponent = () => {
     }
   };
   
-
-  // Inicializa el mapa y la posicion de watermark
+// Inicializa el mapa y la posicion de watermark
   const initializeMap = () => {
     const map = L.map('map');
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
@@ -65,8 +61,7 @@ const MapComponent = () => {
     return map;
   };
 
-
-  // obtener geolocalización
+// obtener geolocalización
   const handleGeolocation = (map) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -86,34 +81,32 @@ const MapComponent = () => {
     }
   };
 
+// Agrega marcadores al mapa
+  const addMarkersToMap = (map, locations) => {
+    locations.forEach((user) => {
+        // Comprueba si el objeto location existe y si la latitud y la longitud están definidas
+        if (user.location && user.location.latitude !== undefined && user.location.longitude !== undefined) {
+            const selectedIcon = getRandomIcon();
+            const customIcon = L.icon({
+                iconUrl: selectedIcon.url,
+                iconSize: selectedIcon.size,
+                iconAnchor: selectedIcon.anchor,
+            });
 
-  // Agrega marcadores al mapa
-const addMarkersToMap = (map, locations) => {
-  locations.forEach((user) => {
-      // Comprueba si el objeto location existe y si la latitud y la longitud están definidas
-      if (user.location && user.location.latitude !== undefined && user.location.longitude !== undefined) {
-          const selectedIcon = getRandomIcon();
-          const customIcon = L.icon({
-              iconUrl: selectedIcon.url,
-              iconSize: selectedIcon.size,
-              iconAnchor: selectedIcon.anchor,
-          });
+            const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(map);
+            const popupContent = `<div>
+                <p>Latitud: ${user.location.latitude}</p>
+                <p>Longitud: ${user.location.longitude}</p>
+                <button class="details-button" data-id="${user.id}">Ver detalles</button>
+            </div>`;
+            marker.bindPopup(popupContent);
+        } else {
+            console.error(`Invalid location object: ${JSON.stringify(user)}`);
+        }
+    });
+  };
 
-          const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(map);
-          const popupContent = `<div>
-              <p>Latitud: ${user.location.latitude}</p>
-              <p>Longitud: ${user.location.longitude}</p>
-              <button class="details-button" data-id="${user.id}">Ver detalles</button>
-          </div>`;
-          marker.bindPopup(popupContent);
-      } else {
-          console.error(`Invalid location object: ${JSON.stringify(user)}`);
-      }
-  });
-};
-
-
-  //control watermark
+//control watermark
   const waterMark = () => {
     L.Control.Watermark = L.Control.extend({
       onAdd: function() {
@@ -130,7 +123,6 @@ const addMarkersToMap = (map, locations) => {
     }
   }
  
-
 // inicializar el mapa y manejar la geolocalización
 useEffect(() => {
   waterMark();
@@ -169,7 +161,6 @@ useEffect(() => {
   
     
 }, [store.location]);  // Este efecto se ejecuta cada vez que cambia store.location
-
 
   return (
     <>
