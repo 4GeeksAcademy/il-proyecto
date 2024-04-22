@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, } from "react-router-dom";
 import { BackendURL } from "./component/backendURL";
+import { useNavigate } from "react-router-dom";
 
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
@@ -21,6 +22,20 @@ import { UserProfile } from "./pages/userProfile";
 import { Resources } from "./pages/resources";
 
 
+function PrivateRoute({ children }) {
+    const navigate = useNavigate();
+    const authToken = sessionStorage.getItem('userToken'); // Obtén el token de autenticación del almacenamiento local
+
+    const isAuthenticated = authToken !== null; // El usuario está autenticado si hay un token de autenticación
+
+    if (!isAuthenticated) {
+        // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
+        return navigate("/login");
+    }
+
+    // Si el usuario está autenticado, renderizar los hijos
+    return children;
+    }
 
 //create your first component
 const Layout = () => {
@@ -30,26 +45,24 @@ const Layout = () => {
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
+
+   
     return (
         <div className="main-content">
             <BrowserRouter basename={basename}>                              
                     <MainNavbar />
-                    <Routes>
-                        <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Single />} path="/single/:theid" />
+                    <Routes>                      
+                        <Route element={<Home />} path="/" />                       
                         <Route element={<Login />} path="/login" />
                         <Route element={<Faqs />} path="/faqs" />
                         <Route element={<Legal />} path="/legal" />
-¡                       <Route element={<ResetPassword />} path="/reset-password" />
+                        <Route element={<PrivateRoute><ResetPassword /></PrivateRoute>} path="/reset-password" />
                         <Route element={<SignUp />} path="/singup" />
                         <Route element={<DeleteAccount />} path="/delete-account" />
-                        <Route element={<ChooseMood />} path="/chooseMood" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Geolocation />} path="/geolocation"/>
-                        <Route element={<UserProfile />} path="/user-profile"/>
-                        <Route element={<Resources />} path="/resources"/>
-                        <Route element={<h1>Not found!</h1>} />
+                        <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/chooseMood" />
+                        <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
+                        <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/user-profile"/>
+                        <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/>                    
                     </Routes>
                     <Footer />            
             </BrowserRouter>

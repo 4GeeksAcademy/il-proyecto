@@ -51,7 +51,8 @@ class User(db.Model):
             "surnames": self.surnames,
             "age": self.age,
             "is_active": self.is_active,
-            "profile_url": self.profile_url
+            "profile_url": self.profile_url,
+            "location": self.location.serialize() if self.location else None
             # Do not serialize the password, it's a security breach
         }
 
