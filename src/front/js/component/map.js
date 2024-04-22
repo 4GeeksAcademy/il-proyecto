@@ -12,7 +12,7 @@ const MapComponent = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const [showLocationModal, setShowLocationModal] = useState(true);
-
+  const [hasAcceptedModal, setHasAcceptedModal] = useState(false);
 
   // Cuando el usuario cierra el modal
   const handleCloseLocationModal = () => {
@@ -23,6 +23,7 @@ const MapComponent = () => {
   // Cuando el usuario acepta el modal, solicita la ubicación
   const handleAcceptLocationModal = () => {
     setShowLocationModal(false);
+    setHasAcceptedModal(true);
     requestLocation();
   };
 
@@ -37,7 +38,13 @@ const MapComponent = () => {
   // pide localizacion al usuario
   const requestLocation = async () => {
     try {
+     
+      //guarda la ubicación del usuario
       await actions.requestUserLocation();
+      await actions.saveUserLocation();
+      //obtiene todas las localizaciones activas
+      await actions.getAllActiveLocations();
+
             // Cerrar el modal después de obtener la ubicación exitosamente
       handleCloseLocationModal();
     } catch (error) {
@@ -81,23 +88,29 @@ const MapComponent = () => {
   };
 
 
-  const addMarkersToMap = (map, activeUserLocations) => {
-    activeUserLocations.forEach(({ id, latitude, longitude }) => {
-        const selectedIcon = getRandomIcon();
-        const customIcon = L.icon({
-            iconUrl: selectedIcon.url,
-            iconSize: selectedIcon.size,
-            iconAnchor: selectedIcon.anchor,
-        });
 
-        const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(map);
-        const popupContent = `<div>
-            <p>Latitud: ${latitude}</p>
-            <p>Longitud: ${longitude}</p>
-            <button class="details-button" data-id="">Ver detalles</button>
-        </div>`;
-        marker.bindPopup(popupContent);
-    });
+const addMarkersToMap = (map, locations) => {
+  locations.forEach((user) => {
+      // Comprueba si el objeto location existe y si la latitud y la longitud están definidas
+      if (user.location && user.location.latitude !== undefined && user.location.longitude !== undefined) {
+          const selectedIcon = getRandomIcon();
+          const customIcon = L.icon({
+              iconUrl: selectedIcon.url,
+              iconSize: selectedIcon.size,
+              iconAnchor: selectedIcon.anchor,
+          });
+
+          const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(map);
+          const popupContent = `<div>
+              <p>Latitud: ${user.location.latitude}</p>
+              <p>Longitud: ${user.location.longitude}</p>
+              <button class="details-button" data-id="${user.id}">Ver detalles</button>
+          </div>`;
+          marker.bindPopup(popupContent);
+      } else {
+          console.error(`Invalid location object: ${JSON.stringify(user)}`);
+      }
+  });
 };
 
 
@@ -124,10 +137,10 @@ const MapComponent = () => {
 useEffect(() => {
   waterMark();
 
-  actions.getUserActiveFromDatabase();
-  actions.getActiveUserLocations();
+  // actions.getUserActiveFromDatabase();
+  // actions.getActiveUserLocations();
 
-  console.log("user locations active", store.activeUserLocations);
+  console.log("user locations active", store.location);
   const map = initializeMap();
   handleGeolocation(map);
   
@@ -144,24 +157,25 @@ useEffect(() => {
     }
   });
 
-  if (store.activeUserLocations && Array.isArray(store.activeUserLocations) && store.activeUserLocations.length > 0) {
-    console.log('Location data:', store.activeUserLocations); // Agrega esta línea
+  if (store.location && Array.isArray(store.location) && store.location.length > 0) {
+    console.log('Location data:', store.location); // Agrega esta línea
     const selectedIcon = getRandomIcon();
     const customIcon = L.icon({
-      iconUrl: selectedIcon.url,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
+        iconUrl: selectedIcon.url,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
     });
-  
-    addMarkersToMap(map, store.activeUserLocations, customIcon);
-  }
+
+    addMarkersToMap(map, store.location, customIcon);
+}
 
   return () => {
     map.remove();
+    actions.clearUserLocation();
   };
   
     
-}, [store.location]);  // Este efecto se ejecuta cada vez que cambia store.location
+}, [store.location, hasAcceptedModal]);  // Este efecto se ejecuta cada vez que cambia store.location
 
 
   return (
@@ -173,10 +187,10 @@ useEffect(() => {
         </Modal.Header>
         <Modal.Body>
           <p className='base-paragrahp'>Este sitio web desea conocer tu ubicación para proporcionar servicios personalizados.</p>
-          <button className='button-login' onClick={requestLocation}>
+          <button className='button-login' onClick={handleAcceptLocationModal}>
             Aceptar
           </button>
-          <button className='button-login' onClick={handleAcceptLocationModal}>
+          <button className='button-login' onClick={handleCloseLocationModal}>
             Cancelar
           </button>
         </Modal.Body>

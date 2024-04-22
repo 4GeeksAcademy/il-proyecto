@@ -1,7 +1,8 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import random, math
+import random, math, os
+from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
 from api.models import db, User, Location, Mood
 from api.utils import generate_sitemap, APIException
@@ -235,17 +236,7 @@ def delete_account(user_id):
 
 
 
-
-
-
-@api.route('/user', methods=['GET'])
-def get_all_users():
-    query_results = User.query.filter(User.is_active == True).all()
-    results = list(map(lambda item: item.serialize(), query_results))
-    return jsonify(results), 200
- 
- 
-    
+# trae todas las localizaciones de la base de datos( para pruebas )    
 @api.route('/location', methods=['GET'])
 # @jwt_required()
 def get_all_location():
@@ -270,81 +261,73 @@ def get_all_location():
     
 
 
-@api.route("/location", methods=["POST"])
+@api.route('/users/active-locations', methods=['GET'])
+def get_active_users_locations():
+    # Obtén todos los usuarios activos
+    active_users = User.query.filter_by(is_active=True).all()
+
+    # Obtén la ubicación de cada usuario activo
+    user_locations = []
+    for user in active_users:
+        user_data = user.serialize()  # Asume que tienes un método serialize en tu modelo User
+        if user.location_id:
+            location = Location.query.filter_by(id=user.location_id).first()
+            if location:
+                user_data['location'] = location.serialize()
+            else:
+                return jsonify({"msg": f"No location found for user {user.id}"}), 404
+        user_locations.append(user_data)
+
+    # Si se encontraron usuarios, devuelve un objeto JSON con los usuarios y sus ubicaciones
+    if user_locations:
+        return jsonify(user_locations), 200
+    else:
+        return jsonify({"msg": "No active users found"}), 404
+    
+
+#asigna la localizacion al usuario
+
+@api.route("/user/location", methods=["POST"])
 def save_user_location():
-    latitude = request.json.get("latitude", None)
-    longitude = request.json.get("longitude", None)
-    
-    query_result = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
-     
-    if query_result is None:
+    # Obtener datos de la solicitud
+    user_id = request.json.get("user_id")
+    latitude = request.json.get("latitude")
+    longitude = request.json.get("longitude")
 
-        new_location = Location(latitude=latitude, longitude=longitude)
-        db.session.add(new_location)
+    # Validar datos recibidos
+    if user_id is None or latitude is None or longitude is None:
+        return jsonify({"error": "Invalid request data"}), 400
+    
+    
+
+    # Buscar la ubicación existente o crear una nueva
+    location = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
+    if not location:
+        # Si la ubicación no existe, crea una nueva
+        location = Location(latitude=latitude, longitude=longitude)
+        db.session.add(location)
+        db.session.commit()  # Guardar la nueva ubicación en la base de datos
+
+    # Buscar al usuario por su ID
+    user = User.query.filter_by(id=user_id).first()
+    if user:
+        # Asignar el ID de la ubicación al usuario
+        user.location_id = location.id
+        db.session.commit()  # Guardar el cambio en la base de datos
+        return jsonify({"msg": "Location assigned to user successfully", "user": user_id}), 200
+    else:
+        return jsonify({"error": "User not found", "user": user_id}), 404
+    
+
+
+@api.route("/user/location", methods=["DELETE"])
+def delete_user_location():
+    user_id = request.json.get("user_id", None)
+    user = User.query.filter_by(id=user_id).first()
+    if user and user.location_id:
+        location = Location.query.filter_by(id=user.location_id).first()
+        db.session.delete(location)
         db.session.commit()
-
-        return jsonify({"msg": "New location created"}), 200
-    
-    else :
-        return jsonify({"msg": "Location exist, try another location"}), 200
-
-
-
-@api.route("/location-user", methods=["POST"])
-def location_user():
-    user_id  = request.json.get("user_id", None)
-    latitude = request.json.get("latitude", None)
-    longitude = request.json.get("longitude", None)
-
-    location_result = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
-
-    user_result = User.query.filter_by(id=user_id).first()
-     
-    if user_result:
-        user_result.location_id = location_result.id             
-        db.session.commit()
-
-        return jsonify({"msg": "User location saved", "user": user_id}), 200
-    
-    else :
-        return jsonify({"msg": "User doesn't exist", "user": user_id}), 200
-    
-
-
-
-@api.route('/users/active_locations', methods=['GET'])
-def active_user_locations():
-    # Obtener los usuarios activos y sus ubicaciones en una sola consulta
-    active_users = db.session.query(User, Location).join(Location, User.location_id == Location.id).filter(User.is_active == True).all()
-
-    # Usar list comprehension para generar la lista de ubicaciones ofuscadas
-    active_locations = [{
-        'latitude': max(min(user.location.latitude + random.uniform(-2.0, 2.0) / (111.0 - 0.5 * math.sin(2 * math.radians(user.location.latitude))), 90.0), -90.0),
-        'longitude': max(min(user.location.longitude + random.uniform(-2.0, 2.0) / (111.0 * math.cos(math.radians(user.location.latitude))), 180.0), -180.0)
-    } for user, location in active_users if user.location_id]
-
-    # Enviar la lista de ubicaciones ofuscadas como respuesta JSON
-    return jsonify({'active_locations': active_locations}), 200
-
-
-
-
-
-# @api.route('/location/<int:location_id>', methods=['DELETE'])
-# def delete_location(location_id):
-#     try:
-#         # Verificar si la ubicación con el ID proporcionado existe en la base de datos
-#         location = Location.query.get(location_id)
-        
-#         if not location:
-#             return jsonify({'error': 'Ubicación no encontrada'}), 404
-        
-#         # Eliminar la ubicación de la base de datos
-#         db.session.delete(location)
-#         db.session.commit()
-
-#         return jsonify({'message': 'Ubicación eliminada correctamente'}), 200
-    
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-    
+        return jsonify({"msg": "User location deleted", "user": user_id}), 200
+    else:
+        return jsonify({"msg": "No location found for user", "user": user_id}), 404
