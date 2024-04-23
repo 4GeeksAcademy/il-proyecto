@@ -41,12 +41,7 @@ const Layout = () => {
 ¡                       <Route element={<ResetPassword />} path="/reset-password" />
                         <Route element={<SignUp />} path="/singup" />
                         <Route element={<DeleteAccount />} path="/delete-account" />
-<<<<<<< HEAD
-                        <Route element={<ChooseMood />} path="/chooseMood" />
-                        <Route element={<Demo />} path="/demo" />
-=======
                         <Route element={<Geolocation />} path="/geolocation"/>
->>>>>>> develop
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />            
