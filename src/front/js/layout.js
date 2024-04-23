@@ -16,9 +16,10 @@ import { Legal } from "./pages/legal";
 import  ResetPassword  from "./component/resetPassword";
 import { SignUp } from "./pages/singup";
 import { DeleteAccount } from "./pages/deleteAccount";
-import { ChooseMood } from "./pages/chooseMood";
+import { ChooseMood } from "./pages/choose-mood";
 import { UserProfile } from "./pages/userProfile";
 import { Resources } from "./pages/resources";
+import { DayMood } from "./pages/day-mood";
 
 
 
@@ -44,11 +45,12 @@ const Layout = () => {
 ¡                       <Route element={<ResetPassword />} path="/reset-password" />
                         <Route element={<SignUp />} path="/singup" />
                         <Route element={<DeleteAccount />} path="/delete-account" />
-                        <Route element={<ChooseMood />} path="/chooseMood" />
+                        <Route element={<ChooseMood />} path="/choose-mood" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Geolocation />} path="/geolocation"/>
                         <Route element={<UserProfile />} path="/user-profile"/>
                         <Route element={<Resources />} path="/resources"/>
+                        <Route element={<DayMood />} path="/day-mood"/>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />            

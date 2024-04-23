@@ -1,0 +1,75 @@
+
+/* Estilos para el cuadro naranja */
+.orange-box {
+    border: 1px solid #000; /* Borde negro */
+    background-color: var(--option3-color); /* Color de fondo naranja */
+    padding: 20px; /* Espaciado interno */
+    border-radius: var(--button1-border); /* Utiliza la variable para el radio del borde */
+    box-shadow: var(--button1-box-shadow); /* Utiliza la variable para la sombra */
+    box-sizing: var(--button1-box-sizing); /* Utiliza la variable para el box-sizing */
+
+}
+
+/* Estilos para el título h1 dentro del cuadro naranja */
+.orange-box h1 {
+    font-size: 2em; /* Tamaño de fuente */
+    color: black; /* Color de texto */
+}
+
+
+/* Estilos para el párrafo dentro del cuadro naranja */
+.base-paragrahp {
+    font-size: 1em; /* Tamaño de fuente */
+    color: #000000; /* Color de texto */
+    margin-top: 50px;
+    margin-bottom: 20px; /* Margen inferior */
+    line-height: 1.5; /* Altura de línea */
+    
+}
+
+/* Estilos para los botones */
+.actions-buttons button {
+    width: 100%; /* Ancho completo */
+    border-radius: 0; /* Elimina los bordes redondeados */
+}
+
+.orange {
+    background-color: #FF5E41; /* Color naranja */
+}
+
+/* Estilos para los botones cuando se pasa el ratón por encima */
+.actions-buttons button:hover {
+    width: 100%; /* Ancho completo */
+    border-radius: 0; /* Elimina los bordes redondeados */
+    border: var(--button1-border); /* Aplica el borde */
+    box-shadow: var(--button1-box-shadow); /* Aplica la sombra */
+    box-sizing: var(--button1-box-sizing); /* Aplica el box-sizing */
+    color: black; /* Mantén el color del texto negro */
+}
+
+
+
+/* Estilos para el botón adicional con flecha */
+.custom-button {
+    margin-top: 10px;
+    background-color: #000; /* Color de fondo */
+    color: #fff; /* Color de texto */
+    border: 1px solid #000; /* Borde negro */
+    border-radius: 20px; /* Bordes redondeados al máximo */
+    padding: 10px 20px; /* Espaciado interno */
+    border-top-left-radius: 60px; /* Bordes redondeados solo en la esquina superior izquierda */
+    border-top-right-radius: 60px; /* Bordes redondeados solo en la esquina superior derecha */
+    border-bottom-left-radius: 60px; /* Sin bordes redondeados en la esquina inferior izquierda */
+    border-bottom-right-radius: 60px; /* Sin bordes redondeados en la esquina inferior derecha */
+}
+
+/* Estilos para el botón adicional con flecha cuando se pasa el ratón por encima */
+.custom-button:hover {
+    background-color: #fff; /* Cambio de color de fondo a blanco */
+    color: #000; /* Cambio de color de texto a negro */
+}
+
+/* Estilos para la flecha dentro del botón adicional */
+.arrow {
+    margin-right: 5px; /* Margen derecho */
+}
