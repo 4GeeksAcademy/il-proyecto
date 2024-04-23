@@ -74,6 +74,32 @@ p { font-size: var(--p-size);}
 /* ==========================================================================
    RESOURCES
    ========================================================================== */
+
+   @media (max-width: 768px) {
+    .resources-tab-title {
+      flex-direction: row; /* Cambia la dirección del flexbox a fila en dispositivos móviles */
+      justify-content: center; /* Centra los elementos horizontalmente */
+      text-align: center; /* Centra el texto */
+    }
+  
+    .resources-tab-title img {
+      width: 50px; /* Tamaño de imagen más pequeño para dispositivos móviles */
+      margin-right: 5px; /* Reducción del espaciado entre la imagen y el texto */
+    }
+  }
+  
+   /* Estilo para cambiar el color de fondo de la pestaña activa */
+.nav-tabs .nav-link.active {
+    background-color: #D2F752; /* Cambia el color de fondo a azul */
+    color: #000000; /* Cambia el color del texto a blanco */
+}
+
+/* Estilo para cambiar el color de fondo al pasar el cursor sobre la pestaña */
+.nav-tabs .nav-link:hover {
+    background-color: #D2F752; /* Cambia el color de fondo al pasar el cursor */
+    color: #007bff; /* Cambia el color del texto al pasar el cursor */
+}
+
 .resources {
     display: flex; /* Establece un contenedor Flex */
     flex-wrap: wrap; /* Permite que los elementos se envuelvan en la siguiente línea si no hay espacio */

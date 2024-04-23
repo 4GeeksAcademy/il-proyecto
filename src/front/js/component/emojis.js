@@ -11,11 +11,15 @@ export const iconList = [
   'Final%20Icons%2Flevel-2.png?alt=media&token=679901b2-846a-4c8b-bbd3-f1b188bf493e',
   'Final%20Icons%2Flevel-3.png?alt=media&token=5edf7dcb-6aa3-4782-b52d-4a1a2b274549',
   'Final%20Icons%2Flevel-4.png?alt=media&token=60cdd5e4-7e13-49cb-8e9e-b8b8585be63a',
+  
 
 ].map(name => ({
   url: `${process.env.FIREBASE_URL}/${name}`,
   size: defaultSize,
   anchor: defaultAnchor,
 }));
+
+
+
 
 
