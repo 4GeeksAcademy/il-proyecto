@@ -38,8 +38,38 @@ export const Resources = () => {
 
     const firstFourItems = data.slice(0, 4);
 
+    if (resources) {
+        // Extraer el tipo de cada recurso
+        const types = resources.map(resource => resource.resource_type);
+        
+        function groupResourcesByType(resources) {
+            const groupedResources = {};
+            resources.forEach(resource => {
+                const resourceType = resource.resource_type;
+                if (!groupedResources[resourceType]) {
+                    groupedResources[resourceType] = [];
+                }
+                groupedResources[resourceType].push(resource);
+            });
+            return groupedResources;
+        }
+    
+        // Organizar los recursos por tipo
+        const groupedResources = groupResourcesByType(resources);
+    
+        // Verificar los recursos organizados por tipo
+        for (const resourceType in groupedResources) {
+            console.log(`Recursos de tipo '${resourceType}':`);
+            groupedResources[resourceType].forEach(resource => {
+                console.log(resource);
+            });
+            console.log();
+        }
+    } else {
+        console.log('resources is null or undefined');
+    }
 
-
+    
     return (
         <Container fluid className="container-landingpage">
             <Container className="user-profile">
