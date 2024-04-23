@@ -51,7 +51,8 @@ class User(db.Model):
             "surnames": self.surnames,
             "age": self.age,
             "is_active": self.is_active,
-            "profile_url": self.profile_url
+            "profile_url": self.profile_url,
+            "location": self.location.serialize() if self.location else None
             # Do not serialize the password, it's a security breach
         }
 
@@ -194,12 +195,17 @@ class Resource(db.Model):
         return '<Resource %r>' % self.id
 
     def serialize(self):
+        info_physcologyst = Phycologyst.query.filter_by(id=self.phycologyst_id).first()
+        print(info_physcologyst)
         return {
             "id": self.id,
-            "resource_type_id": self.resource_type_id,
+            'resource_type': self.resource_type.resource_type if self.resource_type else None,
             "url": self.url,
             "description": self.description,
-            "created_at": self.created_at
+            "created_at": self.created_at,
+            "psychologist_id": self.phycologyst_id,
+            "phycologyst_info": None if info_physcologyst is None else info_physcologyst.serialize(),
+            "title": self.title
         }
 
 class Chat(db.Model):

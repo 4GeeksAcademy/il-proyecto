@@ -1,13 +1,14 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import random, math
+import random, math, os
+from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location, Mood
+from api.models import db, User, Location, Mood, Resource, ResourceType
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-
+from collections import defaultdict
 # google
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -43,6 +44,7 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+
 @api.route("/login", methods=['POST'])
 def login():
     email = request.json.get("email", None)
@@ -69,8 +71,6 @@ def login():
         return jsonify({"msg": "Usuario no encontrado"}), 401
     
     
-
-
 # Protect a route with jwt_required, which will kick out requests
 # # without a valid JWT present.
 @api.route('/valid-token', methods=['GET'])
@@ -95,6 +95,7 @@ def logout():
         current_user.is_active = False
         db.session.commit()
     return jsonify({"message": "Logout successful"}), 200
+
 
 ## Sign Up User
 @api.route("/signup", methods=["POST"])
@@ -121,7 +122,6 @@ def signup():
         return jsonify({"msg": "Ya existe un usuario con este mail, recupera tu contraseña."}), 401
     
     
-
 @api.route('/login-google', methods=['POST'])
 def login_google():
     token = request.json.get('id_token')
@@ -155,10 +155,6 @@ def login_google():
     except ValueError:
         # Invalid token
         return jsonify({"msg": "Token de Google inválido"}), 401
-
-
-
-
 
 
 
@@ -235,23 +231,13 @@ def delete_account(user_id):
 
 
 
-
-
-
-@api.route('/user', methods=['GET'])
-def get_all_users():
-    query_results = User.query.filter(User.is_active == True).all()
-    results = list(map(lambda item: item.serialize(), query_results))
-    return jsonify(results), 200
- 
- 
-    
+# trae todas las localizaciones de la base de datos( para pruebas )    
 @api.route('/location', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_all_location():
-    # current_user = get_jwt_identity()
+    current_user = get_jwt_identity()
     # print(current_user)
-    # if current_user:
+    if current_user:
         query_results = Location.query.all()
         results = list(map(lambda item: item.serialize(), query_results))
 
@@ -269,82 +255,118 @@ def get_all_location():
             return jsonify({"msg": "There aren't any location yet"}), 404
     
 
+# trae todas las localizaciones de los usuarios activos
+@api.route('/users/active-locations', methods=['GET'])
+@jwt_required()
+def get_active_users_locations():
+    # Obtén todos los usuarios activos
+    active_users = User.query.filter_by(is_active=True).all()
 
-@api.route("/location", methods=["POST"])
+    # Obtén la ubicación de cada usuario activo
+    user_locations = []
+    for user in active_users:
+        user_data = user.serialize()  # Asume que tienes un método serialize en tu modelo User
+        if user.location_id:
+            location = Location.query.filter_by(id=user.location_id).first()
+            if location:
+                user_data['location'] = location.serialize()
+            else:
+                return jsonify({"msg": f"No location found for user {user.id}"}), 404
+        user_locations.append(user_data)
+
+    # Si se encontraron usuarios, devuelve un objeto JSON con los usuarios y sus ubicaciones
+    if user_locations:
+        return jsonify(user_locations), 200
+    else:
+        return jsonify({"msg": "No active users found"}), 404
+    
+
+
+# Guardar la ubicación de un usuario activo con un ruido aleatorio
+@api.route("/user/location", methods=["POST"])
+@jwt_required()
 def save_user_location():
-    latitude = request.json.get("latitude", None)
-    longitude = request.json.get("longitude", None)
-    
-    query_result = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
-     
-    if query_result is None:
+    # Obtener datos de la solicitud
+    user_id = request.json.get("user_id")
+    latitude = request.json.get("latitude")
+    longitude = request.json.get("longitude")
 
-        new_location = Location(latitude=latitude, longitude=longitude)
-        db.session.add(new_location)
-        db.session.commit()
+    # Validar datos recibidos
+    if user_id is None or latitude is None or longitude is None:
+        return jsonify({"error": "Invalid request data"}), 400
 
-        return jsonify({"msg": "New location created"}), 200
-    
-    else :
-        return jsonify({"msg": "Location exist, try another location"}), 200
+    # Ofuscar la ubicación agregando un pequeño ruido aleatorio
+    latitude += uniform(-0.018, 0.018)
+    longitude += uniform(-0.018, 0.018)
 
+    # Buscar al usuario por su ID
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({"error": "User not found", "user": user_id}), 404
 
+# Si el usuario ya tiene una ubicación activa, actualizarla
+    if user.location:
+        user.location.latitude = latitude
+        user.location.longitude = longitude
+    else:
+        # Si el usuario no tiene una ubicación, crear una nueva
+        location = Location(latitude=latitude, longitude=longitude)
+        db.session.add(location)
+        user.location = location
 
-@api.route("/location-user", methods=["POST"])
-def location_user():
-    user_id  = request.json.get("user_id", None)
-    latitude = request.json.get("latitude", None)
-    longitude = request.json.get("longitude", None)
+    db.session.commit()  # Guardar los cambios en la base de datos
 
-    location_result = Location.query.filter_by(latitude=latitude, longitude=longitude).first()
-
-    user_result = User.query.filter_by(id=user_id).first()
-     
-    if user_result:
-        user_result.location_id = location_result.id             
-        db.session.commit()
-
-        return jsonify({"msg": "User location saved", "user": user_id}), 200
-    
-    else :
-        return jsonify({"msg": "User doesn't exist", "user": user_id}), 200
-    
-
-
-
-@api.route('/users/active_locations', methods=['GET'])
-def active_user_locations():
-    # Obtener los usuarios activos y sus ubicaciones en una sola consulta
-    active_users = db.session.query(User, Location).join(Location, User.location_id == Location.id).filter(User.is_active == True).all()
-
-    # Usar list comprehension para generar la lista de ubicaciones ofuscadas
-    active_locations = [{
-        'latitude': max(min(user.location.latitude + random.uniform(-2.0, 2.0) / (111.0 - 0.5 * math.sin(2 * math.radians(user.location.latitude))), 90.0), -90.0),
-        'longitude': max(min(user.location.longitude + random.uniform(-2.0, 2.0) / (111.0 * math.cos(math.radians(user.location.latitude))), 180.0), -180.0)
-    } for user, location in active_users if user.location_id]
-
-    # Enviar la lista de ubicaciones ofuscadas como respuesta JSON
-    return jsonify({'active_locations': active_locations}), 200
-
-
-
-
-
-# @api.route('/location/<int:location_id>', methods=['DELETE'])
-# def delete_location(location_id):
-#     try:
-#         # Verificar si la ubicación con el ID proporcionado existe en la base de datos
-#         location = Location.query.get(location_id)
+    return jsonify({"msg": "Location assigned to user successfully", "user": user_id}), 200
         
-#         if not location:
-#             return jsonify({'error': 'Ubicación no encontrada'}), 404
-        
-#         # Eliminar la ubicación de la base de datos
-#         db.session.delete(location)
-#         db.session.commit()
 
-#         return jsonify({'message': 'Ubicación eliminada correctamente'}), 200
-    
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-    
+# trae todas los resources de la base de datos 
+@api.route('/resources', methods=['GET'])
+# @jwt_required()
+def get_all_resources():
+    # current_user = get_jwt_identity()
+    # print(current_user)
+    # if current_user:
+        resource_results = Resource.query.all()
+        # type_results = ResourceType.query.all()
+        # print(type_results)
+        results = list(map(lambda item: item.serialize(), resource_results))
+  
+             
+        if results != []:
+            response_body = {
+            "msg": "OK",
+            "results": results
+        }
+            return jsonify(response_body), 200
+        
+        else:
+
+            return jsonify({"msg": "There aren't any location yet"}), 404
+        
+
+
+
+@api.route('/resources-bytype', methods=['GET'])
+def get_resources_by_type():
+    resource_results = Resource.query.all()
+
+    resources_by_type = defaultdict(list)
+
+    for resource in resource_results:
+        # Acceder al tipo del recurso a través de su relación 'resource_type'
+        resource_type = resource.resource_type.resource_type if resource.resource_type else None
+        if resource_type:
+            resources_by_type[resource_type].append(resource.serialize())
+
+    # Convertir el diccionario a una lista de diccionarios para que pueda ser serializado a JSON
+    type_resources = [{"type": type, "resources": resources} for type, resources in resources_by_type.items()]
+
+    if type_resources:
+        response_body = {
+            "msg": "OK",
+            "results": type_resources,
+            "number_of_resources": sum(len(resources) for resources in resources_by_type.values())
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "There aren't any resources yet"}), 404
