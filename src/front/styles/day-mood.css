@@ -31,13 +31,30 @@
 .actions-buttons button {
     width: 100%; /* Ancho completo */
     border-radius: 0; /* Elimina los bordes redondeados */
+    position: relative; /* Para posicionar el círculo */
 }
 
-.orange {
-    background-color: #FF5E41; /* Color naranja */
+/* Estilos para el círculo al inicio del botón */
+.actions-buttons button::before {
+    content: ''; /* Contenido del elemento pseudo */
+    position: absolute; /* Posición absoluta */
+    top: 50%; /* Posiciona en la mitad vertical */
+    left: 10px; /* Distancia del borde izquierdo */
+    transform: translateY(-50%); /* Centra verticalmente */
+    width: 20px; /* Ancho del círculo */
+    height: 20px; /* Altura del círculo */
+    border-radius: 50%; /* Hace que el borde sea redondo */
+    background-color: white; /* Color de fondo blanco */
+    border: 1px solid black; /* Borde negro */
 }
 
-/* Estilos para los botones cuando se pasa el ratón por encima */
+/* Estilos para el texto del botón */
+.actions-buttons button {
+    padding-left: 40px; /* Espacio a la izquierda del texto */
+}
+
+
+/* Estilos para el botón cuando se pasa el ratón por encima */
 .actions-buttons button:hover {
     width: 100%; /* Ancho completo */
     border-radius: 0; /* Elimina los bordes redondeados */
@@ -46,6 +63,12 @@
     box-sizing: var(--button1-box-sizing); /* Aplica el box-sizing */
     color: black; /* Mantén el color del texto negro */
 }
+
+/* Estilos para el círculo cuando se pasa el ratón por encima del botón */
+.actions-buttons button:hover::before {
+    background-color: black; /* Cambia el color de fondo del círculo a negro */
+}
+
 
 
 

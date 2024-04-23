@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 export const DayMood = () => {
-    const name = JSON.parse(sessionStorage.userData).name;
+    // const name = JSON.parse(sessionStorage.userData).name;
     const navigate = useNavigate();
 
     const handleClickGeolocation = () => {
@@ -57,7 +57,7 @@ export const DayMood = () => {
                 <Row>
                     <Col xs={12} md={6} lg={9} className="d-flex justify-content-center">
                         {/* Botón adicional con evento onClick para redirigir a la página choose-mood */}
-                        <Button className="btn-block custom-button" size="lg" onClick={handleClickVolver}>
+                        <Button className="custom-button" size="lg" onClick={handleClickVolver}>
                             <span className="arrow">&#8592;</span> Volver
                         </Button>
                     </Col>
