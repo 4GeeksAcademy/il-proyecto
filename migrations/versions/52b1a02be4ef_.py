@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: a771b19b45fb
+Revision ID: 52b1a02be4ef
 Revises: 
-Create Date: 2024-04-19 16:42:07.215898
+Create Date: 2024-04-21 21:44:06.464459
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a771b19b45fb'
+revision = '52b1a02be4ef'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,6 +21,8 @@ def upgrade():
     op.create_table('category_mood',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('category', sa.String(length=255), nullable=True),
+    sa.Column('description', sa.String(length=255), nullable=True),
+    sa.Column('icon_url', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('hobbie',
@@ -41,12 +43,17 @@ def upgrade():
     sa.Column('email', sa.String(length=255), nullable=True),
     sa.Column('password', sa.String(length=255), nullable=True),
     sa.Column('experience', sa.Integer(), nullable=True),
+    sa.Column('collegiate_number', sa.String(length=255), nullable=True),
+    sa.Column('biography', sa.String(length=1000), nullable=True),
+    sa.Column('web', sa.String(length=255), nullable=True),
+    sa.Column('profile_url', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
     op.create_table('resource_type',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('resource_type', sa.String(length=255), nullable=True),
+    sa.Column('icon_url', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('actions',
@@ -61,17 +68,17 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('mood', sa.String(length=255), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
-    sa.Column('description', sa.String(length=255), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['category_mood.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('category_id')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('resource',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('resource_type_id', sa.Integer(), nullable=True),
     sa.Column('url', sa.String(length=255), nullable=True),
+    sa.Column('title', sa.String(length=255), nullable=True),
     sa.Column('description', sa.String(length=255), nullable=True),
     sa.Column('phycologyst_id', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['phycologyst_id'], ['phycologyst.id'], ),
     sa.ForeignKeyConstraint(['resource_type_id'], ['resource_type.id'], ),
     sa.PrimaryKeyConstraint('id')

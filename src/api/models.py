@@ -51,7 +51,8 @@ class User(db.Model):
             "surnames": self.surnames,
             "age": self.age,
             "is_active": self.is_active,
-            "profile_url": self.profile_url
+            "profile_url": self.profile_url,
+            "location": self.location.serialize() if self.location else None
             # Do not serialize the password, it's a security breach
         }
 
@@ -91,23 +92,27 @@ class CategoryMood(db.Model):
     __tablename__ = 'category_mood'
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(255))
+    description = db.Column(db.String(255))
     moods = db.relationship('Mood', backref='category_mood', lazy=True, uselist=False, cascade="all, delete")
+    icon_url = db.Column(db.String(255))
     
     def __repr__(self):
-         return '<CategoryMood %r>' % self.id
+        return '<CategoryMood %r>' % self.id
 
     def serialize(self):
         return {
             "id": self.id,
             "category": self.category,
+            "description": self.description,
+            "icon_url": self.icon_url
         }
 
 class Mood(db.Model):
     __tablename__ = 'mood'
     id = db.Column(db.Integer, primary_key=True)
     mood = db.Column(db.String(255))
-    category_id = db.Column(db.Integer, db.ForeignKey('category_mood.id'), unique=True)
-    description = db.Column(db.String(255))
+    category_id = db.Column(db.Integer, db.ForeignKey('category_mood.id'))
+    response = db.Column(db.String(255))
     users = db.relationship('User', backref='mood', lazy=True, cascade="all, delete")
     
     def __repr__(self):
@@ -117,7 +122,8 @@ class Mood(db.Model):
         return {
             "id": self.id,
             "mood": self.mood,
-            "description": self.description,
+            "category_id": self.category_id,
+            "response": self.response,
         }
 
 class UserMoodHistory(db.Model):
@@ -161,6 +167,7 @@ class ResourceType(db.Model):
     __tablename__ = 'resource_type'
     id = db.Column(db.Integer, primary_key=True)
     resource_type = db.Column(db.String(255))
+    icon_url = db.Column(db.String(255))
     
     def __repr__(self):
         return '<ResourceType %r>' % self.id
@@ -169,6 +176,7 @@ class ResourceType(db.Model):
         return {
             "id": self.id,
             "resource_type": self.resource_type,
+            "icon_url": self.icon_url
         }
 
 class Resource(db.Model):
@@ -176,20 +184,28 @@ class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     resource_type_id = db.Column(db.Integer, db.ForeignKey('resource_type.id'))
     url = db.Column(db.String(255))
+    title = db.Column(db.String(255))
     description = db.Column(db.String(255))
     phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
     resource_type = db.relationship('ResourceType', backref='resource', cascade="all, delete")
     phycologyst = db.relationship('Phycologyst', backref='resource', cascade="all, delete")
+    created_at = db.Column(db.DateTime)
     
     def __repr__(self):
         return '<Resource %r>' % self.id
 
     def serialize(self):
+        info_physcologyst = Phycologyst.query.filter_by(id=self.phycologyst_id).first()
+        print(info_physcologyst)
         return {
             "id": self.id,
-            "resource_type_id": self.resource_type_id,
+            'resource_type': self.resource_type.resource_type if self.resource_type else None,
             "url": self.url,
             "description": self.description,
+            "created_at": self.created_at,
+            "psychologist_id": self.phycologyst_id,
+            "phycologyst_info": None if info_physcologyst is None else info_physcologyst.serialize(),
+            "title": self.title
         }
 
 class Chat(db.Model):
@@ -223,7 +239,11 @@ class Phycologyst(db.Model):
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     experience = db.Column(db.Integer)
+    collegiate_number = db.Column(db.String(255))
+    biography = db.Column(db.String(1000))
+    web = db.Column(db.String(255))
     users = db.relationship('User', backref='phycologyst', lazy=True, cascade="all, delete")
+    profile_url = db.Column(db.String(255))
     
     def __repr__(self):
         return '<Phycologyst %r>' % self.id
@@ -235,6 +255,10 @@ class Phycologyst(db.Model):
             "surnames": self.surnames,
             "email": self.email,
             "experience": self.experience,
+            "collegiate_number": self.collegiate_number,
+            "biography": self.biography,
+            "web": self.web,
+            "profile_url" : self.profile_url
         }
 
 class Sessions(db.Model):
