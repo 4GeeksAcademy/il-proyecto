@@ -74,10 +74,50 @@ p { font-size: var(--p-size);}
 /* ==========================================================================
    RESOURCES
    ========================================================================== */
+
+   @media (max-width: 768px) {
+    .resources-tab-title {
+      flex-direction: row; /* Cambia la dirección del flexbox a fila en dispositivos móviles */
+      justify-content: center; /* Centra los elementos horizontalmente */
+      text-align: center; /* Centra el texto */
+    }
+  
+    .resources-tab-title img {
+      width: 50px; /* Tamaño de imagen más pequeño para dispositivos móviles */
+      margin-right: 5px; /* Reducción del espaciado entre la imagen y el texto */
+    }
+  }
+  
+   /* Estilo para cambiar el color de fondo de la pestaña activa */
+.nav-tabs .nav-link.active {
+    background-color: #D2F752; /* Cambia el color de fondo a azul */
+    color: #000000; /* Cambia el color del texto a blanco */
+}
+
+/* Estilo para cambiar el color de fondo al pasar el cursor sobre la pestaña */
+.nav-tabs .nav-link:hover {
+    background-color: #D2F752; /* Cambia el color de fondo al pasar el cursor */
+    color: #007bff; /* Cambia el color del texto al pasar el cursor */
+}
+
+div .tab-content{
+    margin-top: 4vh;
+}
 .resources {
     display: flex; /* Establece un contenedor Flex */
     flex-wrap: wrap; /* Permite que los elementos se envuelvan en la siguiente línea si no hay espacio */
     gap: 10px; /* Espacio entre columnas y filas */
+}
+
+.resources ul a{
+    text-decoration: none;
+    color: var(--base-color-text);
+}
+
+.resources ul a:hover{
+    text-decoration: none;
+    color: var(--option67-color);
+    transition: ease-in-out 0.3s;
 }
 
 .resources ul {
@@ -98,11 +138,17 @@ p { font-size: var(--p-size);}
     text-overflow: ellipsis; /* Añade puntos suspensivos si el texto se desborda */
 }
 
+.resources ul li p {
+    font-weight: 100;
+    margin-left: 51px;
+}
+
 
 .resources ul {
     list-style: none; /* Elimina los bullets predeterminados */
     padding-left: 0; /* Remueve el padding por defecto */
     margin-left:0;
+    margin-bottom: 0; /* Elimina el margen inferior */
 }
 
 .resources li {
@@ -110,15 +156,15 @@ p { font-size: var(--p-size);}
     background-repeat: no-repeat; /* El ícono no se repite */
     background-position: 0 center; /* Posiciona el ícono al inicio y al centro verticalmente */
     margin-bottom: 10px; /* Espacio entre ítems de lista */
-    line-height: 24px; /* Altura de línea para centrar el texto con el ícono */
+    line-height: 35px; /* Altura de línea para centrar el texto con el ícono */
 }
 
 .resources li.articulo::before {
     content: ''; /* Necesario para generar el pseudo-elemento */
-    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Farticle.png?alt=media&token=c7baed85-7d3b-4f7a-abd2-f47bbea5a372');
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Farticle.png?alt=media&token=139ea2e3-df12-42e0-a5c9-283b1838e526');
     display: inline-block; /* Hace que el pseudo-elemento sea en línea */
-    width: 22px; /* Ancho del ícono */
-    height: 22px; /* Altura del ícono */
+    width: 35px; /* Ancho del ícono */
+    height: 35px; /* Altura del ícono */
     margin-right: 16px; /* Espacio entre el ícono y el texto */
     vertical-align: middle; /* Alinea verticalmente con el texto */
     background-size: cover; /* Asegura que la imagen cubra todo el área asignada */
@@ -126,10 +172,10 @@ p { font-size: var(--p-size);}
 
 .resources li.video::before {
     content: '';
-    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fvideo.png?alt=media&token=21e95df2-7c85-4df1-a08e-848f2ef1ddf9');
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fvideo.png?alt=media&token=20c0a734-73d9-4842-90d6-b88b73a89722');
     display: inline-block;
-    width: 22px;
-    height: 22px;
+    width: 35px; /* Ancho del ícono */
+    height: 35px; /* Altura del ícono */
     margin-right: 16px;
     vertical-align: middle;
     background-size: cover;
@@ -137,10 +183,10 @@ p { font-size: var(--p-size);}
 
 .resources li.podcast::before {
     content: '';
-    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fpodcast.png?alt=media&token=d0ea6e38-b4a2-4816-8488-1a4e99de627e');
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fpodcast.png?alt=media&token=2cf50f74-4ad8-4706-bf34-8b07b918ccf7');
     display: inline-block;
-    width: 22px;
-    height: 22px;
+    width: 35px; /* Ancho del ícono */
+    height: 35px; /* Altura del ícono */
     margin-right: 16px;
     vertical-align: middle;
     background-size: cover;

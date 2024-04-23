@@ -4,11 +4,11 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 import random, math, os
 from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location, Mood
+from api.models import db, User, Location, Mood, Resource, ResourceType
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-
+from collections import defaultdict
 # google
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -318,3 +318,55 @@ def save_user_location():
 
     return jsonify({"msg": "Location assigned to user successfully", "user": user_id}), 200
         
+
+# trae todas los resources de la base de datos 
+@api.route('/resources', methods=['GET'])
+# @jwt_required()
+def get_all_resources():
+    # current_user = get_jwt_identity()
+    # print(current_user)
+    # if current_user:
+        resource_results = Resource.query.all()
+        # type_results = ResourceType.query.all()
+        # print(type_results)
+        results = list(map(lambda item: item.serialize(), resource_results))
+  
+             
+        if results != []:
+            response_body = {
+            "msg": "OK",
+            "results": results
+        }
+            return jsonify(response_body), 200
+        
+        else:
+
+            return jsonify({"msg": "There aren't any location yet"}), 404
+        
+
+
+
+@api.route('/resources-bytype', methods=['GET'])
+def get_resources_by_type():
+    resource_results = Resource.query.all()
+
+    resources_by_type = defaultdict(list)
+
+    for resource in resource_results:
+        # Acceder al tipo del recurso a través de su relación 'resource_type'
+        resource_type = resource.resource_type.resource_type if resource.resource_type else None
+        if resource_type:
+            resources_by_type[resource_type].append(resource.serialize())
+
+    # Convertir el diccionario a una lista de diccionarios para que pueda ser serializado a JSON
+    type_resources = [{"type": type, "resources": resources} for type, resources in resources_by_type.items()]
+
+    if type_resources:
+        response_body = {
+            "msg": "OK",
+            "results": type_resources,
+            "number_of_resources": sum(len(resources) for resources in resources_by_type.values())
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "There aren't any resources yet"}), 404
