@@ -195,13 +195,16 @@ class Resource(db.Model):
         return '<Resource %r>' % self.id
 
     def serialize(self):
+        info_physcologyst = Phycologyst.query.filter_by(id=self.phycologyst_id).first()
+        print(info_physcologyst)
         return {
             "id": self.id,
             'resource_type': self.resource_type.resource_type if self.resource_type else None,
             "url": self.url,
             "description": self.description,
             "created_at": self.created_at,
-            "phycologyst_id": self.phycologyst_id,
+            "psychologist_id": self.phycologyst_id,
+            "phycologyst_info": None if info_physcologyst is None else info_physcologyst.serialize(),
             "title": self.title
         }
 

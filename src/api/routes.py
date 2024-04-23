@@ -8,7 +8,7 @@ from api.models import db, User, Location, Mood, Resource, ResourceType
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-
+from collections import defaultdict
 # google
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -345,3 +345,28 @@ def get_all_resources():
         
 
 
+
+@api.route('/resources-bytype', methods=['GET'])
+def get_resources_by_type():
+    resource_results = Resource.query.all()
+
+    resources_by_type = defaultdict(list)
+
+    for resource in resource_results:
+        # Acceder al tipo del recurso a través de su relación 'resource_type'
+        resource_type = resource.resource_type.resource_type if resource.resource_type else None
+        if resource_type:
+            resources_by_type[resource_type].append(resource.serialize())
+
+    # Convertir el diccionario a una lista de diccionarios para que pueda ser serializado a JSON
+    type_resources = [{"type": type, "resources": resources} for type, resources in resources_by_type.items()]
+
+    if type_resources:
+        response_body = {
+            "msg": "OK",
+            "results": type_resources,
+            "number_of_resources": sum(len(resources) for resources in resources_by_type.values())
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "There aren't any resources yet"}), 404

@@ -383,7 +383,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getAllResources: async() => {
 				try {
-					const urlActiveLocations = process.env.BACKEND_URL + `/api/resources`; 
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/resources-bytype`; 
 			
 					// Obtén el token JWT del sessionStorage
 					// const token = sessionStorage.getItem('userToken');
