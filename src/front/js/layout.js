@@ -63,8 +63,8 @@ const Layout = () => {
                         <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/choose-mood" />
                         <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
                         <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/user-profile"/>
-                        <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/>                        
-                        <Route element={<DayMood />} path="/day-mood"/>
+                        <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/> 
+                        <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>                      
                     
                     </Routes>
                     <Footer />            
