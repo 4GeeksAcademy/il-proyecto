@@ -97,7 +97,7 @@ class CategoryMood(db.Model):
     icon_url = db.Column(db.String(255))
     
     def __repr__(self):
-         return '<CategoryMood %r>' % self.id
+        return '<CategoryMood %r>' % self.id
 
     def serialize(self):
         return {
@@ -112,7 +112,7 @@ class Mood(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mood = db.Column(db.String(255))
     category_id = db.Column(db.Integer, db.ForeignKey('category_mood.id'))
-    #description = db.Column(db.String(255))
+    response = db.Column(db.String(255))
     users = db.relationship('User', backref='mood', lazy=True, cascade="all, delete")
     
     def __repr__(self):
@@ -122,8 +122,8 @@ class Mood(db.Model):
         return {
             "id": self.id,
             "mood": self.mood,
-            "category_id": self.category_id
-            #"description": self.description,
+            "category_id": self.category_id,
+            "response": self.response,
         }
 
 class UserMoodHistory(db.Model):

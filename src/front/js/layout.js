@@ -17,9 +17,10 @@ import { Legal } from "./pages/legal";
 import  ResetPassword  from "./component/resetPassword";
 import { SignUp } from "./pages/singup";
 import { DeleteAccount } from "./pages/deleteAccount";
-import { ChooseMood } from "./pages/chooseMood";
+import { ChooseMood } from "./pages/choose-mood";
 import { UserProfile } from "./pages/userProfile";
 import { Resources } from "./pages/resources";
+import { DayMood } from "./pages/day-mood";
 
 
 function PrivateRoute({ children }) {
@@ -59,10 +60,12 @@ const Layout = () => {
                         <Route element={<PrivateRoute><ResetPassword /></PrivateRoute>} path="/reset-password" />
                         <Route element={<SignUp />} path="/singup" />
                         <Route element={<DeleteAccount />} path="/delete-account" />
-                        <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/chooseMood" />
+                        <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/choose-mood" />
                         <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
                         <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/user-profile"/>
-                        <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/>                    
+                        <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/> 
+                        <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>                      
+                    
                     </Routes>
                     <Footer />            
             </BrowserRouter>

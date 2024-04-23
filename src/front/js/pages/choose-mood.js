@@ -5,7 +5,7 @@ import MoodTriste from "../component/moodTriste";
 import MoodEnfadado from "../component/moodEnfadado";
 import MoodMeh from "../component/moodMeh";
 import MoodEstresado from "../component/moodEstresado";
-import "/workspaces/il-proyecto/src/front/styles/chooseMood.css"; 
+import "/workspaces/il-proyecto/src/front/styles/choose-mood.css"; 
 
 export const ChooseMood = () => {
     const { store, actions } = useContext(Context);
