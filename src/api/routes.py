@@ -407,38 +407,6 @@ def get_all_moods():
 
 
 
-
-
-@api.route("/user/mood", methods=["POST"])
-# @jwt_required()
-def save_user_mood():
-    # Obtener datos de la solicitud
-    user_id = request.json.get("user_id")
-    mood_id = request.json.get("mood_id")
-
-    # Validar datos recibidos
-    if user_id is None or mood_id is None:
-        return jsonify({"error": "Invalid request data"}), 400
-
-    # Buscar al usuario por su ID
-    user = User.query.filter_by(id=user_id).first()
-    if not user:
-        return jsonify({"error": "User not found", "user": user_id}), 404
-
-    # Buscar el mood por su ID
-    mood = Mood.query.filter_by(id=mood_id).first()
-    if not mood:
-        return jsonify({"error": "Mood not found", "mood": mood_id}), 404
-
-    # Crear un nuevo registro en UserMoodHistory
-    user_mood_history = UserMoodHistory(user_id=user_id, mood_id=mood_id, date=datetime.now())
-    db.session.add(user_mood_history)
-
-    db.session.commit()  # Guardar los cambios en la base de datos
-
-    return jsonify({"msg": "Mood assigned to user successfully", "user": user_id}), 200
-
-
 #ultima categoria de estado de animo del usuario
 @api.route("/user/<int:user_id>/last_mood_category", methods=["GET"])
 # @jwt_required()
