@@ -455,32 +455,6 @@ def get_last_mood_category(user_id):
 
 
 
-@api.route("/user_mood", methods=["POST"])
-def set_user_mood():
-    # Obtén el mood_id y user_id de la solicitud
-    mood_id = request.json.get("mood_id")
-    user_id = request.json.get("user_id")
-    if mood_id is None or user_id is None:
-        return jsonify({"error": "Invalid request data"}), 400
-
-    # Busca el mood y el usuario por sus IDs
-    mood = Mood.query.get(mood_id)
-    user = User.query.get(user_id)
-    if not mood or not user:
-        return jsonify({"error": "Mood or user not found"}), 404
-
-    # Crea un nuevo UserMoodHistory con el mood y el usuario
-    user_mood_history = UserMoodHistory(user_id=user.id, mood_id=mood.id, date=datetime.today().date())
-    db.session.add(user_mood_history)
-
-    db.session.commit()  # Guarda los cambios en la base de datos
-
-    # Vuelve a obtener el usuario para reflejar los cambios
-    user = User.query.get(user_id)
-
-    return jsonify({"msg": "User mood set successfully", "user": user.serialize()}), 200
-
-
 # todos los usuarios
 @api.route('/users', methods=['GET'])
 def get_all_users():
@@ -502,6 +476,7 @@ def get_all_users():
         return jsonify({"msg": "There aren't any users yet"}), 404
     
 
+
 # todos los usuarios activos
 @api.route('/users-active', methods=['GET'])
 def get_all_users_active():
@@ -521,3 +496,31 @@ def get_all_users_active():
 
     else:
         return jsonify({"msg": "There aren't any active users yet"}), 404
+    
+
+
+
+
+@api.route('/user/<int:user_id>/mood', methods=['PUT'])
+def update_user_mood(user_id):
+    # Busca el usuario por su ID
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Obtiene el ID del estado de ánimo de la solicitud
+    mood_id = request.json.get('mood_id')
+    if not mood_id:
+        return jsonify({"error": "Mood ID is required"}), 400
+
+    # Busca el estado de ánimo por su ID
+    mood = Mood.query.get(mood_id)
+    if not mood:
+        return jsonify({"error": "Mood not found"}), 404
+
+    # Actualiza la categoría de estado de ánimo del usuario con la del nuevo estado de ánimo
+    user.mood_id = mood.id
+    db.session.commit()
+
+    # Serializa el usuario y devuelve la respuesta
+    return jsonify({"user": user.serialize()}), 200

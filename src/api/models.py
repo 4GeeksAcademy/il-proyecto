@@ -58,7 +58,7 @@ class User(db.Model):
             "is_active": self.is_active,
             "profile_url": self.profile_url,
             "location": self.location.serialize() if self.location else None,
-            "mood_category": mood_category,
+            "mood_category": self.mood.category_mood.serialize() if self.mood and self.mood.category_mood else None,
             # Do not serialize the password, it's a security breach
         }
 
