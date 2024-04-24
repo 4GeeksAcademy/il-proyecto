@@ -44,6 +44,11 @@ class User(db.Model):
      
 
     def serialize(self):
+        # Obtén la última entrada de UserMoodHistory para este usuario
+        last_mood_history = UserMoodHistory.query.filter_by(user_id=self.id).order_by(UserMoodHistory.date.desc()).first()
+        mood_category = last_mood_history.mood.category_mood.serialize() if last_mood_history and last_mood_history.mood and last_mood_history.mood.category_mood else None
+        
+        
         return {
             "id": self.id,
             "email": self.email,
@@ -52,7 +57,8 @@ class User(db.Model):
             "age": self.age,
             "is_active": self.is_active,
             "profile_url": self.profile_url,
-            "location": self.location.serialize() if self.location else None
+            "location": self.location.serialize() if self.location else None,
+            "mood_category": mood_category,
             # Do not serialize the password, it's a security breach
         }
 
@@ -139,8 +145,10 @@ class UserMoodHistory(db.Model):
         return '<UserMoodHistory %r>' % self.id
 
     def serialize(self):
+        mood_category = self.mood.category_mood.category if self.mood and self.mood.category_mood else None
         return {
             "mood_id": self.mood_id,
+            "mood_category": mood_category,
         }
 
 class Action(db.Model):

@@ -15,11 +15,11 @@ export const ChooseMood = () => {
 
 
     useEffect(() => {
-        actions.getAllMood().then(res => {
+        actions.getAllMoods().then(res => {
             if (res) {
                 setMood(res);  // Aquí se almacenan los Mood en el estado
             }
-            console.log(mood);
+            console.log(store.mood);
             // setKey(res[0].type);  // Aquí se establece la clave como el tipo del primer Mood
             // console.log(res);  // Aquí se imprime la respuesta
         });
