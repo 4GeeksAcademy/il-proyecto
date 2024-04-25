@@ -36,6 +36,8 @@ function PrivateRoute({ children }) {
     return children;
     }
 
+    
+
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -57,10 +59,10 @@ const Layout = () => {
                         <Route element={<Legal />} path="/legal" />                    
                         <Route element={<SignUp />} path="/singup" />
                         <Route element={<DeleteAccount />} path="/delete-account" />
-                        <Route element={<PrivateRoute><ResetPassword /></PrivateRoute>} path="/reset-password" />
+                        <Route element={<ResetPassword />} path="/reset-password" />
                         <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/choose-mood" />
                         <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
-                        <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/:uid"/>
+                        <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/:uid/:url"/>
                         <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/> 
                         <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>                                     
                     </Routes>

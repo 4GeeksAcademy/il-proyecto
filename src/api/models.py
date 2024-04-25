@@ -47,7 +47,8 @@ class User(db.Model):
         # Obtén la última entrada de UserMoodHistory para este usuario
         last_mood_history = UserMoodHistory.query.filter_by(user_id=self.id).order_by(UserMoodHistory.date.desc()).first()
         mood = Mood.query.filter_by(id=self.mood_id).first()
-                          
+        hobbie = Hobbie.query.filter_by(id=self.hobbie_id).first()
+        print(hobbie)              
         return {
             "id": self.id,
             "email": self.email,
@@ -58,6 +59,8 @@ class User(db.Model):
             "profile_url": self.profile_url,
             "location": self.location.serialize() if self.location else None,
             "user_mood": self.mood.serialize() if self.mood else None,
+            "hobbie": self.hobbie.name if self.hobbie else None,
+           
             # Do not serialize the password, it's a security breach
         }
 

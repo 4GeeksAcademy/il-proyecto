@@ -2,6 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import random, math, os
+import re
 from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
 from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory
@@ -25,6 +26,7 @@ import bcrypt
 
 from flask_session import Session
 from flask import session
+
 
 
 
@@ -109,7 +111,11 @@ def signup():
     surnames = request.json.get("surnames", None)
     is_active= False
     created_at = datetime.now()
-    profile_url = name.replace(" ","") + surnames.replace(" ", "")
+    profile_url = re.sub(r'[^a-z0-9]', '', name.replace(" ", "").lower()) + re.sub(r'[^a-z0-9]', '', surnames.replace(" ", "").lower())
+
+    
+
+
 
     query_result = User.query.filter_by(email=email).first()
     if query_result is None:
@@ -184,9 +190,9 @@ def send_reset_email(user, token):
     link = url_for('api.reset_password_request', token=token, _external=False)
     new_link = link.replace("/api", "")
     full_link = f"{base_host}{new_link}"  
-    
+    print("*************************************************")
     print(full_link)
-     
+    print("*************************************************")
     # msg = Message('Recuperar contraseña',
     #               sender='mymoodbnp@gmail.com',
     #               recipients=[user.email])
@@ -493,3 +499,16 @@ def update_user_mood(user_id):
 
     # Serializa el usuario y devuelve la respuesta
     return jsonify({"user": user.serialize()}), 200
+
+
+
+
+@api.route('/current-user', methods=['GET'])
+@jwt_required()
+def get_current_user():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(email=user_id).first()
+    if user:
+        return jsonify(user.serialize()), 200
+    else:
+        return jsonify({"msg": "User not found"}), 404

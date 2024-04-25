@@ -50,7 +50,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return false;
 					}
 					sessionStorage.setItem("userToken", data.access_token);
-					sessionStorage.setItem("userId", JSON.stringify(data.user.id));
+					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
 
 					// getActions().setUser(data.user);
 					console.log(data);
@@ -78,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// Procesa el login exitoso
 					console.log("Login successful:", data);
 					sessionStorage.setItem('userToken', data.access_token);
-					sessionStorage.setItem("userId", JSON.stringify(data.user.id));
+					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
 					console.log(data.user);
 					getActions().setUser(data.user);
 					setStore({ ...getStore(), auth: true })
@@ -105,7 +105,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (response.ok) {
 						console.log("Logout successful:", data);
 						sessionStorage.removeItem("userToken");
-						sessionStorage.removeItem("userId");
+						sessionStorage.removeItem("userData");
 						setStore({ ...getStore(), auth: false })
 						actions.clearUser();
 					} else {
@@ -113,6 +113,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				} catch (error) {
 					console.error('Logout error:', error);
+				}
+			},
+
+			handleResetPassword: async (email) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password`, {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({ email })
+					});
+					const result = await response.json();
+			
+					if (!response.ok) 
+						return { ok: false, message: result.message || "Ocurrió un error. Por favor, inténtalo de nuevo." }
+						
+					else {
+						return { ok: true, message: "Consulta tu email para las instrucciones de reestablecimiento de contraseña." }								
+					}
+				} catch (error) {
+					return { ok: false, message: "Network error" };
 				}
 			},
 
@@ -172,7 +192,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			validToken: async () => {
 				console.log("holaaaaa estooy en valid token");
 				let token = sessionStorage.getItem("userToken");
-				let user = JSON.parse(sessionStorage.getItem("userId"));
+				let user = JSON.parse(sessionStorage.getItem("userData"));
 
 				if (!token) {
 					console.log("Token not found");
@@ -196,14 +216,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					else {
 						sessionStorage.removeItem("userToken");
-						sessionStorage.removeItem("userId");
+						sessionStorage.removeItem("userData");
 						setStore({ ...getStore(), auth: false, user: null })
 						return false;
 					}
 				} catch (error) {
 					console.error('Token expired:', error);
 					sessionStorage.removeItem("userToken");
-					sessionStorage.removeItem("userId");
+					sessionStorage.removeItem("userData");
 					setStore({ ...getStore(), auth: false, user: null })
 					return false;
 				}
@@ -224,7 +244,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (response.ok) {
 						console.log("La cuenta se eliminó correctamente");
 						sessionStorage.removeItem("userToken");
-						sessionStorage.removeItem("userId");
+						sessionStorage.removeItem("userData");
 						getActions().clearUser();
 						setStore({ ...getStore(), auth: false, user: null });
 					} else {
@@ -347,7 +367,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const token = sessionStorage.getItem('userToken');
 
 					// Guarda la ubicación en el usuario
-					const userId = JSON.parse(sessionStorage.userId);
+					const userId = JSON.parse(sessionStorage.userData).id;
 			
 					console.log("Id de usuario: " + userId);
 
@@ -454,12 +474,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getCurrentUser: async () => {
 				try {
-					// const token = sessionStorage.getItem('userToken');
-					const response = await fetch(`${process.env.BACKEND_URL}api/users`, {
+					const token = sessionStorage.getItem('userToken');
+					const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
 						method: 'GET',
 						headers: {
 							'Content-Type': 'application/json',
-							// 'Authorization': `Bearer ${token}`
+							'Authorization': `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -468,7 +488,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					const data = await response.json();
 					console.log(data);
-					setStore({ ...getStore(), user: data.results });
+					setStore({ ...getStore(), user: data });
 					
 					console.log(getStore().user);
 					console.log('Current user data loaded from the API to store');
