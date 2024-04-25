@@ -60,7 +60,7 @@ const Layout = () => {
                         <Route element={<PrivateRoute><ResetPassword /></PrivateRoute>} path="/reset-password" />
                         <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/choose-mood" />
                         <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
-                        <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/user-profile"/>
+                        <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/:uid"/>
                         <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/> 
                         <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>                                     
                     </Routes>

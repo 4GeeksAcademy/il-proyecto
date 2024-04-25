@@ -109,10 +109,11 @@ def signup():
     surnames = request.json.get("surnames", None)
     is_active= False
     created_at = datetime.now()
-    
+    profile_url = name.replace(" ","") + surnames.replace(" ", "")
+
     query_result = User.query.filter_by(email=email).first()
     if query_result is None:
-        new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at)
+        new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at, profile_url=profile_url)
         db.session.add(new_user)
         db.session.commit()
 

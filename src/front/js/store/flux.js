@@ -50,7 +50,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return false;
 					}
 					sessionStorage.setItem("userToken", data.access_token);
-					sessionStorage.setItem("userData", JSON.stringify(data.user));
+					sessionStorage.setItem("userId", JSON.stringify(data.user.id));
 
 					// getActions().setUser(data.user);
 					console.log(data);
@@ -78,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// Procesa el login exitoso
 					console.log("Login successful:", data);
 					sessionStorage.setItem('userToken', data.access_token);
-					sessionStorage.setItem("userData", JSON.stringify(data.user));
+					sessionStorage.setItem("userId", JSON.stringify(data.user.id));
 					console.log(data.user);
 					getActions().setUser(data.user);
 					setStore({ ...getStore(), auth: true })
@@ -105,7 +105,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (response.ok) {
 						console.log("Logout successful:", data);
 						sessionStorage.removeItem("userToken");
-						sessionStorage.removeItem("userData");
+						sessionStorage.removeItem("userId");
 						setStore({ ...getStore(), auth: false })
 						actions.clearUser();
 					} else {
@@ -172,7 +172,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			validToken: async () => {
 				console.log("holaaaaa estooy en valid token");
 				let token = sessionStorage.getItem("userToken");
-				let user = JSON.parse(sessionStorage.getItem("userData"));
+				let user = JSON.parse(sessionStorage.getItem("userId"));
 
 				if (!token) {
 					console.log("Token not found");
@@ -196,14 +196,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					else {
 						sessionStorage.removeItem("userToken");
-						sessionStorage.removeItem("userData");
+						sessionStorage.removeItem("userId");
 						setStore({ ...getStore(), auth: false, user: null })
 						return false;
 					}
 				} catch (error) {
 					console.error('Token expired:', error);
 					sessionStorage.removeItem("userToken");
-					sessionStorage.removeItem("userData");
+					sessionStorage.removeItem("userId");
 					setStore({ ...getStore(), auth: false, user: null })
 					return false;
 				}
@@ -224,7 +224,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (response.ok) {
 						console.log("La cuenta se eliminó correctamente");
 						sessionStorage.removeItem("userToken");
-						sessionStorage.removeItem("userData");
+						sessionStorage.removeItem("userId");
 						getActions().clearUser();
 						setStore({ ...getStore(), auth: false, user: null });
 					} else {
@@ -347,7 +347,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const token = sessionStorage.getItem('userToken');
 
 					// Guarda la ubicación en el usuario
-					const userId = JSON.parse(sessionStorage.userData).id;
+					const userId = JSON.parse(sessionStorage.userId);
 			
 					console.log("Id de usuario: " + userId);
 
@@ -452,10 +452,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			getCurrentUser: async () => {
+				try {
+					// const token = sessionStorage.getItem('userToken');
+					const response = await fetch(`${process.env.BACKEND_URL}api/users`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							// 'Authorization': `Bearer ${token}`
+						}
+					});
+					if (!response.ok) {
+						throw new Error('Failed to fetch current user data');
+						
+					}
+					const data = await response.json();
+					console.log(data);
+					setStore({ ...getStore(), user: data.results });
+					
+					console.log(getStore().user);
+					console.log('Current user data loaded from the API to store');
+					return true;
+				} catch (error) {
+					console.error('Error fetching or processing current user data:', error);
+					return false;
+				}
+			}
 			
-
-
-
 		}
 	};
 };

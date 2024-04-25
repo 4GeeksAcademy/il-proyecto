@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
+import { Link, useParams } from "react-router-dom";
 import "../../styles/profile.css";
 import { useNavigate } from "react-router-dom";
 import Container from 'react-bootstrap/Container';
@@ -16,7 +17,42 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 export const UserProfile = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
+    const { user, setCurrentUser } = useState(null);
+    // let params = useParams();
 
+    // let userProfile = params.uid;
+  
+    // let { uid } = useParams();
+    
+
+    // useEffect(() => {
+    //     actions.getCurrentUser().then(() => {
+    //         if (store.user) {
+    //             console.log(store.user);
+    //                   // Aquí se imprimen todos los moods de la categoría "Normal"
+    //         }
+    //     });
+        
+    // }, []);
+
+    // setCurrentUser(store.user[sessionStorage.getItem('userId')]);
+    // console.log(user);  
+
+
+    // useEffect(() => {
+    //     actions.getCurrentUser().then(() => {
+    //         if (store.user) {
+    //             console.log(store.user);
+    //             // Aquí se imprimen todos los moods de la categoría "Normal"
+    //             const userId = sessionStorage.getItem('userId');
+    //             if (userId && store.user[userId]) {
+    //                 setCurrentUser(store.user[userId]);
+    //                 console.log(store.user[userId]);
+    //             }
+    //         }
+    //     });
+    // }, []);
+    console.log(store.user);
 
     return (
         <Container fluid className="container-landingpage">

@@ -14,16 +14,14 @@ export const ChooseMood = () => {
     const [mood, setMood] = useState(null);
 
 
-    useEffect(() => {
-        actions.getAllMoods().then(res => {
-            if (res) {
-                setMood(res);  // Aquí se almacenan los Mood en el estado
-            }
-            console.log(store.mood);
-            // setKey(res[0].type);  // Aquí se establece la clave como el tipo del primer Mood
-            // console.log(res);  // Aquí se imprime la respuesta
-        });
-    }, []);
+   useEffect(() => {
+    actions.getAllMoods().then(() => {
+        if (store.mood && store.mood.Normal) {
+            console.log(store.mood.Normal);         // Aquí se imprimen todos los moods de la categoría "Normal"
+        }
+    });
+    setUsername(store.user.name);
+}, []);
 
 
 
@@ -40,14 +38,15 @@ export const ChooseMood = () => {
             setBotones(generarOrdenAleatorio(botonesIniciales));
     }, []);
 
+
     const handleButtonClick = async (estado) => {
         try {
             await actions.saveMood(estado); 
-            console.log('Estado de ánimo guardado correctamente');
+            // console.log('Estado de ánimo guardado correctamente');
             // Redirigir a la página "demo"
             window.location.href = "/geolocation";
         } catch (error) {
-            console.error('Error al guardar el estado de ánimo:', error);
+            // console.error('Error al guardar el estado de ánimo:', error);
         }
     };
 
@@ -61,19 +60,19 @@ export const ChooseMood = () => {
         return arrayCopia;
     };
 
-    console.log('vino')
-    console.log(sessionStorage.userData)
+    // console.log('vino')
+    // console.log(sessionStorage.userData)
 
-    const name = JSON.parse(sessionStorage.userData).name;
-    console.log(name)
+   
+    // console.log(name)
 
     return (
         <div className="container-fluid container-landingpage">
             <div className="row">
                 <div className="col-md-12">
                     <h1 className="heading1">
-                        {name ? <strong>{name}</strong> : null}
-                        <em>{name ? ', ' : null}¿cómo te sientes hoy?</em>
+                        {username ? <strong>{username}</strong> : null}
+                        <em>{username ? ', ' : null}¿cómo te sientes hoy?</em>
                     </h1>
                 </div>
             </div>

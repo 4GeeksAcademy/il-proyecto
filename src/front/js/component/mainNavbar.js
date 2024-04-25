@@ -19,7 +19,7 @@ import logo from "../../img/logo.png";
 export const MainNavbar = () => {
     const { store, actions } = useContext(Context);
 	const navigate = useNavigate();
-
+    
     useEffect(() => {
 
     }, []);
@@ -51,7 +51,7 @@ export const MainNavbar = () => {
                                 <NavDropdown title="Menu" id="basic-nav-dropdown" align="end" >
                                     <NavDropdown.Item href="/geolocation">Mapa</NavDropdown.Item>
                                     <NavDropdown.Item href="/resources">Recursos</NavDropdown.Item>
-                                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                                    <NavDropdown.Item href={`/${store.user.profile_url}`}>Perfil</NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item href="#action/3.4">Link</NavDropdown.Item>
                                 </NavDropdown>
