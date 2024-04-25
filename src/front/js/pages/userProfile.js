@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
+import { Link, useParams } from "react-router-dom";
 import "../../styles/profile.css";
 import { useNavigate } from "react-router-dom";
 import Container from 'react-bootstrap/Container';
@@ -15,7 +16,16 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 export const UserProfile = () => {
     const { store, actions } = useContext(Context);
-    const navigate = useNavigate();
+
+    useEffect(() => {
+        
+    }, []);
+
+    console.log(store.user);
+    
+    if (!store.user || Object.keys(store.user).length === 0) {
+        return null; // O puedes retornar un componente de carga
+      }
 
 
     return (
@@ -23,8 +33,8 @@ export const UserProfile = () => {
             <Container className="user-profile">
                 <Row className="mb-5">
                     <Col xs={11} md={6} lg={10}>
-                        <h2 className="">Nombre profile</h2>
-                        <h3 className="">Hobbie</h3>
+                        <h2 className="">{store.user.name} {store.user.surnames}</h2>
+                        <h3 className="">{store.user.hobbie}</h3>
                     </Col>
                     <Col xs={1} md={6} lg={2} className="text-end">
                         <Image src="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-0%402x.png?alt=media&token=dc422f85-022b-44de-a81d-16b84f250ea4" className="img-mood" />
@@ -35,7 +45,7 @@ export const UserProfile = () => {
                     <Col xs={12} md={6} lg={3}>
                         <Card className="user-info-profile">
                             <ListGroup variant="flush">
-                                <ListGroup.Item><p>Email</p><p>user.email</p></ListGroup.Item>
+                                <ListGroup.Item><p>Email</p><p>{store.user.email}</p></ListGroup.Item>
                                 <ListGroup.Item><p>Contraseña</p><p>Cambiar contraseña</p></ListGroup.Item>
                                 <ListGroup.Item><p>Unido/a</p><p>24/04/2024</p></ListGroup.Item>
                             </ListGroup>

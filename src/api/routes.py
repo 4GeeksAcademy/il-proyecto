@@ -2,9 +2,10 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import random, math, os
+import re
 from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location, Mood, Resource, ResourceType
+from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -25,6 +26,7 @@ import bcrypt
 
 from flask_session import Session
 from flask import session
+
 
 
 
@@ -109,10 +111,15 @@ def signup():
     surnames = request.json.get("surnames", None)
     is_active= False
     created_at = datetime.now()
+    profile_url = re.sub(r'[^a-z0-9]', '', name.replace(" ", "").lower()) + re.sub(r'[^a-z0-9]', '', surnames.replace(" ", "").lower())
+
     
+
+
+
     query_result = User.query.filter_by(email=email).first()
     if query_result is None:
-        new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at)
+        new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at, profile_url=profile_url)
         db.session.add(new_user)
         db.session.commit()
 
@@ -183,9 +190,9 @@ def send_reset_email(user, token):
     link = url_for('api.reset_password_request', token=token, _external=False)
     new_link = link.replace("/api", "")
     full_link = f"{base_host}{new_link}"  
-    
+    print("*************************************************")
     print(full_link)
-     
+    print("*************************************************")
     # msg = Message('Recuperar contraseña',
     #               sender='mymoodbnp@gmail.com',
     #               recipients=[user.email])
@@ -370,3 +377,138 @@ def get_resources_by_type():
         return jsonify(response_body), 200
     else:
         return jsonify({"msg": "There aren't any resources yet"}), 404
+    
+
+
+#todos los estados filtrados por categoria
+@api.route('/moods', methods=['GET'])
+# @jwt_required()
+def get_all_moods():
+    resource_results = Mood.query.all()
+    results = {}
+
+    for mood in resource_results:
+        mood_dict = mood.serialize()
+        category = CategoryMood.query.filter_by(id=mood.category_id).first()
+        if category:
+            mood_dict["icon_url"] = category.icon_url  # Aquí se añade el icon_url
+            # Se elimina la línea que añade la categoría al mood_dict
+
+            # Si la categoría ya está en los resultados, añade el Mood a la lista de esa categoría
+            if category.category in results:
+                results[category.category].append(mood_dict)
+            # Si la categoría no está en los resultados, crea una nueva lista para esa categoría
+            else:
+                results[category.category] = [mood_dict]
+
+    if results != {}:
+        response_body = {
+            "msg": "OK",
+            "results": results
+        }
+        return jsonify(response_body), 200
+
+    else:
+        return jsonify({"msg": "There aren't any location yet"}), 404
+
+
+
+
+#ultima categoria de estado de animo del usuario
+@api.route("/user/<int:user_id>/last_mood_category", methods=["GET"])
+# @jwt_required()
+def get_last_mood_category(user_id):
+    # Buscar el último registro de UserMoodHistory para el usuario
+    last_mood_history = UserMoodHistory.query.filter_by(user_id=user_id).order_by(UserMoodHistory.date.desc()).first()
+    if not last_mood_history or not last_mood_history.mood or not last_mood_history.mood.category_mood:
+        return jsonify({"error": "No mood history or category found for user", "user": user_id}), 404
+
+    # Obtener la categoría del estado de ánimo
+    mood_category = last_mood_history.mood.category_mood.category
+
+    return jsonify({"last_mood_category": mood_category, "user": user_id}), 200
+
+
+
+# todos los usuarios
+@api.route('/users', methods=['GET'])
+def get_all_users():
+    user_results = User.query.all()
+    results = []
+
+    for user in user_results:
+        user_dict = user.serialize()
+        results.append(user_dict)
+
+    if results:
+        response_body = {
+            "msg": "OK",
+            "results": results
+        }
+        return jsonify(response_body), 200
+
+    else:
+        return jsonify({"msg": "There aren't any users yet"}), 404
+    
+
+
+# todos los usuarios activos
+@api.route('/users-active', methods=['GET'])
+def get_all_users_active():
+    user_results = User.query.filter_by(is_active=True).all()
+    results = []
+
+    for user in user_results:
+        user_dict = user.serialize()
+        results.append(user_dict)
+
+    if results:
+        response_body = {
+            "msg": "OK",
+            "results": results
+        }
+        return jsonify(response_body), 200
+
+    else:
+        return jsonify({"msg": "There aren't any active users yet"}), 404
+    
+
+
+
+
+@api.route('/user/<int:user_id>/mood', methods=['PUT'])
+def update_user_mood(user_id):
+    # Busca el usuario por su ID
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Obtiene el ID del estado de ánimo de la solicitud
+    mood_id = request.json.get('mood_id')
+    if not mood_id:
+        return jsonify({"error": "Mood ID is required"}), 400
+
+    # Busca el estado de ánimo por su ID
+    mood = Mood.query.get(mood_id)
+    if not mood:
+        return jsonify({"error": "Mood not found"}), 404
+
+    # Actualiza la categoría de estado de ánimo del usuario con la del nuevo estado de ánimo
+    user.mood_id = mood.id
+    db.session.commit()
+
+    # Serializa el usuario y devuelve la respuesta
+    return jsonify({"user": user.serialize()}), 200
+
+
+
+
+@api.route('/current-user', methods=['GET'])
+@jwt_required()
+def get_current_user():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(email=user_id).first()
+    if user:
+        return jsonify(user.serialize()), 200
+    else:
+        return jsonify({"msg": "User not found"}), 404

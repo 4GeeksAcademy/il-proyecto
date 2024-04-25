@@ -14,6 +14,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			resources: [],
 
+			mood: [],
+
 		},
 
 		actions: {
@@ -48,7 +50,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return false;
 					}
 					sessionStorage.setItem("userToken", data.access_token);
-					sessionStorage.setItem("userData", JSON.stringify(data.user));
+					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
 
 					// getActions().setUser(data.user);
 					console.log(data);
@@ -76,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// Procesa el login exitoso
 					console.log("Login successful:", data);
 					sessionStorage.setItem('userToken', data.access_token);
-					sessionStorage.setItem("userData", JSON.stringify(data.user));
+					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
 					console.log(data.user);
 					getActions().setUser(data.user);
 					setStore({ ...getStore(), auth: true })
@@ -111,6 +113,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				} catch (error) {
 					console.error('Logout error:', error);
+				}
+			},
+
+			handleResetPassword: async (email) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password`, {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({ email })
+					});
+					const result = await response.json();
+			
+					if (!response.ok) 
+						return { ok: false, message: result.message || "Ocurrió un error. Por favor, inténtalo de nuevo." }
+						
+					else {
+						return { ok: true, message: "Consulta tu email para las instrucciones de reestablecimiento de contraseña." }								
+					}
+				} catch (error) {
+					return { ok: false, message: "Network error" };
 				}
 			},
 
@@ -244,6 +266,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return data;
 				}  catch  (error)  {
 					console.log("Error loading message from backend", error)
+				}
+			},
+
+			//mood
+			getAllMoods: async() => {
+				try {
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`; 
+			
+					// Obtén el token JWT del sessionStorage
+					// const token = sessionStorage.getItem('userToken');
+								
+					const response = await fetch(urlActiveLocations, {
+						method: 'GET',
+						// headers: {
+						// 	'Authorization': `Bearer  ${token}`
+						// }
+					});
+			
+					if (!response.ok) {
+						throw new Error(`Failed to fetch mood data: ${response.status} ${response.statusText}`);
+					}
+			
+					const data = await response.json();
+			
+					// Actualizar el estado con las ubicaciones de los usuarios activos
+					console.log(data);
+					setStore({ ...getStore(), mood: data.results });
+	
+					console.log(getStore().mood);
+					console.log("Mood loaded from the API to store.");
+			
+					return true;
+				} catch (error) {
+					console.error('Error fetching or processing mood data:', error);
+					return false;
 				}
 			},
 
@@ -415,10 +472,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			getCurrentUser: async () => {
+				try {
+					const token = sessionStorage.getItem('userToken');
+					const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
+						}
+					});
+					if (!response.ok) {
+						throw new Error('Failed to fetch current user data');
+						
+					}
+					const data = await response.json();
+					console.log(data);
+					setStore({ ...getStore(), user: data });
+					
+					console.log(getStore().user);
+					console.log('Current user data loaded from the API to store');
+					return true;
+				} catch (error) {
+					console.error('Error fetching or processing current user data:', error);
+					return false;
+				}
+			}
 			
-
-
-
 		}
 	};
 };
