@@ -31,7 +31,7 @@ export const ChooseMood = () => {
             await actions.saveMood(estado); 
             console.log('Estado de ánimo guardado correctamente');
             // Redirigir a la página "demo"
-            window.location.href = "/geolocation";
+            window.location.href = "/day-mood";
         } catch (error) {
             console.error('Error al guardar el estado de ánimo:', error);
         }

@@ -413,12 +413,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error('Error fetching or processing resources data:', error);
 					return false;
 				}
-			},
-
-			
-
-
-
+			},			
 		}
 	};
 };
