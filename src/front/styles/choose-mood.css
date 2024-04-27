@@ -58,7 +58,7 @@
 }
 
 /* Estilos básicos para el cuerpo y el contenedor principal */
-body, .falling-shapes {
+.falling-shapes {
     margin: 0;
     padding: 0;
     height: 100vh;
