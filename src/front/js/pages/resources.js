@@ -18,7 +18,6 @@ export const Resources = () => {
 
     useEffect(() => {
         actions.getAllResources().then(res => {
-
             if (res) {
                 setResources(store.resources);
             }
@@ -27,21 +26,17 @@ export const Resources = () => {
         });
     }, []);
 
-
-
-
     let allResources = [].concat(...store.resources.map(type => type.resources));
 
     allResources.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     let lastFour = allResources.slice(0, 4);
 
-
     function CustomTitle({ type }) {
         return (
-            <button className="cta-button">
+            <span className="cta-button">
                 {type}
-            </button>
+            </span>
         );
     }
 
@@ -70,9 +65,7 @@ export const Resources = () => {
                                             <span className="fw-bold">
                                                 {item.title}
                                                 <br />
-                                                <p>
-                                                    {item.description}
-                                                </p>
+                                                <p>{item.description}</p>
                                             </span>
                                         </a>
                                     </li>
@@ -85,14 +78,12 @@ export const Resources = () => {
                             {lastFour.slice(2, 4).map((item, index) => {
                                 let type = store.resources.find(type => type.resources.includes(item));
                                 return (
-                                    <li key={index} className={type.type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}>
+                                    <li key={index + 2} className={type.type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}>
                                         <a href={item.url} target="_blank" rel="noreferrer">
                                             <span className="fw-bold">
                                                 {item.title}
                                                 <br />
-                                                <p>
-                                                    {item.description}
-                                                </p>
+                                                <p>{item.description}</p>
                                             </span>
                                         </a>
                                     </li>
@@ -100,7 +91,7 @@ export const Resources = () => {
                             })}
                         </ul>
                     </Col>
-                </Row> 
+                </Row>
 
                 <Row className="mt-5">
                     <Col xs={12} md={12} lg={12}>
@@ -109,46 +100,37 @@ export const Resources = () => {
                 </Row>
 
                 <Row>
-
                     <Tabs
                         id="controlled-tab-example"
                         activeKey={key}
                         onSelect={(k) => setKey(k)}
                         className="align-items-center justify-content-center resources"
-                    >{
-                            store.resources.map(type => (
-                                <Tab eventKey={type.type} title={<CustomTitle type={type.type} />} className="resources">
-                                    <ul>
-                                        {
-                                            type.resources.map(item => (
-                                                <li key={item.id} className={type.type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}>
-                                                    <a href={item.url} target="_blank" rel="noreferrer">
-                                                        <span className="fw-bold">
-                                                            {item.title}
-                                                            <br />
-                                                            <p >
-                                                                {item.description}<br />
-                                                                <span style={{fontSize: "var(--small-size)"}}>
-                                                                Recomendado por: <a href="#" style={{fontSize: "var(--small-size)"}}>{item.phycologyst_info.name} {item.phycologyst_info.surnames}</a>
-                                                                </span>
-                                                            </p>
-                    
+                    >
+                        {store.resources.map(type => (
+                            <Tab key={type.type} eventKey={type.type} title={<CustomTitle type={type.type} />} className="resources">
+                                <ul>
+                                    {type.resources.map((item, index) => (
+                                        <li key={index} className={type.type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}>
+                                            <a href={item.url} target="_blank" rel="noreferrer">
+                                                <span className="fw-bold">
+                                                    {item.title}
+                                                    <br />
+                                                    <p>
+                                                        {item.description}<br />
+                                                        <span style={{ fontSize: "var(--small-size)" }}>
+                                                            Recomendado por: <span style={{ fontSize: "var(--small-size)" }}>{item.phycologyst_info.name} {item.phycologyst_info.surnames}</span>
                                                         </span>
-
-                                                    </a>
-                                                </li>
-                                            ))
-                                        }
-                                    </ul>
-                                </Tab>
-                            ))
-                        }
+                                                    </p>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Tab>
+                        ))}
                     </Tabs>
                 </Row>
-
             </Container>
-
-        </Container >
+        </Container>
     );
 };
-

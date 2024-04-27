@@ -1,6 +1,7 @@
 //import react into the bundle
 import React from "react";
 import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 
 //include your index.scss file into the bundle
 import "../styles/index.css";
@@ -12,4 +13,4 @@ import Layout from "./layout";
 //ReactDOM.render(<Layout />, document.querySelector("#app"));
 
 const root = document.querySelector("#app");
-ReactDOM.createRoot(root).render(<Layout />);
+createRoot(root).render(<Layout />);
