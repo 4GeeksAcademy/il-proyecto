@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/choose-mood.css";
@@ -11,54 +11,35 @@ export const ChooseMood = () => {
     const [divStyles, setDivStyles] = useState([]);
     const navigate = useNavigate();
 
-    if (!store.user || Object.keys(store.user).length === 0) {
-        return null; 
-      }
-
-
-    const handleMoodClick = async (moodId) => {
-        const result = await actions.updateUserMood(store.user.id, moodId);
-        if (result) {
-            navigate('/day-mood');
-        } else {
-            console.error('Failed to update mood');
-        }
-    };
-
-    const calculateStyles = () => {
-        const newStyles = Object.keys(mood).map((key, index) => {
-            const backgroundColor = getRandomColor();
-            const color = isColorDark(backgroundColor) ? 'white' : 'black';
-            return {
-                backgroundColor,
-                color,
-                position: 'relative', 
-                width: '100%', 
-                padding: '20px', 
-                marginTop: index === 0 ? '120px' : '20px',
-                opacity: 0,
-                animation: `fadeIn 1s ${index * 0.5}s forwards`
-            };
-        });
-        setDivStyles(newStyles);
-    };
-
     
+    const handleMoodClick = useCallback(async (moodId) => {
+        if (store.user) {
+            const result = await actions.updateUserMood(store.user.id, moodId);
+            if (result) {
+                navigate('/day-mood');
+            } else {
+                console.error('Failed to update mood');
+            }
+        }
+    }, [actions, navigate, store.user]);
+
+
     useEffect(() => {
         const fetchMoods = async () => {
             try {
                 const result = await actions.getAllMoods();
                 if (result && result.results) {
-                    const updatedMood = {
-                        normal: result.results.Normal && result.results.Normal.length > 0 ? result.results.Normal[Math.floor(Math.random() * result.results.Normal.length)] : '',
-                        leve: result.results.Leve && result.results.Leve.length > 0 ? result.results.Leve[Math.floor(Math.random() * result.results.Leve.length)] : '',
-                        moderado: result.results.Moderado && result.results.Moderado.length > 0 ? result.results.Moderado[Math.floor(Math.random() * result.results.Moderado.length)] : '',
-                        severo: result.results.Severo && result.results.Severo.length > 0 ? result.results.Severo[Math.floor(Math.random() * result.results.Severo.length)] : '',
-                        extremo: result.results.Extremo && result.results.Extremo.length > 0 ? result.results.Extremo[Math.floor(Math.random() * result.results.Extremo.length)] : ''
-                    };
+                    const moodTypes = ['Normal', 'Leve', 'Moderado', 'Severo', 'Extremo'];
+                    const updatedMood = moodTypes.reduce((acc, type) => {
+                        const moodTypeResults = result.results[type];
+                        acc[type.toLowerCase()] = moodTypeResults && moodTypeResults.length > 0 ? moodTypeResults[Math.floor(Math.random() * moodTypeResults.length)] : '';
+                        return acc;
+                    }, {});
+                
                     setMood(updatedMood);
-                    calculateStyles();
+                    calculateStyles(updatedMood);
                 }
+    
             } catch (error) {
                 console.error('Error al obtener las frases de los estados de ánimo:', error);
             }
@@ -66,8 +47,6 @@ export const ChooseMood = () => {
         fetchMoods();
     }, []);
 
-
-   
     const getRandomColor = () => {
         const letters = '0123456789ABCDEF';
         let color = '#';
@@ -85,12 +64,37 @@ export const ChooseMood = () => {
         return luminance < 0.5;
     };
 
+    const calculateStyles = (mood) => {
+        if (mood) {
+            const newStyles = Object.keys(mood).map((key, index) => {
+                const backgroundColor = getRandomColor();
+                const color = isColorDark(backgroundColor) ? 'white' : 'black';
+                return {
+                    backgroundColor,
+                    color,
+                    position: 'relative', 
+                    width: '100%', 
+                    padding: '20px', 
+                    marginTop: index === 0 ? '120px' : '20px',
+                    opacity: 0,
+                    animation: `fadeIn 1s ${index * 0.5}s forwards`
+                };
+            });
+            setDivStyles(newStyles);
+        }
+    };
+
+    if (!store.user || Object.keys(store.user).length === 0) {
+        return null; 
+    }
+
+      
     return (
         <Container fluid className="container-landingpage">
             <Container className="mt-5">
                 <Row>
-                    <Col lg={4} md={12} xs={12}>
-                        <h1>{store.user.name} ¿Cómo te sientes hoy?</h1>
+                    <Col lg={4} md={12} xs={12} className="d-flex text-center align-items-center justify-content-center ">
+                        <h1>Hola {store.user.name}<br /> ¿Cómo te sientes hoy?</h1>
                     </Col>
                     <Col lg={8} md={12} xs={12} id="body-mood">
                         <div className="container-choose-mood">
