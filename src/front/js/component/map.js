@@ -38,7 +38,7 @@ const MapComponent = () => {
   const requestLocation = async () => {
     try {
       //obtiene todas las localizaciones activas
-      await actions.getAllActiveLocations();
+      await actions.getAllActiveUsers();
       //guarda la ubicación del usuario
       await actions.requestUserLocation();
       await actions.saveUserLocation();
@@ -144,14 +144,14 @@ const MapComponent = () => {
       }
     });
 
-    addMarkersToMap(map, store?.location);
+    addMarkersToMap(map, store?.active_users);
 
     return () => {
       map.remove();
     };
 
 
-  }, [store.location]);  // Este efecto se ejecuta cada vez que cambia store.location
+  }, [store.active_users]);  // Este efecto se ejecuta cada vez que cambia store.location
 
   return (
     <>

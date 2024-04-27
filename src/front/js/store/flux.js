@@ -8,7 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			user: null,
 
-			location: [],
+			active_users: [],
 
 			auth: false,
 
@@ -189,7 +189,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			validToken: async () => {
-				console.log("holaaaaa estooy en valid token");
 				let token = sessionStorage.getItem("userToken");
 				// let user = JSON.parse(sessionStorage.getItem("userData"));
 
@@ -321,13 +320,17 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-			getAllActiveLocations: async () => {
+			getAllActiveUsers: async () => {
 				try {
 					const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`; 
 			
 					// Obtén el token JWT del sessionStorage
 					const token = sessionStorage.getItem('userToken');
-								
+					if (!token) {
+						console.error('No token available, user not logged in.');
+						setStore({ ...getStore(), user: null });
+						return false;  
+					}				
 					const response = await fetch(urlActiveLocations, {
 						method: 'GET',
 						headers: {
@@ -336,15 +339,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 			
 					if (!response.ok) {
-						throw new Error(`Failed to fetch active location data: ${response.status} ${response.statusText}`);
+						throw new Error(`Failed to fetch active users data: ${response.status} ${response.statusText}`);
 					}
 			
 					const data = await response.json();
 			
 					// Actualizar el estado con las ubicaciones de los usuarios activos
 					console.log(data);
-					setStore({ location: data });
-					console.log("Active user locations loaded from the API to store.");
+					setStore({ active_users: data });
+
+					console.log("Active users loaded from the API to store.");
 			
 					return true;
 				} catch (error) {
@@ -399,7 +403,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(data);
 					setStore(prevState => ({
 						...prevState,
-						location: Array.isArray(prevState.location) ? [...prevState.location, data] : [data]
+						active_users: Array.isArray(prevState.location) ? [...prevState.location, data] : [data]
 					}));
 			
 					console.log("Ubicaciones cargadas desde la API al almacenamiento.");
@@ -424,10 +428,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					// ubicación en el estado global (store)
 					getActions().saveUserLocation(latitude, longitude),
-					getActions().getAllActiveLocations(),
+					getActions().getAllActiveUsers(),
 					setStore(prevState => ({
 						...prevState,
-						location: [{ latitude, longitude }]
+						active_users: [{ latitude, longitude }]
 
 					}));
 
@@ -472,7 +476,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			getCurrentUser: async () => {
-				console.log("Funcionaaaaaaaaa");
 				try {
 					const token = sessionStorage.getItem('userToken');
 						if (!token) {
