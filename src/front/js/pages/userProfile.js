@@ -22,7 +22,7 @@ export const UserProfile = () => {
 
     return (
         <Container fluid className="container-landingpage">
-            <Container className="user-profile">
+            <Container className="user-profile pb-4 pt-4">
                 <Row className="mb-5">
                     <Col xs={11} md={6} lg={10}>
                         <h2 className="">{store.user?.name} {store.user?.surnames}</h2>
