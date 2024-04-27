@@ -61,11 +61,16 @@ def setup_commands(app):
             db.session.commit() 
 
             categories = [
-                CategoryMood(category="Normal", description="Estado de equilibrio emocional, bienestar, o satisfacción con la vida y las circunstancias actuales.", icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-0%402x.png?alt=media&token=dc422f85-022b-44de-a81d-16b84f250ea4"),
-                CategoryMood(category="Leve", description="Estado de malestar o incomodidad que son más bien situacionales y no indican un patrón constante de pensamiento negativo.", icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-1%402x.png?alt=media&token=9d9d0f22-458b-4057-80b1-ae67270d8185"),
-                CategoryMood(category="Moderado", description="Estado de ansiedad o tristeza que muestran un nivel de afectación personal más profundo, pero todavía gestionable en muchos casos.", icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-2%402x.png?alt=media&token=af46d91f-7268-447a-b98d-8f60577b4dbb"),
-                CategoryMood(category="Severo", description="Estados que indican una lucha significativa con pensamientos negativos, donde la capacidad de funcionar en la vida diaria está claramente afectada.", icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-3%402x.png?alt=media&token=6d23a5ad-f9d2-4cf1-a5a2-0f3a8ae6beeb"),
-                CategoryMood(category="Extremo", description="Estados que reflejan pensamientos de desesperanza absoluta, ideación suicida o un estado mental que requiere intervención inmediata.", icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-4%402x.png?alt=media&token=2175e647-7636-4935-94a6-0be3188286bd")
+                CategoryMood(category="Normal", description="Estado de equilibrio emocional, bienestar, o satisfacción con la vida y las circunstancias actuales.", 
+                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-0.png?alt=media&token=966182fb-4544-4bb1-9164-85f8986ecc69"),
+                CategoryMood(category="Leve", description="Estado de malestar o incomodidad que son más bien situacionales y no indican un patrón constante de pensamiento negativo.", 
+                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-1.png?alt=media&token=7a469bcb-505f-4b9e-82d0-2d8471768317"),
+                CategoryMood(category="Moderado", description="Estado de ansiedad o tristeza que muestran un nivel de afectación personal más profundo, pero todavía gestionable en muchos casos.", 
+                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-2.png?alt=media&token=679901b2-846a-4c8b-bbd3-f1b188bf493e"),
+                CategoryMood(category="Severo", description="Estados que indican una lucha significativa con pensamientos negativos, donde la capacidad de funcionar en la vida diaria está claramente afectada.", 
+                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-3.png?alt=media&token=5edf7dcb-6aa3-4782-b52d-4a1a2b274549"),
+                CategoryMood(category="Extremo", description="Estados que reflejan pensamientos de desesperanza absoluta, ideación suicida o un estado mental que requiere intervención inmediata.", 
+                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-4.png?alt=media&token=60cdd5e4-7e13-49cb-8e9e-b8b8585be63a")
             ]
             db.session.add_all(categories)
             db.session.commit() 

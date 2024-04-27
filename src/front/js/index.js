@@ -9,4 +9,7 @@ import "../styles/index.css";
 import Layout from "./layout";
 
 //render your react application
-ReactDOM.render(<Layout />, document.querySelector("#app"));
+// ReactDOM.render(<Layout />, document.querySelector("#app"));
+
+const root = document.querySelector("#app");
+ReactDOM.createRoot(root).render(<Layout />);

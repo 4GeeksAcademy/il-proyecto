@@ -14,6 +14,7 @@ const MapComponent = () => {
   const [showLocationModal, setShowLocationModal] = useState(true);
   const [hasAcceptedModal, setHasAcceptedModal] = useState(false);
 
+  
 
 // Cuando el usuario cierra el modal
   const handleCloseLocationModal = () => {

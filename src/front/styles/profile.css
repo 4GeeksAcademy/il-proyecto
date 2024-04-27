@@ -37,6 +37,12 @@ p { font-size: var(--p-size);}
     border-bottom-left-radius: 0;
 }
 
+small {
+    font-size: --var(small-size);
+    font-weight: 100;
+    text-transform: uppercase;
+}
+
 
 /* ==========================================================================
    ACTIONS
