@@ -162,6 +162,8 @@ useEffect(() => {
     
 }, [store.location]);  // Este efecto se ejecuta cada vez que cambia store.location
 
+
+
   return (
     <>
       <div id="map" className='map-styles' style={{ height: '100vh', width: '100%' }}></div>

@@ -228,19 +228,19 @@ def setup_commands(app):
             users = [
                 User(name="Bárbara", surnames="Puyol", age=30, email="barbara@mymood.com", 
                     password=bcrypt.hashpw("111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="barbarapuyol", location_id=5),  # assuming locations[0].id is 1
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="barbarapuyol", location_id=5),  
 
                 User(name="Pedro", surnames="Berruezo", age=30, email="pedro@mymood.com", 
                     password=bcrypt.hashpw("222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pedroberruezo", location_id=1),  # assuming locations[0].id is 1
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pedroberruezo", location_id=1),  
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="nat@mymood.com", 
                     password=bcrypt.hashpw("333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=2),  # assuming locations[1].id is 2
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=2),  
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="natalia@funtsak.com", 
                     password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4)  # assuming locations[3].id is 4
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4) 
             ]
             db.session.add_all(users)
             db.session.commit()

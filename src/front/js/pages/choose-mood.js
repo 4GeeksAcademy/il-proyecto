@@ -13,14 +13,14 @@ export const ChooseMood = () => {
 
 
     const handleMoodClick = async (moodId) => {
-            const result = await actions.updateUserMood(store.user.id, moodId);
-            if (result) {
-                navigate('/day-mood');
-            } else {
-                console.error('Failed to update mood');
-    }};
-        
-    
+        const result = await actions.updateUserMood(store.user?.id, moodId);
+        if (result) {
+            navigate('/day-mood');
+        } else {
+            console.error('Failed to update mood');
+        }
+    };
+
     useEffect(() => {
         const fetchMoods = async () => {
             try {
@@ -32,11 +32,11 @@ export const ChooseMood = () => {
                         acc[type.toLowerCase()] = moodTypeResults && moodTypeResults.length > 0 ? moodTypeResults[Math.floor(Math.random() * moodTypeResults.length)] : '';
                         return acc;
                     }, {});
-                
+
                     setMood(updatedMood);
                     calculateStyles(updatedMood);
                 }
-    
+
             } catch (error) {
                 console.error('Error al obtener las frases de los estados de ánimo:', error);
             }
@@ -69,9 +69,9 @@ export const ChooseMood = () => {
                 return {
                     backgroundColor,
                     color,
-                    position: 'relative', 
-                    width: '100%', 
-                    padding: '20px', 
+                    position: 'relative',
+                    width: '100%',
+                    padding: '20px',
                     marginTop: index === 0 ? '120px' : '20px',
                     opacity: 0,
                     animation: `fadeIn 1s ${index * 0.5}s forwards`
@@ -82,16 +82,16 @@ export const ChooseMood = () => {
     };
 
     if (!store.user || Object.keys(store.user).length === 0) {
-        return null; 
+        return null;
     }
 
-      
+
     return (
         <Container fluid className="container-landingpage">
             <Container className="mt-5">
                 <Row>
                     <Col lg={4} md={12} xs={12} className="d-flex text-center align-items-center justify-content-center ">
-                        <h1>Hola {store.user.name}<br /> ¿Cómo te sientes hoy?</h1>
+                        <h1>Hola {store.user?.name}<br /> ¿Cómo te sientes hoy?</h1>
                     </Col>
                     <Col lg={8} md={12} xs={12} id="body-mood">
                         <div className="container-choose-mood">

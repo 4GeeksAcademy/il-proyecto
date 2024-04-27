@@ -6,6 +6,8 @@ h4 { font-size: var(--h4-size);}
 h5 { font-size: var(--h5-size);}
 h6 { font-size: var(--h6-size);}
 p { font-size: var(--p-size);}
+
+
 /* ==========================================================================
    USER PROFILE
    ========================================================================== */
@@ -77,36 +79,36 @@ p { font-size: var(--p-size);}
 
    @media (max-width: 768px) {
     .resources-tab-title {
-      flex-direction: row; /* Cambia la dirección del flexbox a fila en dispositivos móviles */
-      justify-content: center; /* Centra los elementos horizontalmente */
-      text-align: center; /* Centra el texto */
+      flex-direction: row; 
+      justify-content: center; 
+      text-align: center;
     }
   
     .resources-tab-title img {
-      width: 50px; /* Tamaño de imagen más pequeño para dispositivos móviles */
-      margin-right: 5px; /* Reducción del espaciado entre la imagen y el texto */
+      width: 50px; 
+      margin-right: 5px; 
     }
   }
   
    /* Estilo para cambiar el color de fondo de la pestaña activa */
 .nav-tabs .nav-link.active {
-    background-color: #D2F752; /* Cambia el color de fondo a azul */
-    color: #000000; /* Cambia el color del texto a blanco */
+    background-color: #D2F752;
+    color: #000000;
 }
 
 /* Estilo para cambiar el color de fondo al pasar el cursor sobre la pestaña */
 .nav-tabs .nav-link:hover {
-    background-color: #D2F752; /* Cambia el color de fondo al pasar el cursor */
-    color: #007bff; /* Cambia el color del texto al pasar el cursor */
+    background-color: #D2F752;
+    color: #007bff; 
 }
 
 div .tab-content{
     margin-top: 4vh;
 }
 .resources {
-    display: flex; /* Establece un contenedor Flex */
-    flex-wrap: wrap; /* Permite que los elementos se envuelvan en la siguiente línea si no hay espacio */
-    gap: 10px; /* Espacio entre columnas y filas */
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px; 
 }
 
 .resources ul a{
@@ -121,21 +123,20 @@ div .tab-content{
 }
 
 .resources ul {
-    display: flex; /* Aplica Flexbox a la lista */
-    flex-direction: column; /* Organiza los elementos de la lista en una columna */
-    flex-wrap: wrap; /* Permite el ajuste de elementos */
-    max-height: 100%; /* Establece una altura máxima para la columna */
+    display: flex; 
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 100%; 
 }
 
 .resources ul li {
-    width: 100%; /* Los elementos de la lista ocuparán el ancho total de la columna */
+    width: 100%; 
 }
 
-/* Estilos adicionales para garantizar que el contenido no se desborde y esté bien alineado */
 .resources ul li::before {
-    overflow: hidden; /* Evita que el contenido se desborde */
-    white-space: nowrap; /* Evita que el texto se ajuste y se mantenga en una sola línea */
-    text-overflow: ellipsis; /* Añade puntos suspensivos si el texto se desborda */
+    overflow: hidden; 
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
 }
 
 .resources ul li p {
@@ -145,37 +146,37 @@ div .tab-content{
 
 
 .resources ul {
-    list-style: none; /* Elimina los bullets predeterminados */
-    padding-left: 0; /* Remueve el padding por defecto */
+    list-style: none; 
+    padding-left: 0; 
     margin-left:0;
-    margin-bottom: 0; /* Elimina el margen inferior */
+    margin-bottom: 0; 
 }
 
 .resources li {
-    padding-left: 0px; /* Espacio para el ícono */
-    background-repeat: no-repeat; /* El ícono no se repite */
-    background-position: 0 center; /* Posiciona el ícono al inicio y al centro verticalmente */
-    margin-bottom: 10px; /* Espacio entre ítems de lista */
-    line-height: 35px; /* Altura de línea para centrar el texto con el ícono */
+    padding-left: 0px; 
+    background-repeat: no-repeat; 
+    background-position: 0 center;
+    margin-bottom: 10px;
+    line-height: 35px;
 }
 
 .resources li.articulo::before {
-    content: ''; /* Necesario para generar el pseudo-elemento */
+    content: ''; 
     background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Farticle.png?alt=media&token=139ea2e3-df12-42e0-a5c9-283b1838e526');
-    display: inline-block; /* Hace que el pseudo-elemento sea en línea */
-    width: 35px; /* Ancho del ícono */
-    height: 35px; /* Altura del ícono */
-    margin-right: 16px; /* Espacio entre el ícono y el texto */
-    vertical-align: middle; /* Alinea verticalmente con el texto */
-    background-size: cover; /* Asegura que la imagen cubra todo el área asignada */
+    display: inline-block; 
+    width: 35px;
+    height: 35px;
+    margin-right: 16px; 
+    vertical-align: middle;
+    background-size: cover;
 }
 
 .resources li.video::before {
     content: '';
     background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fvideo.png?alt=media&token=20c0a734-73d9-4842-90d6-b88b73a89722');
     display: inline-block;
-    width: 35px; /* Ancho del ícono */
-    height: 35px; /* Altura del ícono */
+    width: 35px; 
+    height: 35px; 
     margin-right: 16px;
     vertical-align: middle;
     background-size: cover;
@@ -185,8 +186,8 @@ div .tab-content{
     content: '';
     background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fpodcast.png?alt=media&token=2cf50f74-4ad8-4706-bf34-8b07b918ccf7');
     display: inline-block;
-    width: 35px; /* Ancho del ícono */
-    height: 35px; /* Altura del ícono */
+    width: 35px; 
+    height: 35px; 
     margin-right: 16px;
     vertical-align: middle;
     background-size: cover;
@@ -197,3 +198,13 @@ div .tab-content{
     font-family: var(--base-font-family);
     font-size: var(--h3);
 }
+
+
+/* ==========================================================================
+   PSYCHOLOGYST CARD
+   ========================================================================== */
+
+ .ps-card {
+    border: 1px solid var(--base-color-text);
+    background-color: white;
+ }

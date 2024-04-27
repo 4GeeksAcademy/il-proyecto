@@ -52,9 +52,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					sessionStorage.setItem("userToken", data.access_token);
 					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
 
-					// getActions().setUser(data.user);
 					console.log(data);
-					setStore({ ...getStore(), user: data.user });
+					getActions().getCurrentUser();
 					setStore({ ...getStore(), auth: true })
 					return true;
 				}
@@ -178,7 +177,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					const data = await response.json();
 					if (response.ok) {
-						setStore({ user: data.user });
+						// setStore({ user: data.user });
 						return { status: true, msg: "User created successfully." };
 					} else {
 						return { status: false, msg: data.msg };
@@ -192,7 +191,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			validToken: async () => {
 				console.log("holaaaaa estooy en valid token");
 				let token = sessionStorage.getItem("userToken");
-				let user = JSON.parse(sessionStorage.getItem("userData"));
+				// let user = JSON.parse(sessionStorage.getItem("userData"));
 
 				if (!token) {
 					console.log("Token not found");
@@ -210,7 +209,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await response.json();
 					console.log(data);
 					if (response.status === 200) {
-						setStore({ ...getStore(), auth: data.is_logged, user: user })
+						setStore({ ...getStore(), auth: data.is_logged })
 						console.log('Login successful:', data);
 						return true;
 					}
@@ -473,12 +472,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			getCurrentUser: async () => {
+				console.log("Funcionaaaaaaaaa");
 				try {
 					const token = sessionStorage.getItem('userToken');
 						if (!token) {
 							console.error('No token available, user not logged in.');
 							setStore({ ...getStore(), user: null });
-							return false;  // No further action if there's no token
+							return false;  
 						}
 					const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
 						method: 'GET',
@@ -487,6 +487,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 							'Authorization': `Bearer ${token}`
 						}
 					});
+
+					
 					if (!response.ok) {
 						throw new Error('Failed to fetch current user data');
 						

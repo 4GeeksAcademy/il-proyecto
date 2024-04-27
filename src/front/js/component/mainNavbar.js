@@ -19,10 +19,6 @@ import logo from "../../img/logo.png";
 export const MainNavbar = () => {
     const { store, actions } = useContext(Context);
 	const navigate = useNavigate();
-    
-    useEffect(() => {
-
-    }, []);
 
     const handleLogout = () => {
         actions.logout();
@@ -51,7 +47,7 @@ export const MainNavbar = () => {
                                 <NavDropdown title="Menu" id="basic-nav-dropdown" align="end" >
                                     <NavDropdown.Item href="/geolocation">Mapa</NavDropdown.Item>
                                     <NavDropdown.Item href="/resources">Recursos</NavDropdown.Item>
-                                    <NavDropdown.Item href={`/${store.user.id}/${store.user.profile_url}`}>Perfil</NavDropdown.Item>
+                                    <NavDropdown.Item href={`/${store.user?.id}/${store.user?.profile_url}`}>Perfil</NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item href="/choose-mood">Mood</NavDropdown.Item>
                                 </NavDropdown>
