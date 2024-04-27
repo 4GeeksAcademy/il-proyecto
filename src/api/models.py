@@ -41,7 +41,6 @@ class User(db.Model):
     
     def __repr__(self):
         return '<Users %r>' % self.id
-     
 
     def serialize(self):
         # Obtén la última entrada de UserMoodHistory para este usuario

@@ -39,7 +39,7 @@ def setup_commands(app):
     @app.cli.command("fill-db-with-example-data")
     def fill_db_with_example_data():
         """ Este comando rellenará la base de datos con datos de ejemplo. """
-          
+
 
         db.drop_all()
         db.create_all()
@@ -85,42 +85,42 @@ def setup_commands(app):
 
             # Actions for Normal Category
             actions.extend([
-                Action(action="Explora más", description="Enlace a artículos sobre desarrollo personal y bienestar.", category_id=categories[0].id),
                 Action(action="Conéctate con amigos", description="Acceso directo para compartir estados o iniciar chats con amigos.", category_id=categories[0].id),
-                Action(action="Regístrate a un evento", description="Sugerencias de eventos locales para promover la socialización.", category_id=categories[0].id),
-                Action(action="Valora tu día", description="Herramienta de diario para documentar lo que te hizo sentir bien.", category_id=categories[0].id),
+                Action(action="Explora más", description="Enlace a artículos sobre desarrollo personal y bienestar.", category_id=categories[0].id),
+                Action(action="Valora tu día", description="Llamada con un psicologo para evaluar tu situación.", category_id=categories[0].id),
+                #Action(action="Regístrate a un evento", description="Sugerencias de eventos locales para promover la socialización.", category_id=categories[0].id),
             ])
 
             # Actions for Leve Category
             actions.extend([
-                Action(action="Toma un respiro", description="Ejercicios de respiración y relajación.", category_id=categories[1].id),
                 Action(action="Habla con alguien", description="Enlace a un chat grupal o foro de la comunidad.", category_id=categories[1].id),
-                Action(action="Escucha música", description="Playlist recomendada para mejorar el ánimo.", category_id=categories[1].id),
-                Action(action="Levántate y muévete", description="Incentivos para hacer una pequeña actividad física.", category_id=categories[1].id),
+                Action(action="Toma un respiro", description="Ejercicios de respiración y relajación.", category_id=categories[1].id),
+                Action(action="Escucha a tu terapeuta", description="Contacto con un psicologo", category_id=categories[1].id),
+                #Action(action="Levántate y muévete", description="Incentivos para hacer una pequeña actividad física.", category_id=categories[1].id),
             ])
 
             # Actions for Moderado Category
             actions.extend([
+                Action(action="Únete a un grupo de apoyo", description="Enlace a grupos de soporte en línea.", category_id=categories[2].id),
                 Action(action="Explora tus emociones", description="Guías para entender mejor tus sentimientos.", category_id=categories[2].id),
                 Action(action="Busca soporte", description="Acceso a una lista de terapeutas y consejeros.", category_id=categories[2].id),
-                Action(action="Únete a un grupo de apoyo", description="Enlace a grupos de soporte en línea.", category_id=categories[2].id),
-                Action(action="Meditación guiada", description="Sesiones de meditación para aliviar la ansiedad.", category_id=categories[2].id),
+                #Action(action="Meditación guiada", description="Sesiones de meditación para aliviar la ansiedad.", category_id=categories[2].id),
             ])
 
             # Actions for Severo Category
             actions.extend([
-                Action(action="Urgente: Habla ahora", description="Botón de contacto directo con un psicólogo.", category_id=categories[3].id),
+                Action(action="Se sienten como yo", description="Botón que te conecta con gente como tú.", category_id=categories[3].id),
                 Action(action="Técnicas de manejo del estrés", description="Consejos y técnicas para gestionar el estrés.", category_id=categories[3].id),
-                Action(action="Plan de acción personalizado", description="Crear un plan de acción para días difíciles.", category_id=categories[3].id),
-                Action(action="Historias de éxito", description="Testimonios de personas que han superado dificultades similares.", category_id=categories[3].id),
+                Action(action="Habla con un experto ahora", description="Botón de contacto directo con un psicólogo.", category_id=categories[3].id),
+                #Action(action="Historias de éxito", description="Testimonios de personas que han superado dificultades similares.", category_id=categories[3].id),
             ])
 
             # Actions for Extremo Category
             actions.extend([
-                Action(action="Llama a un amigo", description="Función rápida para contactar a un amigo o familiar.", category_id=categories[4].id),
-                Action(action="Contacto de emergencia", description="Botón para llamar a líneas de ayuda profesional.", category_id=categories[4].id),
-                Action(action="Habla con un experto ahora", description="Acceso inmediato a consejería de emergencia.", category_id=categories[4].id),
+                Action(action="Llama a un amigo", description="Función rápida para contactar a un amigo que esta cerca de ti.", category_id=categories[4].id),
                 Action(action="Recuerda esto", description="Mensajes y afirmaciones de esperanza y soporte vital.", category_id=categories[4].id),
+                Action(action="Contacto de emergencia", description="Acceso inmediato a consejería de emergencia.", category_id=categories[4].id),
+                #Action(action="¿Un podcast de autoayuda?", description="Botón para escuchar un podcast de autoayuda.", category_id=categories[4].id),
             ])
 
             # Add all actions to the session and commit
