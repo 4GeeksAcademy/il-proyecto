@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/day-mood.css";
 import Container from 'react-bootstrap/Container';
@@ -8,26 +9,26 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 export const DayMood = () => {
-    // const name = JSON.parse(sessionStorage.userData).name;
+    const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        actions.getCurrentUser();
+    }, []);
+
     const handleClickGeolocation = () => {
-        // Redirigir a la página "geolocation"
         navigate("/geolocation");
     };
 
     const handleClickResources = () => {
-        // Redirigir a la página "resources"
         navigate("/resources");
     };
 
-    const handleClickUser = () => {
-        // Redirigir a la página "user"
-        navigate("/user");
+    const handleClickPhycologyst = () => {
+        navigate("/phycologyst");
     };
 
     const handleClickVolver = () => {
-        // Redirigir a la página "choose-mood"
         navigate("/choose-mood");
     };
 
@@ -37,26 +38,44 @@ export const DayMood = () => {
                 <Row className="mb-5">
                     <Col xs={11} md={6} lg={10}>
                         <div className="orange-box">
-                            <h1 className="">¿Para qué me he levantado de la cama?</h1>
+                            <h1 className="">{store.user?.user_mood.mood}</h1>
                         </div>
-                        <p className="base-paragrahp">{name}, es normal que haya días que prefieras volver a la suavidad de las sábanas, volver a dormir y soñar con un mundo diferente. Pero... <strong>¿Por qué no disfrutar de este?</strong></p>
+                        <p className="base-paragrahp"> <strong>{store.user?.name}:</strong> {store.user?.user_mood.response}</p>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} md={6} lg={9} className="d-flex justify-content-center align-items-center">
                         <ButtonGroup vertical className="actions-buttons">
-                            {/* Botón con evento onClick para redirigir a la página geolocation */}
-                            <Button className="btn-block custom-border orange" size="lg" onClick={handleClickGeolocation}>Ver quien hay a mi alrededor</Button>
-                            {/* Botón con evento onClick para redirigir a la página resources */}
-                            <Button className="btn-block custom-border pink" size="lg" onClick={handleClickResources}>Ver un recurso</Button>
-                            {/* Botón con evento onClick para redirigir a la página user */}
-                            <Button className="btn-block custom-border green" size="lg" onClick={handleClickUser}>Ir a mi perfil</Button>
+                            {store.user?.user_mood.actions.map((action, index) => (
+                                <Button
+                                    key={index}
+                                    className={`btn-block custom-border ${index === 2 ? "green" : ""}`}
+                                    size="lg"
+                                    onClick={() => {
+                                        switch (index) {
+                                            case 0:
+                                                handleClickGeolocation();
+                                                break;
+                                            case 1:
+                                                handleClickResources();
+                                                break;
+                                            case 2:
+                                                handleClickPhycologyst();
+                                                break;
+                                            // Agrega más casos según sea necesario
+                                            default:
+                                                break;
+                                        }
+                                    }}
+                                >
+                                    {action.action}
+                                </Button>
+                            ))}
                         </ButtonGroup>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} md={6} lg={9} className="d-flex justify-content-center">
-                        {/* Botón adicional con evento onClick para redirigir a la página choose-mood */}
                         <Button className="custom-button" size="lg" onClick={handleClickVolver}>
                             <span className="arrow">&#8592;</span> Volver
                         </Button>

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: b957ddffa548
+Revision ID: 07ddd93bc832
 Revises: 
-Create Date: 2024-04-23 19:24:40.300242
+Create Date: 2024-04-27 11:36:26.355440
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b957ddffa548'
+revision = '07ddd93bc832'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -68,6 +68,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('mood', sa.String(length=255), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('response', sa.String(length=255), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['category_mood.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -92,7 +93,7 @@ def upgrade():
     sa.Column('password', sa.String(length=255), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('profile_url', sa.String(length=255), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.Date(), nullable=True),
     sa.Column('location_id', sa.Integer(), nullable=True),
     sa.Column('hobbie_id', sa.Integer(), nullable=True),
     sa.Column('mood_id', sa.Integer(), nullable=True),
