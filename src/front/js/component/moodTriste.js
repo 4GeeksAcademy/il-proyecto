@@ -1,43 +1,42 @@
 import React, { useEffect, useRef } from 'react';
+import { useState, useContext } from 'react';
+import { Context } from '../store/appContext';
+
 
 export const MoodTriste = () => {
     const svgRef = useRef(); // Referencia al elemento SVG
     const foreignObjectRef = useRef(); // Referencia al elemento foreignObject
+    const { store, actions } = useContext(Context);
+    const [fraseAleatoriaExtremo, setfraseAleatoriaExtremo] = useState(null);
 
-    // Frases de estado de ánimo triste
-    const frasesTriste = [
-        "Me siento muy triste",
-        "Hoy no es mi día",
-        "Todo parece ir mal",
-        "Estoy desanimado",
-        "No encuentro motivación",
-        "Siento un vacío dentro de mí",
-        "Nada parece tener sentido",
-        "La vida es dura",
-        "No sé qué hacer",
-        "Estoy sumido en la tristeza"
-    ];
-
+    useEffect(() => {
+        // Solo seleccionar una frase aleatoria si fraseAleatoriaExtremo aún no se ha establecido
+        if (!fraseAleatoriaExtremo && store.mood && store.mood.Extremo) {
+            const randomIndex = Math.floor(Math.random() * store.mood.Extremo.length);
+            if (store.mood.Extremo[randomIndex]) {
+                setfraseAleatoriaExtremo(store.mood.Extremo[randomIndex].mood);
+            }
+        }
+    }, [store.mood, fraseAleatoriaExtremo]);  // Agregar fraseAleatoriaExtremo como dependencia
+    
     useEffect(() => {
         const svg = svgRef.current;
         const foreignObject = foreignObjectRef.current;
         const div = foreignObject.querySelector('div');
-
-        // Elegir una frase aleatoria de la lista
-        const randomIndex = Math.floor(Math.random() * frasesTriste.length);
-        const fraseAleatoria = frasesTriste[randomIndex];
-
-        // Actualizar el contenido de la div con la frase aleatoria
-        div.innerHTML = fraseAleatoria;
-
-        // Usar una función asíncrona dentro de useEffect
+    
+        if (fraseAleatoriaExtremo) {
+            div.innerHTML = fraseAleatoriaExtremo;
+        }
+    
         setTimeout(() => {
-            let rectHeight = div.offsetHeight + 20; // Agrega tu padding deseado aquí
-            svg.setAttribute('height', rectHeight + 40); // Ajusta según necesites espacio para la sombra
+            let rectHeight = div.offsetHeight + 20;
+            svg.setAttribute('height', rectHeight + 40);
             foreignObject.setAttribute('height', rectHeight);
             svg.querySelector('rect').setAttribute('height', rectHeight);
         }, 0);
-    }, []);
+    }, [fraseAleatoriaExtremo]);  // Agregar fraseAleatoriaLeve como dependencia
+
+
 
     return (
         <svg ref={svgRef} width="350" height="300" xmlns="http://www.w3.org/2000/svg">

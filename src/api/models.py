@@ -44,6 +44,14 @@ class User(db.Model):
      
 
     def serialize(self):
+        # Obtén la última entrada de UserMoodHistory para este usuario
+        last_mood_history = UserMoodHistory.query.filter_by(user_id=self.id).order_by(UserMoodHistory.date.desc()).first()
+        mood = Mood.query.filter_by(id=self.mood_id).first()
+        hobbie = Hobbie.query.filter_by(id=self.hobbie_id).first()
+        psychologists = [session.phycologyst.serialize() for session in self.sessions]
+
+
+        print(hobbie)              
         return {
             "id": self.id,
             "email": self.email,
@@ -52,7 +60,12 @@ class User(db.Model):
             "age": self.age,
             "is_active": self.is_active,
             "profile_url": self.profile_url,
-            "location": self.location.serialize() if self.location else None
+            "location": self.location.serialize() if self.location else None,
+            "user_mood": self.mood.serialize() if self.mood else None,
+            "hobbie": self.hobbie.name if self.hobbie else None,
+            "created_at": self.created_at, 
+            "psychologists": psychologists
+           
             # Do not serialize the password, it's a security breach
         }
 
@@ -97,7 +110,7 @@ class CategoryMood(db.Model):
     icon_url = db.Column(db.String(255))
     
     def __repr__(self):
-         return '<CategoryMood %r>' % self.id
+        return '<CategoryMood %r>' % self.id
 
     def serialize(self):
         return {
@@ -112,18 +125,23 @@ class Mood(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mood = db.Column(db.String(255))
     category_id = db.Column(db.Integer, db.ForeignKey('category_mood.id'))
-    #description = db.Column(db.String(255))
+    response = db.Column(db.String(255))
     users = db.relationship('User', backref='mood', lazy=True, cascade="all, delete")
     
     def __repr__(self):
         return '<Mood %r>' % self.id
 
     def serialize(self):
+        actions = Action.query.filter_by(category_id=self.category_id).all()
+        category_mood = CategoryMood.query.filter_by(id=self.category_id).first()
+        
         return {
-            "id": self.id,
+            "mood_id": self.id,
             "mood": self.mood,
-            "category_id": self.category_id
-            #"description": self.description,
+            "category_id": self.category_id,
+            "response": self.response,
+            "actions": [action.serialize() for action in actions] if actions else [],
+            "category_mood": self.category_mood.serialize() if self.category_mood else None
         }
 
 class UserMoodHistory(db.Model):
@@ -139,8 +157,10 @@ class UserMoodHistory(db.Model):
         return '<UserMoodHistory %r>' % self.id
 
     def serialize(self):
+        mood_category = self.mood.category_mood.category if self.mood and self.mood.category_mood else None
         return {
             "mood_id": self.mood_id,
+            "mood_category": mood_category,
         }
 
 class Action(db.Model):
@@ -195,12 +215,17 @@ class Resource(db.Model):
         return '<Resource %r>' % self.id
 
     def serialize(self):
+        info_physcologyst = Phycologyst.query.filter_by(id=self.phycologyst_id).first()
+        print(info_physcologyst)
         return {
             "id": self.id,
-            "resource_type_id": self.resource_type_id,
+            'resource_type': self.resource_type.resource_type if self.resource_type else None,
             "url": self.url,
             "description": self.description,
-            "created_at": self.created_at
+            "created_at": self.created_at,
+            "psychologist_id": self.phycologyst_id,
+            "phycologyst_info": None if info_physcologyst is None else info_physcologyst.serialize(),
+            "title": self.title
         }
 
 class Chat(db.Model):

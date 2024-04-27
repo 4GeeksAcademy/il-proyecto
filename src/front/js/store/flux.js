@@ -12,6 +12,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			auth: false,
 
+			resources: [],
+
+			mood: [],
+
 		},
 
 		actions: {
@@ -46,11 +50,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return false;
 					}
 					sessionStorage.setItem("userToken", data.access_token);
-					sessionStorage.setItem("userData", JSON.stringify(data.user));
+					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
 
-					// getActions().setUser(data.user);
 					console.log(data);
-					setStore({ ...getStore(), user: data.user });
+					getActions().getCurrentUser();
 					setStore({ ...getStore(), auth: true })
 					return true;
 				}
@@ -74,7 +77,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// Procesa el login exitoso
 					console.log("Login successful:", data);
 					sessionStorage.setItem('userToken', data.access_token);
-					sessionStorage.setItem("userData", JSON.stringify(data.user));
+					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
 					console.log(data.user);
 					getActions().setUser(data.user);
 					setStore({ ...getStore(), auth: true })
@@ -109,6 +112,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				} catch (error) {
 					console.error('Logout error:', error);
+				}
+			},
+
+			handleResetPassword: async (email) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password`, {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({ email })
+					});
+					const result = await response.json();
+			
+					if (!response.ok) 
+						return { ok: false, message: result.message || "Ocurrió un error. Por favor, inténtalo de nuevo." }
+						
+					else {
+						return { ok: true, message: "Consulta tu email para las instrucciones de reestablecimiento de contraseña." }								
+					}
+				} catch (error) {
+					return { ok: false, message: "Network error" };
 				}
 			},
 
@@ -154,7 +177,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					const data = await response.json();
 					if (response.ok) {
-						setStore({ user: data.user });
+						// setStore({ user: data.user });
 						return { status: true, msg: "User created successfully." };
 					} else {
 						return { status: false, msg: data.msg };
@@ -168,7 +191,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			validToken: async () => {
 				console.log("holaaaaa estooy en valid token");
 				let token = sessionStorage.getItem("userToken");
-				let user = JSON.parse(sessionStorage.getItem("userData"));
+				// let user = JSON.parse(sessionStorage.getItem("userData"));
 
 				if (!token) {
 					console.log("Token not found");
@@ -186,7 +209,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await response.json();
 					console.log(data);
 					if (response.status === 200) {
-						setStore({ ...getStore(), auth: data.is_logged, user: user })
+						setStore({ ...getStore(), auth: data.is_logged })
 						console.log('Login successful:', data);
 						return true;
 					}
@@ -242,6 +265,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return data;
 				}  catch  (error)  {
 					console.log("Error loading message from backend", error)
+				}
+			},
+
+			//mood
+			getAllMoods: async() => {
+				try {
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`; 
+			
+					// Obtén el token JWT del sessionStorage
+					// const token = sessionStorage.getItem('userToken');
+								
+					const response = await fetch(urlActiveLocations, {
+						method: 'GET',
+						// headers: {
+						// 	'Authorization': `Bearer  ${token}`
+						// }
+					});
+			
+					if (!response.ok) {
+						throw new Error(`Failed to fetch mood data: ${response.status} ${response.statusText}`);
+					}
+			
+					const data = await response.json();
+			
+					// Actualizar el estado con las ubicaciones de los usuarios activos
+					console.log(data);
+					setStore({ ...getStore(), mood: data});
+	
+					console.log(getStore().mood);
+					console.log("Mood loaded from the API to store.");
+			
+					return data;
+				} catch (error) {
+					console.error('Error fetching or processing mood data:', error);
+					return false;
 				}
 			},
 
@@ -376,6 +434,98 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.error('Error getting user location:', error.message);
 
+				}
+			},
+
+			getAllResources: async() => {
+				try {
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/resources-bytype`; 
+			
+					// Obtén el token JWT del sessionStorage
+					// const token = sessionStorage.getItem('userToken');
+								
+					const response = await fetch(urlActiveLocations, {
+						method: 'GET',
+						// headers: {
+						// 	'Authorization': `Bearer  ${token}`
+						// }
+					});
+			
+					if (!response.ok) {
+						throw new Error(`Failed to fetch active location data: ${response.status} ${response.statusText}`);
+					}
+			
+					const data = await response.json();
+			
+					// Actualizar el estado con las ubicaciones de los usuarios activos
+					console.log(data);
+					setStore({ ...getStore(), resources: data.results });
+	
+					console.log(getStore().resources);
+					console.log("Resources loaded from the API to store.");
+			
+					return true;
+				} catch (error) {
+					console.error('Error fetching or processing resources data:', error);
+					return false;
+				}
+			},
+
+			getCurrentUser: async () => {
+				console.log("Funcionaaaaaaaaa");
+				try {
+					const token = sessionStorage.getItem('userToken');
+						if (!token) {
+							console.error('No token available, user not logged in.');
+							setStore({ ...getStore(), user: null });
+							return false;  
+						}
+					const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
+						}
+					});
+
+					
+					if (!response.ok) {
+						throw new Error('Failed to fetch current user data');
+						
+					}
+					const data = await response.json();
+					console.log(data);
+					setStore({ ...getStore(), user: data });
+					
+					console.log(getStore().user);
+					console.log('Current user data loaded from the API to store');
+					return true;
+				} catch (error) {
+					console.error('Error fetching or processing current user data:', error);
+					return false;
+				}
+			},
+			
+			updateUserMood: async (user_id, mood_id) => {
+				try {
+					console.log("USER ID:" + user_id, "MOOD ID:" + mood_id);
+					const token = sessionStorage.getItem('userToken');
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${user_id}/mood`, {
+						method: 'PUT',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
+						},
+						body: JSON.stringify({ user_id, mood_id })
+					});
+					if (!response.ok) {
+						throw new Error('Error al actualizar el estado de ánimo del usuario');
+					}
+					console.log('Estado de ánimo del usuario actualizado correctamente');
+					return response
+				} catch (error) {
+					console.error('Error al actualizar el estado de ánimo del usuario:', error);
+					return false
 				}
 			},
 		}

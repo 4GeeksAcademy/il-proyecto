@@ -33,7 +33,7 @@ export const Login = () => {
 		setError("");
 		let logged = await actions.login(email, password);
 		if (logged) {
-			navigate("/chooseMood");
+			navigate("/choose-mood");
 		} else {
 			setError("Failed to log in. Please check your email and password.");
 		}
@@ -44,7 +44,7 @@ export const Login = () => {
 		console.log(response);
 		let loggedWithGoogle = await actions.loginGoogle(response);
 		if (loggedWithGoogle) {
-			navigate('/chooseMood');
+			navigate('/choose-mood');
 		}
 		else {
 			setError("Failed to log in with Google. Please check your email and password.");
@@ -58,14 +58,7 @@ export const Login = () => {
 
 	const handleResetPassword = async (e) => {
 		e.preventDefault();
-		try {
-			const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password`, {
-				method: 'POST',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({ email })
-			});
-			const result = await response.json();
-	
+		const response = await actions.handleResetPassword(email)	
 			if (!response.ok) {
 				setIsError(true);
 				setMessage(result.message || "Ocurrió un error. Por favor, inténtalo de nuevo.");
@@ -75,12 +68,8 @@ export const Login = () => {
 				console.log('Reset link sent successfully!');
 				// navigate("/login");  // Optionally redirect to login
 			}
-		} catch (error) {
-			setIsError(true);
-			setMessage("Error inesperado. Por favor, inténtalo de nuevo.");
-			console.error("Reset password failed:", error);
-		}
 	};
+	
 	return (
 		<>
 

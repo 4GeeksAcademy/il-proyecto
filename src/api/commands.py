@@ -124,76 +124,75 @@ def setup_commands(app):
                         
             # Primero definimos todas las frases de estado de ánimo por categoría
             moods = []
-            mood_descriptions = [
+            mood_descriptions_and_responses = [
                 ("Normal", [
-                    "Hoy me siento con las pilas puestas.",
-                    "Todo marchando según el plan, ¿estoy soñando?",
-                    "Contento con el rumbo de las cosas, rareza nivel: unicornio.",
-                    "Un día normal, nada fuera de lo común.",
-                    "En paz con el mundo, espero que dure.",
-                    "Disfrutando de la vida, ¿quién dijo que no se podía?",
-                    "Optimista hasta más no poder, que venga lo que sea.",
-                    "Energía al máximo, ¿dónde está la fiesta?",
-                    "Todo bajo control, por ahora...",
-                    "Satisfecho con mi situación, ¡vamos por más!"
+                    ("Hoy me siento con las pilas puestas.", "¡Esa es la actitud! Aprovecha esa energía al máximo y haz que hoy sea inolvidable."),
+                    ("Todo marchando según el plan, ¿estoy soñando?", "¡Disfruta de este momento de serenidad y orden! No todos los días se sienten como un sueño cumplido."),
+                    ("Contento con el rumbo de las cosas, rareza nivel: unicornio.", "Esos días mágicos son para celebrarlos. ¿Qué tal si te das un pequeño premio porque todo va bien?"),
+                    ("Un día normal, nada fuera de lo común.", "A veces, la belleza está en lo cotidiano. Mira a tu alrededor y encuentra algo pequeño que te haga sonreír."),
+                    ("En paz con el mundo, espero que dure.", "Ese sentimiento de paz es un tesoro; respira profundo y guarda un poco de esa calma para los días menos tranquilos."),
+                    ("Disfrutando de la vida, ¿quién dijo que no se podía?", "¡Exacto! La vida está para disfrutarla. Sigue buscando esos momentos que llenan el alma."),
+                    ("Optimista hasta más no poder, que venga lo que sea.", "Con esa actitud, estás más que preparado para enfrentar cualquier desafío. ¡Adelante!"),
+                    ("Energía al máximo, ¿dónde está la fiesta?", "Tu energía es contagiosa. Comparte esa vibra positiva con los demás, y la fiesta te encontrará a ti."),
+                    ("Todo bajo control, por ahora...", "Aprovecha esta tranquilidad para relajarte un poco. Estar preparado es bueno, pero recuerda tomarte un respiro."),
+                    ("Satisfecho con mi situación, ¡vamos por más!", "Ese sentimiento de satisfacción es una base sólida para alcanzar nuevas metas. ¡Sigue así!")
                 ]),
                 ("Leve", [
-                    "Hoy todo me parece un montón, ¿más café tal vez?",
-                    "No estoy seguro de cómo manejar esto, ¿algún voluntario?",
-                    "Cansado... y eso que el día apenas comienza.",
-                    "Ya quiero que sea fin de semana, ¿alguien más?",
-                    "Esto de ser adulto no es como lo pintan.",
-                    "Frustrado con las pequeñas cosas, típico.",
-                    "Un poco nervioso con lo que viene, cruzando dedos.",
-                    "Esperando mejoras como quien espera el estreno de su serie favorita.",
-                    "No veo el final de mis pendientes, ¿será eterno?",
-                    "Sintiéndome solo, ¿hola, eco?"
+                    ("Hoy todo me parece un montón, ¿más café tal vez?", "Un café puede ser un buen comienzo. Y recuerda, está bien pedir ayuda si sientes que la carga es demasiada."),
+                    ("No estoy seguro de cómo manejar esto, ¿algún voluntario?", "Pedir ayuda es signo de fortaleza, no de debilidad. Estamos más conectados cuando compartimos nuestras luchas."),
+                    ("Cansado... y eso que el día apenas comienza.", "Intenta tomarlo con calma y haz pequeñas pausas durante el día. La energía a veces viene en oleadas."),
+                    ("Ya quiero que sea fin de semana, ¿alguien más?", "Piensa en ello como en la cuenta regresiva para algo maravilloso. El fin de semana está cerca, ¡aguanta un poco más!"),
+                    ("Esto de ser adulto no es como lo pintan.", "Ser adulto tiene sus retos, pero también sus recompensas. Encuentra algo que disfrutes y date ese gusto."),
+                    ("Frustrado con las pequeñas cosas, típico.", "Toma un respiro y trata de ver el problema desde otra perspectiva. A veces, un pequeño cambio de enfoque puede hacer una gran diferencia."),
+                    ("Un poco nervioso con lo que viene, cruzando dedos.", "Es natural sentir nervios ante lo desconocido, pero confía en ti mismo y en tu capacidad para enfrentar lo que venga."),
+                    ("Esperando mejoras como quien espera el estreno de su serie favorita.", "La anticipación puede ser dulce. Mientras tanto, encuentra placer en las pequeñas cosas que te rodean cada día."),
+                    ("No veo el final de mis pendientes, ¿será eterno?", "Cada cosa a su tiempo. Divide tus tareas en partes más pequeñas y manejables, y celebra cada pequeño logro."),
+                    ("Sintiéndome solo, ¿hola, eco?", "Sentirse solo puede ser duro, pero también es una oportunidad para reconectarte contigo mismo. Además, nunca está de más alcanzar a otros y compartir cómo te sientes.")
                 ]),
                 ("Moderado", [
-                    "Siento que todo me supera, ¿dónde está el botón de pausa?",
-                    "Levantarse de la cama es la misión más difícil.",
-                    "Pensando en lo peor, pero esperando lo mejor.",
-                    "¿Alguien más se siente incomprendido?",
-                    "Perdiendo interés... ni las series me animan.",
-                    "Atrapado en mi rutina, send help.",
-                    "Todo es un desafío, incluso lo más simple.",
-                    "A veces, simplemente quiero desaparecer.",
-                    "Vacío por dentro, como mi nevera en fin de mes.",
-                    "Mi vida parece un GPS sin señal, sin dirección."
+                    ("Siento que todo me supera, ¿dónde está el botón de pausa?", "Es completamente válido sentirse abrumado. Tomarte un momento para pausar y respirar profundamente puede ayudar mucho."),
+                    ("Levantarse de la cama es la misión más difícil.", "Hay días en los que levantarse es una gran victoria. Reconoce tu esfuerzo, y toma el día paso a paso."),
+                    ("Pensando en lo peor, pero esperando lo mejor.", "Es humano preocuparse, pero intenta equilibrar esos pensamientos con esperanza y acciones positivas."),
+                    ("¿Alguien más se siente incomprendido?", "No estás solo en sentirte así. Expresar tus sentimientos y buscar comprensión puede aliviar ese peso."),
+                    ("Perdiendo interés... ni las series me animan.", "Cuando las cosas habituales ya no te entusiasman, podría ser tiempo de explorar nuevos intereses. ¿Qué tal algo completamente diferente?"),
+                    ("Atrapado en mi rutina, send help.", "Romper la rutina puede ser liberador. Intenta algo nuevo hoy, aunque sea pequeño, para ver el mundo con otros ojos."),
+                    ("Todo es un desafío, incluso lo más simple.", "Afrontar desafíos constantes es agotador. Asegúrate de cuidar tu bienestar físico y emocional para mantener tu resiliencia."),
+                    ("A veces, simplemente quiero desaparecer.", "Sentirse así es serio y es importante hablarlo. Hablar con alguien de confianza puede brindarte apoyo y perspectiva."),
+                    ("Vacío por dentro, como mi nevera en fin de mes.", "Ese sentimiento de vacío es difícil, pero también es un llamado a rellenar tu vida con cosas que te aporten significado."),
+                    ("Mi vida parece un GPS sin señal, sin dirección.", "Es normal sentirse perdido de vez en cuando. Considera este momento como una oportunidad para reevaluar y ajustar tu rumbo.")
                 ]),
                 ("Severo", [
-                    "Sin salida visible, ¿alguien ve la luz?",
-                    "Obsesionado con mis errores, playlist triste en repeat.",
-                    "Viviendo con miedo, y no precisamente a las películas de terror.",
-                    "Mi vida es un caos de esos que no se ordenan ni con tutorial de YouTube.",
-                    "Solo, como el '1' en el día del amigo.",
-                    "Tristeza profunda diaria, necesito un cambio de canal.",
-                    "Mis pensamientos oscuros no me dan tregua.",
-                    "Al borde... del próximo capítulo de mi telenovela de drama personal.",
-                    "Sin energía, incluso el café me falla.",
-                    "¿Para qué salir de la cama? El suelo está sobrevalorado."
+                    ("Sin salida visible, ¿alguien ve la luz?", "Aunque ahora parezca oscuro, siempre hay una luz, aunque no la veamos. Hablar con alguien puede ayudarte a encontrarla."),
+                    ("Obsesionado con mis errores, playlist triste en repeat.", "Reconocer que te duele es el primer paso para sanar. Perdonarte a ti mismo es tan importante como aprender de los errores."),
+                    ("Viviendo con miedo, y no precisamente a las películas de terror.", "Es difícil, pero enfrentar tus miedos poco a poco te puede ayudar a superarlos. Considera buscar apoyo profesional si es demasiado para manejar solo."),
+                    ("Mi vida es un caos de esos que no se ordenan ni con tutorial de YouTube.", "A veces necesitamos ayuda externa para desenredar el caos. No hay vergüenza en buscar asesoramiento o terapia."),
+                    ("Solo, como el '1' en el día del amigo.", "Sentirse solo duele profundamente, pero recuerda que mereces conexión y cariño. Alcanza a otros, a menudo se sentirán halagados de saber que los necesitas."),
+                    ("Tristeza profunda diaria, necesito un cambio de canal.", "Cuando la tristeza se vuelve un canal constante, es tiempo de buscar ayuda para cambiarlo. Habla con un profesional que pueda ofrecerte nuevas perspectivas y herramientas."),
+                    ("Mis pensamientos oscuros no me dan tregua.", "Es importante que no enfrentes esos pensamientos solo. Buscar ayuda de un profesional puede ser un paso valiente hacia la luz."),
+                    ("Al borde... del próximo capítulo de mi telenovela de drama personal.", "Aunque sientas que estás al borde, cada día te da la oportunidad de comenzar un nuevo capítulo. No tienes que escribirlo solo."),
+                    ("Sin energía, incluso el café me falla.", "La falta de energía puede ser desalentadora. Es importante cuidar tu salud física y emocional, y considerar consultar a un profesional si esto persiste."),
+                    ("¿Para qué salir de la cama? El suelo está sobrevalorado.", "A veces, el mundo exterior puede esperar. Si sientes que no puedes enfrentarlo, podría ser útil hablar con alguien sobre lo que sientes.")
                 ]),
                 ("Extremo", [
-                    "No quiero seguir, punto final.",
-                    "Mejor sin mí, o eso parece.",
-                    "Sin salidas, en un laberinto sin final.",
-                    "Pensando en hacerme daño, alerta roja.",
-                    "Sería mejor no existir, pensamiento recurrente.",
-                    "¿Qué sentido tiene seguir? Buscando razones...",
-                    "Esto no mejora, cada día más gris.",
-                    "Cansado de luchar contra viento y marea.",
-                    "Dudando si podré aguantar otro día más.",
-                    "Al final de mi cuerda, literalmente."
+                    ("No quiero seguir, punto final.", "Sentir que no puedes continuar es una señal de que necesitas apoyo inmediato. Por favor, habla con alguien, un amigo, un familiar o un profesional de inmediato."),
+                    ("Mejor sin mí, o eso parece.", "Puede ser difícil ver tu propio valor cuando te sientes así, pero eres importante para más gente de la que crees. Buscar ayuda profesional es un acto de valentía."),
+                    ("Sin salidas, en un laberinto sin final.", "Cuando todo parece un laberinto, a veces necesitamos ayuda externa para encontrar la salida. No tienes que hacerlo solo."),
+                    ("Pensando en hacerme daño, alerta roja.", "Estos pensamientos son una señal seria para buscar ayuda inmediata. Es crucial que hables con un profesional de la salud mental cuanto antes."),
+                    ("Sería mejor no existir, pensamiento recurrente.", "Es muy duro sentir esto, pero tu vida tiene un valor inmenso. Por favor, busca apoyo de amigos, familiares o un profesional."),
+                    ("¿Qué sentido tiene seguir? Buscando razones...", "A veces, encontrar un sentido puede ser difícil solo. Hablar con alguien puede ayudarte a ver razones que ahora no puedes."),
+                    ("Esto no mejora, cada día más gris.", "Cuando los días se sienten continuamente grises, es importante intervenir con ayuda profesional. Hay técnicas y tratamientos que pueden ayudarte."),
+                    ("Cansado de luchar contra viento y marea.", "Luchar solo es agotador. Permitirte recibir ayuda de otros puede darte el respiro que necesitas para continuar."),
+                    ("Dudando si podré aguantar otro día más.", "Es muy valiente reconocer esta lucha. Hablar con alguien, especialmente un profesional, puede darte el soporte necesario para seguir adelante."),
+                    ("Al final de mi cuerda, literalmente.", "Cuando te sientes al final de tu cuerda, es crucial buscar ayuda de emergencia. Está bien pedir ayuda; es un paso hacia la recuperación.")
                 ])
             ]
 
-            for category_name, texts in mood_descriptions:
+            for category_name, texts in mood_descriptions_and_responses:
                 category = CategoryMood.query.filter_by(category=category_name).first()
                 if category:
-                    for text in texts:
-                        mood = Mood(mood=text, category_id=category.id)
+                    for text, response in texts:
+                        mood = Mood(mood=text, category_id=category.id, response=response)
                         moods.append(mood)
-
             db.session.add_all(moods)
             db.session.commit()
 
@@ -229,19 +228,19 @@ def setup_commands(app):
             users = [
                 User(name="Bárbara", surnames="Puyol", age=30, email="barbara@mymood.com", 
                     password=bcrypt.hashpw("111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20)),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="barbarapuyol", location_id=5),  
 
                 User(name="Pedro", surnames="Berruezo", age=30, email="pedro@mymood.com", 
                     password=bcrypt.hashpw("222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), location_id=1),  # assuming locations[0].id is 1
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pedroberruezo", location_id=1),  
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="nat@mymood.com", 
                     password=bcrypt.hashpw("333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), location_id=2),  # assuming locations[1].id is 2
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=2),  
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="natalia@funtsak.com", 
                     password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), location_id=4)  # assuming locations[3].id is 4
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4) 
             ]
             db.session.add_all(users)
             db.session.commit()
