@@ -15,7 +15,7 @@ class User(db.Model):
     password = db.Column(db.String(255))
     is_active = db.Column(db.Boolean)
     profile_url = db.Column(db.String(255))
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(db.Date)
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
     hobbie_id = db.Column(db.Integer, db.ForeignKey('hobbie.id'))
     mood_id = db.Column(db.Integer, db.ForeignKey('mood.id'))
@@ -62,7 +62,7 @@ class User(db.Model):
             "location": self.location.serialize() if self.location else None,
             "user_mood": self.mood.serialize() if self.mood else None,
             "hobbie": self.hobbie.name if self.hobbie else None,
-            "created_at": self.created_at, 
+            'created_at': self.created_at.strftime('%Y-%m-%d') if self.created_at else None,
             "psychologists": psychologists
            
             # Do not serialize the password, it's a security breach
