@@ -388,8 +388,3 @@ def setup_commands(app):
         except Exception as e:
             db.session.rollback() 
             print(f"Error al llenar la base de datos: {e}")
-         
-       
-        
-
-       
