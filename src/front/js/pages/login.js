@@ -69,10 +69,6 @@ export const Login = () => {
 				// navigate("/login");  // Optionally redirect to login
 			}
 	};
-		
-		
-		
-
 	
 	return (
 		<>

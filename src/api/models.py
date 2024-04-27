@@ -48,6 +48,9 @@ class User(db.Model):
         last_mood_history = UserMoodHistory.query.filter_by(user_id=self.id).order_by(UserMoodHistory.date.desc()).first()
         mood = Mood.query.filter_by(id=self.mood_id).first()
         hobbie = Hobbie.query.filter_by(id=self.hobbie_id).first()
+        psychologists = [session.phycologyst.serialize() for session in self.sessions]
+
+
         print(hobbie)              
         return {
             "id": self.id,
@@ -60,6 +63,8 @@ class User(db.Model):
             "location": self.location.serialize() if self.location else None,
             "user_mood": self.mood.serialize() if self.mood else None,
             "hobbie": self.hobbie.name if self.hobbie else None,
+            "created_at": self.created_at, 
+            "psychologists": psychologists
            
             # Do not serialize the password, it's a security breach
         }
