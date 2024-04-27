@@ -17,7 +17,6 @@ export const MoodEnfadado = () => {
         });
     }, []);
 
- 
 
     useEffect(() => {
         // Solo seleccionar una frase aleatoria si fraseAleatoriaNormal aún no se ha establecido

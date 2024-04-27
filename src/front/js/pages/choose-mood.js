@@ -1,103 +1,120 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { Context } from "../store/appContext";
-import MoodFeliz from "../component/moodFeliz";
-import MoodTriste from "../component/moodTriste";
-import MoodEnfadado from "../component/moodEnfadado";
-import MoodMeh from "../component/moodMeh";
-import MoodEstresado from "../component/moodEstresado";
+import { useNavigate } from "react-router-dom";
 import "../../styles/choose-mood.css";
-import { Row } from "react-bootstrap";
+import { Col, Container, Row, Button } from "react-bootstrap";
+
 
 export const ChooseMood = () => {
     const { store, actions } = useContext(Context);
-    const [username, setUsername] = useState(null);
-    const [botones, setBotones] = useState([]);
-    const [mood, setMood] = useState(null);
+    const [mood, setMood] = useState({ normal: "", leve: "", moderado: "", severo: "", extremo: "" });
+    const [divStyles, setDivStyles] = useState([]);
+    const navigate = useNavigate();
 
-
-    // useEffect(() => {
-    //     actions.getAllMoods().then(() => {
-    //         if (store.mood && store.mood.Normal) {
-    //             console.log(store.mood.Normal);         // Aquí se imprimen todos los moods de la categoría "Normal"
-    //         }
-    //     });
-    //     setUsername(store.user.name);
-    // }, []);
-
-
-
-    // useEffect(() => {
-
-    //     // orden aleatorio inicial de los botones
-    //     const botonesIniciales = [
-    //         <MoodFeliz mood="feliz" />,
-    //         <MoodTriste mood="triste" />,
-    //         <MoodEnfadado mood="enfadado" />,
-    //         <MoodMeh mood="meh" />,
-    //         <MoodEstresado mood="estresado" />
-    //     ];
-    //     setBotones(generarOrdenAleatorio(botonesIniciales));
-    // }, []);
-
-
-    // const handleButtonClick = async (estado) => {
-    //     try {
-    //         await actions.saveMood(estado);
-    //         // console.log('Estado de ánimo guardado correctamente');
-    //         // Redirigir a la página "demo"
-    //         window.location.href = "/geolocation";
-    //     } catch (error) {
-    //         // console.error('Error al guardar el estado de ánimo:', error);
-    //     }
-    // };
-
-    // Orden aleatorio de los botones
-    const generarOrdenAleatorio = (array) => {
-        const arrayCopia = [...array];
-        for (let i = arrayCopia.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arrayCopia[i], arrayCopia[j]] = [arrayCopia[j], arrayCopia[i]];
+    
+    const handleMoodClick = useCallback(async (moodId) => {
+        if (store.user) {
+            const result = await actions.updateUserMood(store.user.id, moodId);
+            if (result) {
+                navigate('/day-mood');
+            } else {
+                console.error('Failed to update mood');
+            }
         }
-        return arrayCopia;
+    }, [actions, navigate, store.user]);
+
+
+    useEffect(() => {
+        const fetchMoods = async () => {
+            try {
+                const result = await actions.getAllMoods();
+                if (result && result.results) {
+                    const moodTypes = ['Normal', 'Leve', 'Moderado', 'Severo', 'Extremo'];
+                    const updatedMood = moodTypes.reduce((acc, type) => {
+                        const moodTypeResults = result.results[type];
+                        acc[type.toLowerCase()] = moodTypeResults && moodTypeResults.length > 0 ? moodTypeResults[Math.floor(Math.random() * moodTypeResults.length)] : '';
+                        return acc;
+                    }, {});
+                
+                    setMood(updatedMood);
+                    calculateStyles(updatedMood);
+                }
+    
+            } catch (error) {
+                console.error('Error al obtener las frases de los estados de ánimo:', error);
+            }
+        };
+        fetchMoods();
+    }, []);
+
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     };
 
-    // console.log('vino')
-    // console.log(sessionStorage.userData)
+    const isColorDark = (color) => {
+        const r = parseInt(color.substr(1, 2), 16);
+        const g = parseInt(color.substr(3, 2), 16);
+        const b = parseInt(color.substr(5, 2), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return luminance < 0.5;
+    };
 
+    const calculateStyles = (mood) => {
+        if (mood) {
+            const newStyles = Object.keys(mood).map((key, index) => {
+                const backgroundColor = getRandomColor();
+                const color = isColorDark(backgroundColor) ? 'white' : 'black';
+                return {
+                    backgroundColor,
+                    color,
+                    position: 'relative', 
+                    width: '100%', 
+                    padding: '20px', 
+                    marginTop: index === 0 ? '120px' : '20px',
+                    opacity: 0,
+                    animation: `fadeIn 1s ${index * 0.5}s forwards`
+                };
+            });
+            setDivStyles(newStyles);
+        }
+    };
 
-    // console.log(name)
+    if (!store.user || Object.keys(store.user).length === 0) {
+        return null; 
+    }
 
+      
     return (
-        <>
-            {/* <div className="container-fluid container-landingpage">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="heading1">
-                            {username ? <strong>{username}</strong> : null}
-                            <em>{username ? ', ' : null}¿cómo te sientes hoy?</em>
-                        </h1>
-                    </div>
-                </div>
-                <div className="row justify-content-center">
-                    {botones.map((boton, index) => (
-                        <div key={index} className="col-md-4 col-sm-6 col-12 mb-3">
-                            <div className="opciones text-center">
-                                <div onClick={() => handleButtonClick(boton.props.mood)} className="boton-movil">
-                                    {boton}
-                                </div>
-                            </div>
+        <Container fluid className="container-landingpage">
+            <Container className="mt-5">
+                <Row>
+                    <Col lg={4} md={12} xs={12} className="d-flex text-center align-items-center justify-content-center ">
+                        <h1>Hola {store.user.name}<br /> ¿Cómo te sientes hoy?</h1>
+                    </Col>
+                    <Col lg={8} md={12} xs={12} id="body-mood">
+                        <div className="container-choose-mood">
+                            {Object.keys(mood).map((key, index) => (
+                                <button
+                                    key={index}
+                                    className="dynamic-content"
+                                    id={`div${index + 1}`}
+                                    style={divStyles[index] || {}}
+                                    onClick={() => handleMoodClick(mood[key].mood_id)}
+                                >
+                                    {mood[key].mood}
+                                </button>
+                            ))}
                         </div>
-                    ))}
-
-                </div>
-            </div> */}
-            <Row>
-                <div id="auto-height-div" className="falling-shapes">
-                    <div>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </div>
-                </div>
-            </Row >
-        </>
+                    </Col>
+                </Row>
+            </Container>
+        </Container>
     );
-};
-
+}
 export default ChooseMood;
+

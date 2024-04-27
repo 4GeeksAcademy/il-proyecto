@@ -1,102 +1,29 @@
-/* Estilos para dispositivos móviles */
-@media only screen and (max-width: 600px) {
-    .opciones {
-        font-size: 14px; /* Reducir el tamaño del texto de los botones */
-    }
-
-    .boton-movil {
-        padding: 5px 10px; /* Reducir el relleno de los botones */
-    }
-}
-
-.container {
-    background-color: #F9F4F0; /* Cambiar el color de fondo */
-    padding-top: 20px;
-    background-color: #F9F4F0; /* Color de fondo */
-    border: 1px solid black; /* Borde negro de 2px */
-    padding: 20px; /* Espacio interno */
-}
-
-.titulo {
-    color: #333; /* Color del texto */
-    margin-bottom: 20px;
-}
-
-.opciones {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.boton-movil {
-    cursor: pointer;
-    border: none;
-    background: none;
-    outline: none;
-}
-
-@media (max-width: 767px) {
-    .boton-movil {
-        font-size: 12px; /* Ajusta el tamaño de fuente */
-        padding: 5px 10px; /* Ajusta el relleno */
-    }
-}
-
-
-
-
-#auto-height-div{
-    width: 20%;
-    min-height: 50px;
-    background-color: #F0F0F0;
-    border: 1px solid #000;
-    padding: 10px;
-    box-sizing: border-box;
+.dynamic-content {          
+    background-color: #f0f0f0; 
+    border: 3px solid #000;    
+    padding: 10px;             
+    box-sizing: border-box;    
     overflow: hidden;
-    box-shadow: 10px 10px 0px #000;
-    border-radius: 10px
-}
-
-/* Estilos básicos para el cuerpo y el contenedor principal */
-body, .falling-shapes {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #6B55F5; 
-}
-/* Estilos generales para las formas */
-.falling-shapes > div {
     position: absolute;
-    top: -20%; /* Inicia fuera de la pantalla */
-    width: 100px;
-    height: 100px;
-    color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    animation: fall 5s forwards; 
-    border: 1px solid #000; 
-    box-shadow: #000 10px 10px 0px -2px;
-    padding: 10px;
+    top: -120px; 
+    left: 0; 
+    box-shadow: 7px 7px 0px #000;
+    border-radius: 10px;
+    width: 100%; 
+    max-width: 100%; 
+    margin: 0 auto; 
 }
-/* Estilo específico para el cuadrado */
-.fs-square {
-    background-color: #77CEBC;
-    left: 30%;
+
+.dynamic-content:hover{
+  border-color: var(--option6-color)
 }
-/* Estilo específico para el círculo */
-.fs-circle {
-    background-color: #F5CE60;
-    border-radius: 50%;
-    left: 70%;
-}
-/* Keyframes para la animación de "caída" */
-@keyframes fall {
-    0% { top: -20%; }
-    100% { top: calc(100vh - 130px); }  /* Actualización aquí: solo un cambio directo al final */
-}
+
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+

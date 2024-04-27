@@ -477,6 +477,7 @@ def get_all_users_active():
 
 
 @api.route('/user/<int:user_id>/mood', methods=['PUT'])
+@jwt_required()
 def update_user_mood(user_id):
     # Busca el usuario por su ID
     user = User.query.get(user_id)
