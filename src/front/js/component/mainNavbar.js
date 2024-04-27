@@ -40,9 +40,9 @@ export const MainNavbar = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
                     <Nav>
-                        {store.auth ? (
+                        {store?.auth ? (
                             <>
-                                <Navbar.Text className="text-body">Hola, <b>{store.user ? store.user.name : ""}</b></Navbar.Text>
+                                <Navbar.Text className="text-body">Hola, <b>{store.user ? store.user?.name : ""}</b></Navbar.Text>
                                 <Button variant="link" className="text-black-50 text-decoration-none" onClick={handleLogout}>Cerrar sesión</Button>
                                 <NavDropdown title="Menu" id="basic-nav-dropdown" align="end" >
                                     <NavDropdown.Item href="/geolocation">Mapa</NavDropdown.Item>

@@ -24,9 +24,9 @@ export const DayMood = () => {
         navigate("/resources");
     };
 
-    const handleClickPhycologyst = () => {
-        navigate("/phycologyst");
-    };
+    // const handleClickPhycologyst = () => {
+    //     navigate("/phycologyst");
+    // };
 
     const handleClickVolver = () => {
         navigate("/choose-mood");
@@ -38,9 +38,9 @@ export const DayMood = () => {
                 <Row className="mb-5">
                     <Col xs={11} md={6} lg={10}>
                         <div className="orange-box">
-                            <h1 className="">{store.user?.user_mood.mood}</h1>
+                            <h1 className="">{store.user.user_mood?.mood}</h1>
                         </div>
-                        <p className="base-paragrahp"> <strong>{store.user?.name}:</strong> {store.user?.user_mood.response}</p>
+                        <p className="base-paragrahp"> <strong>{store.user?.name}:</strong> {store.user.user_mood?.response}</p>
                     </Col>
                 </Row>
                 <Row>
@@ -59,9 +59,9 @@ export const DayMood = () => {
                                             case 1:
                                                 handleClickResources();
                                                 break;
-                                            case 2:
-                                                handleClickPhycologyst();
-                                                break;
+                                            // case 2:
+                                            //     handleClickPhycologyst();
+                                            //     break;
                                             // Agrega más casos según sea necesario
                                             default:
                                                 break;

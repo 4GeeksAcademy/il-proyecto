@@ -382,7 +382,7 @@ def get_resources_by_type():
 
 #todos los estados filtrados por categoria
 @api.route('/moods', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_all_moods():
     resource_results = Mood.query.all()
     results = {}

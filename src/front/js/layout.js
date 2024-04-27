@@ -21,6 +21,7 @@ import { Resources } from "./pages/resources";
 import { DayMood } from "./pages/day-mood";
 
 
+
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
     const authToken = sessionStorage.getItem('userToken'); // Obtén el token de autenticación del almacenamiento local

@@ -273,13 +273,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`; 
 			
 					// Obtén el token JWT del sessionStorage
-					// const token = sessionStorage.getItem('userToken');
+					const token = sessionStorage.getItem('userToken');
 								
 					const response = await fetch(urlActiveLocations, {
 						method: 'GET',
-						// headers: {
-						// 	'Authorization': `Bearer  ${token}`
-						// }
+						headers: {
+							'Authorization': `Bearer  ${token}`
+						}
 					});
 			
 					if (!response.ok) {
@@ -321,6 +321,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 			getAllActiveUsers: async () => {
+				console.log("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				try {
 					const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`; 
 			
@@ -366,16 +367,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const latitude = position.coords.latitude;
 					const longitude = position.coords.longitude;
 			
-					// Guarda la ubicación en el usuario
+					
 					const token = sessionStorage.getItem('userToken');
-
-					// Guarda la ubicación en el usuario
 					const userId = JSON.parse(sessionStorage.userData).id;
 			
 					console.log("Id de usuario: " + userId);
 
 					const urlLocation = process.env.BACKEND_URL + `/api/user/location`;
-					console.log("URL de la API: " + urlLocation);
 			
 					const requestBody = JSON.stringify({ user_id: userId, latitude, longitude });
 					console.log("Cuerpo de la solicitud: " + requestBody);
@@ -405,7 +403,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						...prevState,
 						active_users: Array.isArray(prevState.location) ? [...prevState.location, data] : [data]
 					}));
-			
+					getActions().getAllActiveUsers();
 					console.log("Ubicaciones cargadas desde la API al almacenamiento.");
 					return true
 			

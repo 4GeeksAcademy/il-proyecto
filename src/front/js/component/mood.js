@@ -84,11 +84,6 @@ export const Mood = () => {
         }
     };
 
-    
-    if (!store.user || Object.keys(store.user).length === 0) {
-        return null;
-    }
-
 
     return (      
             <Container className="mt-5">

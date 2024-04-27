@@ -40,22 +40,8 @@ export const Home = () => {
 					Diseñada pensando en la juventud, nuestra plataforma es más que una simple red social;
 					es un refugio seguro donde puedes expresar tus emociones, encontrar comprensión y acceder a recursos que enriquecen tu bienestar mental."
                     buttonText="Únete a Mymood ¡Hoy!"
-                    buttonUrl="/login"
+                    buttonUrl="/singup"
                 />
-
-				{/* <Row fluid  className="text-center second-container-landingpage" >
-					<Col xs={12} md="auto">
-						<h1 className="heading1">Donde los <span className="heading2">sentimientos</span><br /> se <span className="heading2">comparten</span></h1>
-						<p className="base-paragrahp">Descubre, Conéctate, Comparte. En MyMood, creemos en el poder de la conexión y el apoyo mutuo para navegar por los altibajos emocionales de la vida.
-							Diseñada pensando en la juventud, nuestra plataforma es más que una simple red social;
-							es un refugio seguro donde puedes expresar tus emociones, encontrar comprensión y acceder a recursos que enriquecen tu bienestar mental.
-						</p> <br /><br /><br />
-						<Link to="/geolocation">
-						<button className="button1 button-second-container-landingpage"> Únete a Mymood ¡hoy!</button>
-						</Link>
-					</Col>
-				</Row> */}
-			
 		
 				<Row className="third-container-landingpage" >
 					<Col xs={12} sm="auto" md={8} className="text-left">
@@ -127,18 +113,6 @@ export const Home = () => {
                     buttonText="Únete a Mymood ¡Hoy!"
                     buttonUrl="/singup"
                 />
-
-				{/* <Row fluid className="text-center sixth-container-landingpage">
-					<Col xs={12}>
-						<h1 className="heading1 heading6-container-landing-page">Conexión <span className="heading2">profesional</span><br /> al alcance <span className="heading2">de tus manos</span></h1>
-						<p className="base-paragrahp">Descubre, Conéctate, Comparte. En MyMood, creemos en el poder de la conexión y el apoyo mutuo para navegar por los altibajos emocionales de la vida.
-							Diseñada pensando en la juventud, nuestra plataforma es más que una simple red social;
-							es un refugio seguro donde puedes expresar tus emociones, encontrar comprensión y acceder a recursos que enriquecen tu bienestar mental.
-						</p> <br /><br /><br />
-						<button className="button1 button-second-container-landingpage"> Únete a Mymood ¡hoy!</button>
-					</Col>
-					
-				</Row> */}
 	
 		</Container>
 		
