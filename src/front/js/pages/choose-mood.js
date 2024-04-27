@@ -11,19 +11,16 @@ export const ChooseMood = () => {
     const [divStyles, setDivStyles] = useState([]);
     const navigate = useNavigate();
 
-    
-    const handleMoodClick = useCallback(async (moodId) => {
-        if (store.user) {
+
+    const handleMoodClick = async (moodId) => {
             const result = await actions.updateUserMood(store.user.id, moodId);
             if (result) {
                 navigate('/day-mood');
             } else {
                 console.error('Failed to update mood');
-            }
-        }
-    }, [actions, navigate, store.user]);
-
-
+    }};
+        
+    
     useEffect(() => {
         const fetchMoods = async () => {
             try {

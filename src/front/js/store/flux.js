@@ -520,7 +520,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 						throw new Error('Error al actualizar el estado de ánimo del usuario');
 					}
 					console.log('Estado de ánimo del usuario actualizado correctamente');
-					return response
+					getActions().getCurrentUser();
+
+					return true
 				} catch (error) {
 					console.error('Error al actualizar el estado de ánimo del usuario:', error);
 					return false
