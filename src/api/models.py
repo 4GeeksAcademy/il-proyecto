@@ -43,6 +43,11 @@ class User(db.Model):
         return '<Users %r>' % self.id
 
     def serialize(self):
+        # Obtén la última entrada de UserMoodHistory para este usuario
+        last_mood_history = UserMoodHistory.query.filter_by(user_id=self.id).order_by(UserMoodHistory.date.desc()).first()
+        mood = Mood.query.filter_by(id=self.mood_id).first()
+        hobbie = Hobbie.query.filter_by(id=self.hobbie_id).first()
+        print(hobbie)              
         return {
             "id": self.id,
             "email": self.email,
@@ -51,7 +56,10 @@ class User(db.Model):
             "age": self.age,
             "is_active": self.is_active,
             "profile_url": self.profile_url,
-            "location": self.location.serialize() if self.location else None
+            "location": self.location.serialize() if self.location else None,
+            "user_mood": self.mood.serialize() if self.mood else None,
+            "hobbie": self.hobbie.name if self.hobbie else None,
+           
             # Do not serialize the password, it's a security breach
         }
 
@@ -118,11 +126,16 @@ class Mood(db.Model):
         return '<Mood %r>' % self.id
 
     def serialize(self):
+        actions = Action.query.filter_by(category_id=self.category_id).all()
+        category_mood = CategoryMood.query.filter_by(id=self.category_id).first()
+        
         return {
-            "id": self.id,
+            "mood_id": self.id,
             "mood": self.mood,
             "category_id": self.category_id,
             "response": self.response,
+            "actions": [action.serialize() for action in actions] if actions else [],
+            "category_mood": self.category_mood.serialize() if self.category_mood else None
         }
 
 class UserMoodHistory(db.Model):
@@ -138,8 +151,10 @@ class UserMoodHistory(db.Model):
         return '<UserMoodHistory %r>' % self.id
 
     def serialize(self):
+        mood_category = self.mood.category_mood.category if self.mood and self.mood.category_mood else None
         return {
             "mood_id": self.mood_id,
+            "mood_category": mood_category,
         }
 
 class Action(db.Model):
