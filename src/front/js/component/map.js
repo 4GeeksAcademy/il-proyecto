@@ -6,7 +6,7 @@ import L from 'leaflet';
 import map from '../../styles/map.css';
 import 'leaflet/dist/leaflet.css';
 import logo from "../../img/logo.png";
-import { iconList } from '../component/emojis';
+// import { iconList } from '../component/emojis';
 
 const MapComponent = () => {
   const { store, actions } = useContext(Context);
@@ -16,29 +16,29 @@ const MapComponent = () => {
 
   
 
-// Cuando el usuario cierra el modal
+  // Cuando el usuario cierra el modal
   const handleCloseLocationModal = () => {
     setShowLocationModal(false);
   };
 
-// Cuando el usuario acepta el modal, solicita la ubicación
+  // Cuando el usuario acepta el modal, solicita la ubicación
   const handleAcceptLocationModal = () => {
     setShowLocationModal(false);
     setHasAcceptedModal(true);
     requestLocation();
   };
 
-// icono aleatorio de la lista
-  const getRandomIcon = () => {
-    const randomIndex = Math.floor(Math.random() * iconList.length);
-    return iconList[randomIndex];
-  };  
+  // // icono aleatorio de la lista
+  //   const getRandomIcon = () => {
+  //     const randomIndex = Math.floor(Math.random() * iconList.length);
+  //     return iconList[randomIndex];
+  //   };  
 
-// pide localizacion al usuario
+  // pide localizacion al usuario
   const requestLocation = async () => {
     try {
       //obtiene todas las localizaciones activas
-      await actions.getAllActiveLocations();
+      await actions.getAllActiveUsers();
       //guarda la ubicación del usuario
       await actions.requestUserLocation();
       await actions.saveUserLocation();
@@ -48,8 +48,8 @@ const MapComponent = () => {
       console.log('Error getting location:');
     }
   };
-  
-// Inicializa el mapa y la posicion de watermark
+
+  // Inicializa el mapa y la posicion de watermark
   const initializeMap = () => {
     const map = L.map('map');
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
@@ -62,18 +62,22 @@ const MapComponent = () => {
     return map;
   };
 
-// obtener geolocalización
+
+  // obtener geolocalización
   const handleGeolocation = (map) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
         map.setView([latitude, longitude], 12);
-        L.circle([latitude, longitude], {
-          color: '#FF86D2',
-          fillColor: '#FF86D2',
-          fillOpacity: 0.19,
-          radius: 15000,
-        }).addTo(map);
+        // agregar marca circular en la posicion del usuario
+
+        // L.circle([latitude, longitude], {
+        //   color: '#FF86D2',
+        //   fillColor: '#FF86D2',
+        //   fillOpacity: 0.19,
+        //   radius: 15000,
+        // }).addTo(map);
+
       }, (error) => {
         console.error('Error getting location', error);
       });
@@ -82,86 +86,72 @@ const MapComponent = () => {
     }
   };
 
-// Agrega marcadores al mapa
-  const addMarkersToMap = (map, locations) => {
-    locations.forEach((user) => {
-        // Comprueba si el objeto location existe y si la latitud y la longitud están definidas
-        if (user.location && user.location.latitude !== undefined && user.location.longitude !== undefined) {
-            const selectedIcon = getRandomIcon();
-            const customIcon = L.icon({
-                iconUrl: selectedIcon.url,
-                iconSize: selectedIcon.size,
-                iconAnchor: selectedIcon.anchor,
-            });
 
-            const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(map);
-            const popupContent = `<div>
-                <p>Latitud: ${user.location.latitude}</p>
-                <p>Longitud: ${user.location.longitude}</p>
-                <button class="details-button" data-id="${user.id}">Ver detalles</button>
+  // Agrega marcadores al mapa
+  const addMarkersToMap = (map, locations) => {
+    locations.map((user) => {
+      const customIcon = L.icon({
+        iconUrl: user.user_mood.category_mood.icon_url,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
+      const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(map);
+      const popupContent = `<div>
+                <p>${user.name}</p>
+                <p>Hobbie: ${user.hobbie}</p>   
+                <a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-danger">Ver perfil &rarr;</a>
             </div>`;
-            marker.bindPopup(popupContent);
-        } else {
-            console.error(`Invalid location object: ${JSON.stringify(user)}`);
-        }
-    });
+      marker.bindPopup(popupContent);
+    })
   };
 
-//control watermark
+// <button class="details-button" data-id="${user.id}/${user.profile_url}">Ver detalles</button>
+
+  //control watermark
   const waterMark = () => {
     L.Control.Watermark = L.Control.extend({
-      onAdd: function() {
+      onAdd: function () {
         var img = L.DomUtil.create('img');
         img.src = logo;
         img.style.width = '200px';
         return img;
       },
-      onRemove: function() {
+      onRemove: function () {
       }
     });
-    L.control.watermark = function(opts) {
+    L.control.watermark = function (opts) {
       return new L.Control.Watermark(opts);
     }
   }
- 
-// inicializar el mapa y manejar la geolocalización
-useEffect(() => {
-  waterMark();
 
-  const map = initializeMap();
-  handleGeolocation(map);
-  
-  // listener para el evento popupopen
-  map.on('popupopen', (e) => {
-    // contenido del popup
-    const button = e.popup._contentNode.querySelector('.details-button');
-    if (button) {
-      // listener de clic al botón
-      button.addEventListener('click', () => {
-        const id = button.getAttribute('data-id');
-        navigate(`/details/${id}`);
-      });
-    }
-  });
+  // inicializar el mapa y manejar la geolocalización
+  useEffect(() => {
+    waterMark();
 
-  if (store.location && Array.isArray(store.location) && store.location.length > 0) {
-    console.log('Location data:', store.location); // Agrega esta línea
-    const selectedIcon = getRandomIcon();
-    const customIcon = L.icon({
-        iconUrl: selectedIcon.url,
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
+    const map = initializeMap();
+    handleGeolocation(map);
+
+    // listener para el evento popupopen
+    map.on('popupopen', (e) => {
+      // contenido del popup
+      const button = e.popup._contentNode.querySelector('.details-button');
+      if (button) {
+        // listener de clic al botón
+        button.addEventListener('click', () => {
+          const id = button.getAttribute('data-id');
+          navigate(`/details/${id}`);
+        });
+      }
     });
 
-    addMarkersToMap(map, store.location, customIcon);
-}
+    addMarkersToMap(map, store?.active_users);
 
-  return () => {
-    map.remove(); 
-  };
-  
-    
-}, [store.location]);  // Este efecto se ejecuta cada vez que cambia store.location
+    return () => {
+      map.remove();
+    };
+
+
+  }, [store.active_users]);  // Este efecto se ejecuta cada vez que cambia store.location
 
   return (
     <>

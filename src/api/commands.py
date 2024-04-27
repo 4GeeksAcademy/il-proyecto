@@ -233,19 +233,19 @@ def setup_commands(app):
             users = [
                 User(name="Bárbara", surnames="Puyol", age=30, email="barbara@mymood.com", 
                     password=bcrypt.hashpw("111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="barbarapuyol", location_id=5),  
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="barbarapuyol", location_id=5, mood_id=moods[0].id),  
 
                 User(name="Pedro", surnames="Berruezo", age=30, email="pedro@mymood.com", 
                     password=bcrypt.hashpw("222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pedroberruezo", location_id=1),  
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pedroberruezo", location_id=1, mood_id=moods[1].id),  
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="nat@mymood.com", 
                     password=bcrypt.hashpw("333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=2),  
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=2, mood_id=moods[0].id),  
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="natalia@funtsak.com", 
                     password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4) 
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4, mood_id=moods[4].id) 
             ]
             db.session.add_all(users)
             db.session.commit()
