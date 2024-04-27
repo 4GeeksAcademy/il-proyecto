@@ -21,7 +21,7 @@ export const DayMood = () => {
     
     // const { user } = store;
     // const { user_mood } = user;
-    const { response } = user_mood;
+    // const { response } = user_mood;
     // const userResponse = store.user.user_mood.response;
     // console.log(userResponse);
 

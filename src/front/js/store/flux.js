@@ -292,12 +292,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			
 					// Actualizar el estado con las ubicaciones de los usuarios activos
 					console.log(data);
-					setStore({ ...getStore(), mood: data.results });
+					setStore({ ...getStore(), mood: data});
 	
 					console.log(getStore().mood);
 					console.log("Mood loaded from the API to store.");
 			
-					return true;
+					return data;
 				} catch (error) {
 					console.error('Error fetching or processing mood data:', error);
 					return false;
@@ -475,6 +475,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getCurrentUser: async () => {
 				try {
 					const token = sessionStorage.getItem('userToken');
+						if (!token) {
+							console.error('No token available, user not logged in.');
+							setStore({ ...getStore(), user: null });
+							return false;  // No further action if there's no token
+						}
 					const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
 						method: 'GET',
 						headers: {
@@ -497,8 +502,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error('Error fetching or processing current user data:', error);
 					return false;
 				}
-			}
+			},
 			
+			updateUserMood: async (user_id, mood_id) => {
+				try {
+					console.log("USER ID:" + user_id, "MOOD ID:" + mood_id);
+					const token = sessionStorage.getItem('userToken');
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${user_id}/mood`, {
+						method: 'PUT',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
+						},
+						body: JSON.stringify({ user_id, mood_id })
+					});
+					if (!response.ok) {
+						throw new Error('Error al actualizar el estado de ánimo del usuario');
+					}
+					console.log('Estado de ánimo del usuario actualizado correctamente');
+					return response
+				} catch (error) {
+					console.error('Error al actualizar el estado de ánimo del usuario:', error);
+					return false
+				}
+			},
 		}
 	};
 };
