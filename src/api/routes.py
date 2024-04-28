@@ -27,8 +27,9 @@ import bcrypt
 from flask_session import Session
 from flask import session
 
-
-
+#socket.io
+from flask_socketio import emit
+from flask import request
 
 api = Blueprint('api', __name__)
 
@@ -513,3 +514,34 @@ def get_current_user():
         return jsonify(user.serialize()), 200
     else:
         return jsonify({"msg": "User not found"}), 404
+    
+
+#Socket.io
+def register_socket_events(socket_io):
+
+    @socket_io.on('connect')
+    def test_connect():
+        """event listener when client connects to the server"""
+        print("Client connected")
+        emit('your_id', {'id': request.sid}, room=request.sid)
+
+    @socket_io.on('disconnect')
+    def test_disconnect():
+        """event listener when client disconnects from the server"""
+        print("Client disconnected")
+
+    @socket_io.on('message')
+    def test_message(data):
+        print(str(data))
+
+    @socket_io.on('data')
+    def handle_message(data):
+        """event listener when client sends data"""
+        print("Data from the front end: ", str(data))
+        emit("data", {'data': data, 'id': request.sid}, broadcast=True)
+        
+    # @socket_io.on('your_id')
+    # def handle_message(data):
+    #     """event listener when client sends data"""
+    #     print("Data from the front end: ", str(data))
+    #     emit("data", {'data': data, 'id': request.sid}, broadcast=True)

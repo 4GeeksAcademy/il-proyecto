@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import getState from "./flux.js";
+import io from "socket.io-client";
 
 // Don't change, here is where we initialize our context, by default it's just going to be null.
 export const Context = React.createContext(null);
@@ -8,6 +9,10 @@ export const Context = React.createContext(null);
 // https://github.com/4GeeksAcademy/react-hello-webapp/blob/master/src/js/layout.js#L35
 const injectContext = PassedComponent => {
 	const StoreWrapper = props => {
+        const initialSocket = io(process.env.BACKEND_URL, {
+			autoConnect: false
+		});
+		
 		//this will be passed as the contenxt value
 		const [state, setState] = useState(
 			getState({
@@ -16,9 +21,11 @@ const injectContext = PassedComponent => {
 				setStore: updatedStore =>
 					setState({
 						store: Object.assign(state.store, updatedStore),
-						actions: { ...state.actions }
+						actions: { ...state.actions }, 
+						socket: initialSocket
 					})
 			})
+		
 		);
 
 		useEffect(() => {

@@ -19,27 +19,23 @@ import { ChooseMood } from "./pages/choose-mood";
 import { UserProfile } from "./pages/userProfile";
 import { Resources } from "./pages/resources";
 import { DayMood } from "./pages/day-mood";
+import { Chat } from "./pages/chat";
 
 
 
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
-    const authToken = sessionStorage.getItem('userToken'); // Obtén el token de autenticación del almacenamiento local
-
-    const isAuthenticated = authToken !== null; // El usuario está autenticado si hay un token de autenticación
+    const authToken = sessionStorage.getItem('userToken'); 
+    const isAuthenticated = authToken !== null;
 
     if (!isAuthenticated) {
-        // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
         return navigate("/login");
     }
-
-    // Si el usuario está autenticado, renderizar los hijos
     return children;
     }
 
     
 
-//create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
@@ -63,7 +59,8 @@ const Layout = () => {
                         <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
                         <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/:uid/:url"/>
                         <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/> 
-                        <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>                                     
+                        <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>  
+                        <Route element={<PrivateRoute><Chat /></PrivateRoute>} path="/chat-v1" />                                   
                     </Routes>
                     <Footer />            
             </BrowserRouter>
