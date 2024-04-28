@@ -236,7 +236,6 @@ class Chat(db.Model):
     time = db.Column(db.DateTime)
     sender = db.relationship('User', foreign_keys=[user_sender_id], cascade="all, delete", backref='sent_messages')
     receiver = db.relationship('User', foreign_keys=[user_reciver_id], cascade="all, delete", backref='received_messages')
-
     
     def __repr__(self):
         return '<Chat %r>' % self.id

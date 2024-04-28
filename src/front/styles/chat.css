@@ -31,8 +31,7 @@
     background-color: #fff;
     margin-right: auto; 
     margin-left: 10px;
-    text-align: left;
-    
+    text-align: left;   
 }
 
 .other-message {
@@ -45,9 +44,17 @@
 .chat li a {
     color: var(--option67-color);
     text-decoration: none;
-
 }
 
 .date {
     text-align: center;
 }
+
+.active {
+    color: var(--option1-color);
+}
+
+.inactive {
+    color:var(--option3-color);
+}
+

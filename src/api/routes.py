@@ -5,7 +5,7 @@ import random, math, os
 import re
 from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory
+from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory, Chat
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -28,7 +28,7 @@ from flask_session import Session
 from flask import session
 
 #socket.io
-from flask_socketio import emit
+from flask_socketio import emit, join_room, leave_room
 from flask import request
 
 api = Blueprint('api', __name__)
@@ -503,8 +503,6 @@ def update_user_mood(user_id):
     return jsonify({"user": user.serialize()}), 200
 
 
-
-
 @api.route('/current-user', methods=['GET'])
 @jwt_required()
 def get_current_user():
@@ -516,14 +514,25 @@ def get_current_user():
         return jsonify({"msg": "User not found"}), 404
     
 
+
+# CHAT
+
+
+
+
+
+
+
+
 #Socket.io
 def register_socket_events(socket_io):
 
     @socket_io.on('connect')
     def test_connect():
+        # user_id = data['user_id']
         """event listener when client connects to the server"""
         print("Client connected")
-        emit('your_id', {'id': request.sid}, room=request.sid)
+        # emit('your_id', {'id': user_id}, room=request.sid)
 
     @socket_io.on('disconnect')
     def test_disconnect():
@@ -538,10 +547,75 @@ def register_socket_events(socket_io):
     def handle_message(data):
         """event listener when client sends data"""
         print("Data from the front end: ", str(data))
-        emit("data", {'data': data, 'id': request.sid}, broadcast=True)
-        
-    # @socket_io.on('your_id')
+        # emit("data", {'data': data, 'id': request.sid}, broadcast=True)
+
+    # @socket_io.on('join')
+    # def on_join(data):
+    #     print(data)
+    #     user_id = data['user_id']
+    #     other_user_id = data['other_user_id']
+    #     room = f"chat_{min(user_id, other_user_id)}_{max(user_id, other_user_id)}"
+    #     join_room(room)
+    #     emit('joined_room', {'room': room}, room=room)
+    
+    @socket_io.on('join')
+    def on_join(data):
+        print("BACK JOIN")
+        print(data["room"])
+        print(data)
+        user_id = int(data['user_id'])  # Convertir a entero
+        other_user_id = int(data['other_user_id'])  # Convertir a entero
+        room = data["room"]
+        join_room(room)
+        emit('joined_room', {'room': room}, room=room)
+
+    @socket_io.on('leave')
+    def on_leave(data):
+        # user_id = data['user_id']
+        # other_user_id = data['other_user_id']
+        # room = f"chat_{min(user_id, other_user_id)}_{max(user_id, other_user_id)}"
+        room = data['room']
+        leave_room(room)
+        emit('left_room', {'room': room}, room=room)
+
+    # @socket_io.on('send_chat_message')
     # def handle_message(data):
-    #     """event listener when client sends data"""
-    #     print("Data from the front end: ", str(data))
-    #     emit("data", {'data': data, 'id': request.sid}, broadcast=True)
+    #     room = data['room']
+    #     message = data['message']
+    #     # Aquí también podrías guardar el mensaje en la base de datos si es necesario
+    #     emit('receive_message', {'message': message, 'sender_id': data['sender_id']}, room=room)
+
+    @socket_io.on('send_message')
+    def handle_message_chat(data):
+        print("BACK MESSAGE SENDIINGGGG")
+        room = data['room']
+        message = data['message']
+        sender_id = data['sender_id']
+        # Emitir el mensaje a todos en la sala, excepto al remitente
+        print("BACK MESSAGE SENDIINGGGG 222222")
+        emit('receive_message', {
+        'message': message,
+        'sender_id': sender_id,
+        'timestamp': datetime.now().isoformat()  # Opcional
+    }, room=room)
+        print("BACK MESSAGE SENDIINGGGG 333333")
+
+
+
+@api.route('/send_chat_message', methods=['POST'])
+def send_message():
+    data = request.json.get('data')
+    id = request.json.get('id')
+    print("Received data:", data)  # Log para ver qué datos llegan exactamente
+    # Continúa procesando los datos si son correctos
+    new_message = Chat(
+        user_sender_id="3",
+        user_reciver_id="4",
+        message_text=data['message'],
+        time=data['timestamp']
+        # datetime.fromisoformat(data['timestamp'])  # Convertir el timestamp ISO 8601 a datetime
+    )
+    db.session.add(new_message)
+    db.session.commit()
+    return jsonify({'message': 'Message sent successfully'}), 200
+        

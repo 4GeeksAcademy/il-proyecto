@@ -10,6 +10,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			active_users: [],
 
+			all_users: [],
+
 			auth: false,
 
 			resources: [],
@@ -321,7 +323,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 			getAllActiveUsers: async () => {
-				console.log("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				try {
 					const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`; 
 			
@@ -527,6 +528,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.error('Error al actualizar el estado de ánimo del usuario:', error);
 					return false
+				}
+			},
+
+			getAllUsers: async () => {
+				try {
+					const token = sessionStorage.getItem('userToken');
+						if (!token) {
+							console.error('No token available, user not logged in.');
+							setStore({ ...getStore(), all_users: [] });
+							return false;  
+						}
+					const response = await fetch(`${process.env.BACKEND_URL}/api/users`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
+						}
+					});
+
+					
+					if (!response.ok) {
+						throw new Error('Failed to fetch ALL user data');
+						
+					}
+					const data = await response.json();
+					console.log(data);
+					setStore({ ...getStore(), all_users: data.results });
+					
+					return true;
+				} catch (error) {
+					console.error('Error fetching or processing ALL user data:', error);
+					return false;
 				}
 			},
 		}
