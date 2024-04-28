@@ -9,39 +9,61 @@ function ChatForm() {
     const [currentUserId, setCurrentUserId] = useState(null);
     const [roomId, setRoomId] = useState(null);
     const [otherUserId, setOtherUserId] = useState(null);
+    const [name, setName] = useState(null);
 
 
-    function joinChat(otherUserId, roomId, currentUserId) {
-        console.log("JOIN CHAT::"+ roomId, currentUserId, otherUserId);
-        socket.emit('join', { user_id: currentUserId, other_user_id: otherUserId, room: roomId});
-        console.log("JOIN CHAT:3"+ roomId, currentUserId, otherUserId);
-        // socket.on('receive_message', (data) => {
-        //     if (data.room === roomId) {
-        //         setConversation(prevConversation => [
-        //             ...prevConversation,
-        //             data
-        //         ]);
-        //     }
-        // console.log("JOIN CHAT:4"+ roomId, currentUserId, otherUserId);
-        // });
-    }
+    useEffect(() => {
+        actions.getAllUsers();
+        if (!socket) return;
 
-    const handleUserClick = (otherUserId) => {
-        const currentUserId = store?.user.id; // Asumiendo que el ID del usuario actual se almacena aquí
-        const roomId = `chat_${Math.min(currentUserId, otherUserId)}_${Math.max(currentUserId, otherUserId)}`;
-        setOtherUserId(otherUserId); // Establecer el otherUserId en el estado
+        const handleId = (data) => {
+                setCurrentUserId(data.sender_id);};
 
-        setRoomId(roomId); // Establecer el roomId en el estado
-        console.log("Joining room 1. :", roomId, currentUserId, otherUserId);
-        // Unir a la room
-        joinChat(otherUserId, roomId, currentUserId);
-        // socket.emit('join', { user_id: currentUserId, other_user_id: otherUserId });
-    };
+        const handleMessage = (data) => {
+            console.log("Received data in handleMessage:", data);
+            // Cambiar aquí para acceder a data.data.newMessage
+            if (!data.data.newMessage || typeof data.data.newMessage.message !== 'string') {
+                console.error("Expected data.newMessage.message to be a string, got:", data);
+                return;
+            }
+            const messageText = data.data.newMessage.message;  // Accede a través de data.data.newMessage
+            const enhancedMessage = linkify(messageText);
+            const timestamp = new Date(data.data.newMessage.timestamp);  // y data.data.newMessage.timestamp
+            const room = data.data.newMessage.room;
+            console.log(enhancedMessage, timestamp);
+            // Crear un nuevo objeto de mensaje
+            const userMessage = {
+                message: enhancedMessage,
+                sender_id: data.data.newMessage.sender_id,
+                timestamp: timestamp,
+                room: room
+            };
+        
+            // Actualizar el estado de conversation
+            setConversation(prevConversation => [...prevConversation, userMessage]);
+        };
 
-    
+            socket.connect();
+            socket.on('your_id', handleId);
+            socket.on('connect', function() {
+                console.log('Connected to the server.');
+                socket.emit('join_room', { userId: currentUserId, roomId: roomId });
+            });
+  
+            socket.on('data', handleMessage);
+
+        return () => {
+
+            socket.off('data', handleMessage);
+
+        }
+    }, [socket]);
+
+
     function submitMessageRoom(e) {
         console.log("JOIN ROOM 5");
         if (e.key === "Enter" && message.trim()) {
+            console.log("Sending message with timestamp:", { message, timestamp: new Date().toISOString() });
             console.log("DENTRO DEL IF");
             const newMessage = {
                 message: message,
@@ -50,162 +72,59 @@ function ChatForm() {
                 room: roomId
             };
             console.log(newMessage);
-            socket.emit('send_message', { ...newMessage });
-            setConversation(prevConversation => {
-                const updatedConversation = [...prevConversation, newMessage];
-                console.log(updatedConversation);
-                return updatedConversation;
-            });
-    
+            socket.emit('data', { newMessage });
             setMessage("");
-            // setConversation(prevConversation => [
-            //     ...prevConversation,
-            //     newMessage
-            // ]);
-            // setMessage("")
             console.log(conversation);
             console.log("JOIN ROOM 6 hemos pasado el send message");
-            // socket.on('receive_message', { ...conversation });
-            // socket.on('receive_message', (data) => {
-            //     if (data.room === roomId) {
-            //         setConversation(prevConversation => [
-            //             ...prevConversation,
-            //             data
-            //         ]);
-            //     }
-            // });
+
         }}
-        //     sendMessage(newMessage.message, roomId);
-        //     // Añadir el mensaje al estado para actualizar la UI inmediatamente.
-        //     setConversation(prevConversation => [
-        //         ...prevConversation,
-        //         newMessage
-        //     ]);
-        //     setMessage("")
-        // }
-    
 
+ 
 
-    // ************************************ROOMS// ************************************
-  
-
-    // function sendMessage(message, roomId) {
-    //     if (roomId && currentUserId && message.trim()) {
-    //         const newMessage = {
-    //             message,
-    //             sender_id: currentUserId,
-    //             timestamp: new Date().toISOString()
-    //         };
-    //         socket.emit('send_message', { ...newMessage, room: roomId });
-    //         socket.on('receive_message', (data) => {
-    //             if (data.room === roomId) {
-    //                 setConversation(prevConversation => [
-    //                     ...prevConversation,
-    //                     data
-    //                 ]);
-    //             }
-    //         });
-    //     }
-    // }
-    
-
-    // function sendMessage(message, roomId) {
-    //     socket.emit('send_message', { message, sender_id: currentUserId, room: roomId });
-    //     socket.on('receive_message', (data) => {
-    //         if (data.room === roomId) {
-    //             setConversation(prevConversation => [
-    //                 ...prevConversation,
-    //                 data
-    //             ]);
-    //         }
-    //     });
-    // }
-
-    const handleMessageReceived = (data) => {
-        if (data.room === roomId) {
-            setConversation(prevConversation => [
-                ...prevConversation,
-                data
-            ]);
-        }
-    };
-
-    // function sendMessage(message, roomId) {
-    //     socket.emit('send_message', { message, sender_id: currentUserId, room: roomId });
-    // }
-
-    
-
-    function leaveChat(roomId) {
-        socket.emit('leave', { room: roomId });
+    function joinChat(otherUserId, roomId, currentUserId) {
+        console.log("JOIN CHAT::"+ roomId, currentUserId, otherUserId);
+        socket.emit('join', { user_id: currentUserId, other_user_id: otherUserId, room: roomId});
+        console.log("JOIN CHAT:3"+ roomId, currentUserId, otherUserId);
     }
 
-    useEffect(() => {
+    const handleUserClick = (otherUserId) => {
+        setCurrentUserId(JSON.parse(sessionStorage.getItem('userData')).id); 
+        setName(JSON.parse(sessionStorage.getItem('userData')).name);
+        const roomId = `chat_${Math.min(currentUserId, otherUserId)}_${Math.max(currentUserId, otherUserId)}`;
+        setOtherUserId(otherUserId); 
+        setRoomId(roomId);
+        console.log("Joining room 1. :", roomId, currentUserId, otherUserId);
+        joinChat(otherUserId, roomId, currentUserId);
+    
+    };
 
-
-
-
-
-    }, [socket]);
- 
-    useEffect(() => {
-        actions.getAllUsers();
-        if (!socket) return;
-
-        const handleId = (data) => {
-                setCurrentUserId(data.id);
-            };
-
-        socket.on('your_id', (data) => {
-            setCurrentUserId(data.id);
-        });
-
-        const handleMessage = (data) => {
-            console.log("Received data in handleMessage:", data);
-            if (!data.data || typeof data.data.message !== 'string') {
-                console.error("Expected data.data.message to be a string, got:", data);
-                return;
+    function groupMessagesByDay(conversation) {
+        const groupedByDay = conversation.reduce((acc, message) => {
+            // Asegúrate de que el timestamp es válido antes de convertirlo a fecha
+            const dateObj = new Date(message.timestamp);
+            if (isNaN(dateObj)) {
+                console.error("Invalid date from timestamp", message.timestamp);
+                return acc; // Continúa con el siguiente elemento si la fecha no es válida
             }
-            const messageText = data.data.message;
-            const enhancedMessage = linkify(messageText);
-            const timestamp = new Date(data.data.timestamp);
-            setConversation(prevConversation => [
-                ...prevConversation,
-                { message: enhancedMessage, id: data.id, timestamp }
-            ]);
-            console.log(conversation);
-        };
+            // Formatear la fecha a Castellano
+            const day = new Intl.DateTimeFormat('es-ES', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).format(dateObj);
 
-        socket.connect();
+            if (!acc[day]) {
+                acc[day] = [];
+            }
+            acc[day].push(message);
+            return acc;
+        }, {});
+        console.log(groupedByDay);
+        return Object.keys(groupedByDay).map(day => ({
+            day,
+            messages: groupedByDay[day]
+        }));
+    }
 
-        socket.on('receive_message', handleMessageReceived);
-        socket.on('your_id', handleId);
-        socket.on('data', handleMessage);
-        socket.on('send_message_chat', handleMessage);
-
-        
-                            // socket.on('join', (data) => {
-                            //     console.log(`Joined room ${data.room}`);
-                            // });
-
-                            // socket.on('receive_message', (data) => {
-                            //     console.log("Received message in receive_message:", data.message);
-                            //     // Añadir el mensaje recibido al estado que maneja la conversación
-                            // });
-
-        return () => {
-            
-            socket.off('receive_message', handleMessageReceived);
-            socket.off('your_id');
-            socket.off('data', handleMessage);
-            
-        };
-    }, [socket, roomId]);
-    // ************************************// ************************************
-
-
-
-
+    const groupedMessages = groupMessagesByDay(conversation) ;
+   
+ 
 // Función para convertir las URLs en enlaces
     function linkify(inputText) {
         if (typeof inputText !== 'string') {
@@ -234,24 +153,45 @@ function ChatForm() {
 
             {roomId && (
                 <div className="chat">
-                    {/* {groupedMessages.map(group => ( */}
-                        <div className="date">
-                            {/* <small>{group.day}</small> */}
+                    {groupedMessages.map(group => (
+                        <div key={group.day} className="date">
+                            <small>{group.day}</small>
                             <ul>
-                                {conversation.map((item, index) => (
-                                    <li key={index} className={item.id === currentUserId ? "my-message" : "other-message"}
-                                        dangerouslySetInnerHTML={{ __html: `${item.id}: ${item.message}` }}>
+                                {group.messages.map((item, index) => (
+                                    <li key={index} className={item.sender_id === currentUserId ? "my-message" : "other-message"}
+                                        dangerouslySetInnerHTML={{ __html: `${item.sender_id}: ${item.message} ` }}>
                                     </li>
                                 ))}
                             </ul>
                         </div>
-                    {/* ))} */}
+                    ))}
                     <input type="text" placeholder="Message..." className="form-control my-input mt-3"
                         onChange={(e) => setMessage(e.target.value)}
                         value={message}
                         onKeyDown={submitMessageRoom} />
                 </div>
             )}
+
+            {/* {roomId && (
+                <div className="chat">
+                    {groupedMessages.map(group => (
+                        <div className="date">
+                            <small>{group.day}</small>
+                            <ul>
+                                {conversation.map((item, index) => (
+                                    <li key={index} className={item.sender_id === currentUserId ? "my-message" : "other-message"}
+                                        dangerouslySetInnerHTML={{ __html: `${item.sender_id}: ${item.message}` }}>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                    <input type="text" placeholder="Message..." className="form-control my-input mt-3"
+                        onChange={(e) => setMessage(e.target.value)}
+                        value={message}
+                        onKeyDown={submitMessageRoom} />
+                </div> */}
+            {/* )} */}
         </>
     );
 }
