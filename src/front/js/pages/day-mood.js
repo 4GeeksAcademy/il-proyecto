@@ -24,9 +24,9 @@ export const DayMood = () => {
         navigate("/resources");
     };
 
-    // const handleClickPhycologyst = () => {
-    //     navigate("/phycologyst");
-    // };
+    const handleClickPhycologyst = () => {
+        navigate("/phycologyst");
+    };
 
     const handleClickVolver = () => {
         navigate("/choose-mood");
@@ -59,10 +59,9 @@ export const DayMood = () => {
                                             case 1:
                                                 handleClickResources();
                                                 break;
-                                            // case 2:
-                                            //     handleClickPhycologyst();
-                                            //     break;
-                                            // Agrega más casos según sea necesario
+                                            case 2:
+                                                handleClickPhycologyst();
+                                                break;
                                             default:
                                                 break;
                                         }

@@ -5,7 +5,7 @@ import random, math, os
 import re
 from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory
+from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory, Phycologyst
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -513,3 +513,18 @@ def get_current_user():
         return jsonify(user.serialize()), 200
     else:
         return jsonify({"msg": "User not found"}), 404
+    
+
+@api.route('/phycologyst', methods=['GET'])
+def get_phycologyst():
+    phycologyst_results = Phycologyst.query.all()
+    results = list(map(lambda item: item.serialize(), phycologyst_results))
+    if results != []:
+        response_body = {
+        "msg": "OK",
+        "results": results
+    }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "There aren't any phycologyst yet"}), 404
+

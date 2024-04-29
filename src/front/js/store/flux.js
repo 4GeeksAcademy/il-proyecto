@@ -529,6 +529,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
+
+			getPhycologyst: async (phycologystId) => {
+				try {
+					const url = phycologystId ?
+					
+						`${process.env.BACKEND_URL}/api/phycologyst/${phycologystId}` :
+						`${process.env.BACKEND_URL}/api/phycologyst/`;
+			
+					const response = await fetch(url, {
+						method: 'GET',   
+					});
+			
+					if (!response.ok) {
+						throw new Error(`Failed to fetch phycologyst data: ${response.status} ${response.statusText}`);
+					}
+			
+					const data = await response.json();
+					console.log(data);
+					return data;
+				} catch (error) {
+					console.error('Error fetching or processing phycologyst data:', error);
+					return null;
+				}
+			},
+			
+
+
 		}
 	};
 };
