@@ -7,13 +7,35 @@ import map from '../../styles/map.css';
 import 'leaflet/dist/leaflet.css';
 import logo from "../../img/logo.png";
 
+import ChatForm from './chatform';
+import { Container, Row, Col } from 'react-bootstrap';
 
-const MapComponent = () => {
+
+const MapComponent = (props) => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const [showLocationModal, setShowLocationModal] = useState(true);
   const [hasAcceptedModal, setHasAcceptedModal] = useState(false);
-  const [ finalMap, setFinalMap ] = useState(null);
+  const [finalMap, setFinalMap] = useState(null);
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [hasAcceptedChatModal, setHasAcceptedChatModal] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+
+  // const handleUserClick = (id) => {
+  //   setUserId(id);
+  //   setShowChatModal(true);
+  // };
+
+  const handleCloseChatModal = () => {
+    setShowChatModal(false);
+  };
+
+  const handleAcceptChatModal = () => {
+    setShowChatModal(false);
+    setHasAcceptedChatModal(true);
+  };
+
 
 
   // Inicializa el mapa y la posicion de watermark
@@ -28,10 +50,10 @@ const MapComponent = () => {
     // Agrega la marca de agua después de que el mapa se haya inicializado
     L.control.watermark({ position: 'bottomright' }).addTo(map);
     setFinalMap(map);
-    
+
     return map;
   };
-  
+
 
 
   // obtener geolocalización
@@ -39,7 +61,7 @@ const MapComponent = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        map.setView([latitude, longitude], 13);     
+        map.setView([latitude, longitude], 13);
         // agregar marca circular en la posicion del usuario
         // L.circle([latitude, longitude], {
         //   color: '#FF86D2',
@@ -55,7 +77,6 @@ const MapComponent = () => {
     }
   };
 
-
   // Agrega marcadores al mapa
   const addMarkersToMap = (map, locations) => {
     locations.map((user) => {
@@ -68,15 +89,18 @@ const MapComponent = () => {
         // console.log("ESTE USUARIO NO TIENE LOCALIZACION");
         return;
       }
+
       const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(map);
       const popupContent = `<div>
                 <h6>${user.name}</h6>
-                <p>Hobbie: ${user.hobbie}</p>   
+                <p>Hobbie: ${user.hobbie}</p>  
+                <a href='#' class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
                 <a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
             </div>`;
       marker.bindPopup(popupContent);
-    })
+    });
   };
+  // <a id=${uniqueId} href='#' class="details-button btn btn-dark rounded-pill text-white">Chat &rarr;</a>
 
 
   //control watermark
@@ -113,28 +137,30 @@ const MapComponent = () => {
     }
   };
 
-    // Cuando el usuario cierra el modal
-    const handleCloseLocationModal = () => {
-      setShowLocationModal(false);
-    };
-  
-    // Cuando el usuario acepta el modal, solicita la ubicación
-    const handleAcceptLocationModal = () => {
-      setShowLocationModal(false);
-      setHasAcceptedModal(true);
-      requestLocation();
-    };
-  
+  // Cuando el usuario cierra el modal
+  const handleCloseLocationModal = () => {
+    setShowLocationModal(false);
+  };
+
+  // Cuando el usuario acepta el modal, solicita la ubicación
+  const handleAcceptLocationModal = () => {
+    setShowLocationModal(false);
+    setHasAcceptedModal(true);
+    requestLocation();
+  };
+
+
   // inicializar el mapa y manejar la geolocalización
   useEffect(() => {
     waterMark();
-   
+
     const map = initializeMap("map_id");
     handleGeolocation(map);
-    
+
     // listener para el evento popupopen
     map.on('popupopen', (e) => {
       // contenido del popup
+      const buttonChat = e.popup._contentNode.querySelector('.chat-button');
       const button = e.popup._contentNode.querySelector('.details-button');
       if (button) {
         // listener de clic al botón
@@ -143,18 +169,24 @@ const MapComponent = () => {
           navigate(`/details/${id}`);
         });
       }
+      if (buttonChat) {
+        buttonChat.addEventListener('click', () => {
+          setShowChatModal(true);
+        });
+      }
+
     });
 
     return () => {
       map.remove();
     };
 
-  }, []);  
+  }, []);
 
 
   return (
     <>
-      <div id="map_id" className='map-styles' style={{ height: '100vh', width: '100%' }}></div>
+      {/* <div id="map_id" className='map-styles' style={{ height: '100vh', width: '100%' }}></div>
       <Modal show={showLocationModal} onHide={handleCloseLocationModal}>
         <Modal.Header closeButton>
           <Modal.Title className='heading1'>Solicitar Geolocalización</Modal.Title>
@@ -169,6 +201,50 @@ const MapComponent = () => {
           </button>
         </Modal.Body>
       </Modal>
+    
+
+      <Modal show={showChatModal} onHide={handleCloseChatModal}>
+        <Modal.Header closeButton>
+          <Modal.Title className='heading1'>Chat</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ChatForm />
+          <button className='button-login' onClick={handleCloseChatModal}>
+            Cancelar
+          </button>
+        </Modal.Body>
+      </Modal> */}
+
+      <Container fluid>
+        <Row>
+          <Col xs={showChatModal ? 8 : 12}>
+            <div id="map_id" className='map-styles' style={{ height: '100vh', width: '100%' }}></div>
+            <Modal show={showLocationModal} onHide={handleCloseLocationModal}>
+              <Modal.Header closeButton>
+                <Modal.Title className='heading1'>Solicitar Geolocalización</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p className='base-paragrahp'>Este sitio web desea conocer tu ubicación aproximada para proporcionar servicios personalizados. No te preocupes, no es tu ubicación real. </p>
+                <button className='button-login' onClick={handleAcceptLocationModal}>
+                  Aceptar
+                </button>
+                <button className='button-login' onClick={handleCloseLocationModal}>
+                  Cancelar
+                </button>
+              </Modal.Body>
+            </Modal>
+          </Col>
+          {showChatModal && (
+            <Col xs={4}>
+              <h4 className='heading2'>¿ Con quién quieres hablar ?</h4>
+              <ChatForm /> 
+              <button className='button-login' onClick={handleCloseChatModal}>
+                Cancelar
+              </button>
+            </Col>
+          )}
+        </Row>
+      </Container>
     </>
   );
 };

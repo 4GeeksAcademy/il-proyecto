@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/chat.css";
 
+
 function ChatForm() {
     const { socket, store, actions } = useContext(Context);
     const [message, setMessage] = useState("");
@@ -10,6 +11,8 @@ function ChatForm() {
     const [roomId, setRoomId] = useState(null);
     const [otherUserId, setOtherUserId] = useState(null);
     const [name, setName] = useState(null);
+    
+   
 
 
     useEffect(() => {
@@ -141,6 +144,7 @@ function ChatForm() {
   
     return (
         <>
+        {!roomId && (	
             <ul>
                 {store?.all_users.map((item, index) => {
                     return (
@@ -150,6 +154,7 @@ function ChatForm() {
                     );
                 })}
             </ul>
+        )}
 
             {roomId && (
                 <div className="chat">
@@ -171,27 +176,6 @@ function ChatForm() {
                         onKeyDown={submitMessageRoom} />
                 </div>
             )}
-
-            {/* {roomId && (
-                <div className="chat">
-                    {groupedMessages.map(group => (
-                        <div className="date">
-                            <small>{group.day}</small>
-                            <ul>
-                                {conversation.map((item, index) => (
-                                    <li key={index} className={item.sender_id === currentUserId ? "my-message" : "other-message"}
-                                        dangerouslySetInnerHTML={{ __html: `${item.sender_id}: ${item.message}` }}>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
-                    <input type="text" placeholder="Message..." className="form-control my-input mt-3"
-                        onChange={(e) => setMessage(e.target.value)}
-                        value={message}
-                        onKeyDown={submitMessageRoom} />
-                </div> */}
-            {/* )} */}
         </>
     );
 }
