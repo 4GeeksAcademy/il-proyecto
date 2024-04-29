@@ -1,43 +1,83 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 
 :root {
     /* Variables para texto */
-    --heading1-font-family: 'Taviraj'; /* Fuente para h1 */
-    --base-font-family: 'Space Grotesk'; /* Fuente para párrafos */
+    --heading1-font-family: 'Taviraj';
+    /* Fuente para h1 */
+    --base-font-family: 'Space Grotesk';
+    /* Fuente para párrafos */
 
     /* Variables de colores */
-    --base-color-text: #333; /* Color de texto de base */
-    --option1-color: #D2F752; /* Color de fondo para opción 1 */
-    --option2-color: #FF86D2; /* Color de fondo para opción 2 */
-    --option3-color: #FF5E41; /* Color de fondo para opción 3 */
-    --option4-color: #F9F4F0; /* Color de fondo para opcion 4 */
-    --option5-color: #000000; /* Color de fondo para opción 5 */
-    --option6-color: #FAB6DB; /* Color de fondo para opción 6 */
+    --base-color-text: #000;
+    /* Color de texto de base */
+    --option1-color: #D2F752;
+    /* Color de fondo para opción 1 */
+    --option2-color: #FF86D2;
+    /* Color de fondo para opción 2 */
+    --option3-color: #FF5E41;
+    /* Color de fondo para opción 3 */
+    --option4-color: #F9F4F0;
+    /* Color de fondo para opcion 4 */
+    --option5-color: #000000;
+    /* Color de fondo para opción 5 */
+    --option6-color: #FAB6DB;
+    /* Color de fondo para opción 6 */
+    --option67-color: #5456D9;
+    /* Color de fondo para opción 6 */
 
     /* Variables sombras button / button 2 mainbutton */
-    --button1-border: 1px solid #000000; /* Borde para button1 */ 
-    --button1-box-shadow: 7px 7px 0px 0px #000; /* Sombra para button1 */
-    --button1-box-sizing: border-box; /* Box-sizing para button1 */
-  
- 
+    --button1-border: 1px solid #000000;
+    /* Borde para button1 */
+    --button1-box-shadow: 7px 7px 0px 0px #000;
+    /* Sombra para button1 */
+    --button1-box-sizing: border-box;
+    /* Box-sizing para button1 */
+
+
     /* Variables para button3 */
-    --button3-border: 1px solid #979797; /* Borde para button3 */
-    --button3-border-radius: 37px; /* Radio de borde para button3 */
+    --button3-border: 1px solid #979797;
+    /* Borde para button3 */
+    --button3-border-radius: 37px;
+    /* Radio de borde para button3 */
 
     /* Variables para imagenes */
-    --image-width: 100%; /* Ancho para imagen */
-    --image-box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Sombra para imagen */
-    --image-border: 1px solid #000000; /* Borde para imagen */
-  }
+    --image-width: 100%;
+    /* Ancho para imagen */
+    --image-box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    /* Sombra para imagen */
+    --image-border: 1px solid #000000;
+    /* Borde para imagen */
+
+    --h1-size: clamp(1.5rem, 4vw, 2.986rem);
+    --h2-size: clamp(1.3rem, 3.5vw, 2.488rem);
+    --h3-size: clamp(1.2rem, 3vw, 2.074rem);
+    --h4-size: clamp(1.1rem, 2.5vw, 1.728rem);
+    --h5-size: clamp(1rem, 2vw, 1.44rem);
+    --h6-size: clamp(1rem, 1.5vw, 1.2rem);
+    --p-size: 21px;
+    --small-size: clamp(0.70rem, 1vw, 0.86rem);
+}
+* {
+    font-family: var(--base-font-family);
+}
+html, body, * {
+    font-size: var(--p-size);
+}
+
+
+.main-content {
+    margin: 0 15px 15px 15px;
+}
 
 
 .heading1 {
     font-family: var(--heading1-font-family);
-    font-size: 80px; 
-    color: var(--heading-color); 
+    font-size: 80px;
+    color: var(--heading-color);
     font-weight: 300;
     font-style: italic;
     letter-spacing: 0.08px;
+    text-align: center;
 }
 
 
@@ -47,9 +87,9 @@
     font-size: 80px;
     font-style: normal;
     font-weight: 700;
-    line-height: normal;
+    line-height: 1;
     letter-spacing: 0.08px;
-    }
+}
 
 
 .base-paragrahp {
@@ -62,7 +102,7 @@
     color: var(--heading-color);
 }
 
-.button1{
+.button1 {
     color: #000000;
     text-align: center;
     font-family: "Space Grotesk";
@@ -72,8 +112,32 @@
     line-height: normal;
     letter-spacing: 0.03px;
     background: var(--option3-color);
-    box-shadow: var(--button1-box-shadow);     
+    box-shadow: var(--button1-box-shadow);
+    border: var(--button1-border);
 }
+
+.button1:hover {
+    background-color: var(--option1-color);
+}
+
+.button-login {
+    color: #000000;
+    text-align: center;
+    font-family: "Space Grotesk";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.03px;
+    background: var(--option3-color);
+    box-shadow: var(--image-box-shadow);
+    border: var(--button1-border);
+}
+
+.button-login:hover {
+    background-color: var(--option1-color);
+}
+
 
 
 #scrollToTopBtn {
@@ -83,18 +147,304 @@
     bottom: 1rem;
     right: 1rem;
     border: none;
-    background-color: var(--button2-color-background); /* Color de fondo predeterminado */
-    color: #000; /* Color de texto */
+    background-color: var(--button2-color-background);
+    /* Color de fondo predeterminado */
+    color: #000;
+    /* Color de texto */
     font-size: 24px;
     font-family: var(--base-font-family);
     font-weight: 700;
     cursor: pointer;
-    z-index: 9999; /* Ajusta según sea necesario */
+    z-index: 9999;
+    /* Ajusta según sea necesario */
     border: var(--button1-border);
     box-shadow: var(--button1-box-shadow);
 }
 
 #scrollToTopBtn:hover {
-    background-color: #0056b3; /* Cambio de color en el estado hover */
+    background-color: #0056b3;
+    /* Cambio de color en el estado hover */
+}
+
+.container-fluid .container {
+    border: 0;
+    background-color: transparent;
+}
+
+
+/* ==========================================================================
+   FORMS
+   ========================================================================== */
+
+input.form-control {
+    font-family: var(--base-font-family);
+    font-weight: 100;
+    font-size: 22px;
+    color: rgba(0, 0, 0, 0.50);
+    letter-spacing: 0.03px;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 0;
+    padding: 0.75rem .75rem;
+}
+
+label.form-label {
+    font-family: var(--heading1-font-family);
+    font-style: italic;
+    border: 1px solid #000;
+    background-color: white;
+    padding: 0px 10px;
+    margin-bottom: -1px !important;
+    margin-left: 13px;
+}
+
+button.form-button {
+    color: #000000;
+    text-align: center;
+    font-family: var(--base-font-family);
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.03px;
+    background: var(--option3-color);
+    box-shadow: var(--button1-box-shadow);
+    padding: 20px;
+    border: 1px solid #000;
+
+    display: flex;
+    margin: 0 auto;
+}
+
+.link {
+    color: var(--base-color-text);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    font-family: var(--base-font-family);
+    margin-bottom: 1.7rem;
+}
+
+select.form-select 
+{
+    border: 1px solid #000;
+    border-radius: 0;
+    margin-bottom: 22px;
+    height: 60px;
+    font-family: var(--base-font-family);
+    font-size: 20px;
+    font-weight: 100;
+}
+
+textarea.form-control {
+    border: 1px solid #000;
+    border-radius: 0;
+    margin-bottom: 22px;
+    font-family: var(--base-font-family);
+    font-size: 20px;
+    font-weight: 100;
+}
+
+
+/* ==========================================================================
+   GOOGLE BUTTON
+   ========================================================================== */
+.nsm7Bb-HzV7m-LgbsSe {
+    color: #000000;
+    text-align: center;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.03px;
+    background: #fff;
+    box-shadow: var(--button1-box-shadow);
+    padding: 37px;
+    border: 1px solid #000;
+    border-radius: 0;
+
+    display: flex;
+    margin: 0 auto;
+}
+
+.nsm7Bb-HzV7m-LgbsSe-BPrWId {
+    font-family: var(--base-font-family) !important;
+    /* texto botón google */
+}
+
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.footer-container {
+    margin-top: 20px !important;
+    background-color: var(--option1-color) !important;
+}
+
+footer ul {
+    list-style-type: none;
+    font-family: var(--base-font-family);
+    line-height: 2.2;
+    font-weight: 300;
+}
+
+footer ul li:first-child {
+    font-family: var(--heading1-font-family);
+    font-style: italic;
+}
+
+footer a {
+    text-decoration: none;
+    color: var(--base-color-text);
+    font-weight: 500;
+    font-size: inherit;
+}
+
+.social {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.social li {
+    margin-right: 25px;
+    /* Añade espacio a la derecha de cada elemento */
+}
+
+.social li:first-child {
+    font-family: var(--base-font-family);
+    font-style: normal;
+}
+
+.social li:last-child {
+    margin-right: 0;
+    /* No añade margen a la derecha del último elemento */
+}
+
+.social a {
+    text-decoration: none;
+    /* Opcional: elimina el subrayado de los enlaces */
+    color: var(--base-color-text);
+    /* Opcional: define un color para los textos de los enlaces */
+    transition: all 0.3s ease;
+}
+
+footer a:hover {
+    color: white;
+}
+
+.copyright p {
+    padding-left: 0;
+    font-size: var(--small-size);
+    font-weight: 100;
+    font-family: var(--base-font-family);
+    margin-bottom: 0px;
+    border-top: 0.5px solid black;
+    padding-top: 10px;
+    margin-top: 90px;
+}
+
+
+/* ==========================================================================
+   ACORDION
+   ========================================================================== */
+
+.accordion,
+.accordion-body {
+    font-family: var(--base-font-family);
+}
+
+.accordion-item:first-of-type,
+.accordion-item:last-of-type {
+    border-radius: 0 !important;
+}
+
+.accordion-item {
+    border-radius: 0;
+    border: none !important;
+    border-bottom: 1px solid #000 !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--option3-color) !important;
+    box-shadow: none;
+    color: white !important;
+}
+
+.accordion-button::after {
+    /* Black arrow  */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-button:not(.collapsed)::after {
+    /* White arrow  */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-item .accordion-body {
+    background-color: var(--option3-color);
+    color: white;
+}
+
+.accordion-body {
+    text-align: left;
+}
+
+.accordion-header button {
+    font-weight: bold;
+    font-size: 22px;
+    background-color: var(--option4-color);
+}
+
+
+/* ==========================================================================
+   CALL TO ACTION
+   ========================================================================== */
+
+.cta-button {
+    color: #000000;
+    text-align: center;
+    font-family: "Space Grotesk";
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.03px;
+    background: var(--option3-color);
+    box-shadow: var(--button1-box-shadow);
+    border: var(--button1-border);
+    padding: 20px;
+    position: relative;
+    bottom: 5px;
+    transform: translate(0%, 50%);
+    margin-bottom: 0px;
+}
+
+.cta-button:hover {
+    background-color: var(--option1-color);
+}
+
+.cta-container {
+    background-color: var(--option6-color);
+    padding: 25px 25px 0 25px;
+    border: 1px solid #000;
+    position: relative;
+    text-align: center;
+}
+
+.cta-container .heading1,
+.cta-container .heading2 {
+    font-size: 55px;
+}
+
+
+/* ==========================================================================
+   NAVBAR
+   ========================================================================== */
+
+.navbar-nav {
+    font-family: var(--base-font-family);
 }
 

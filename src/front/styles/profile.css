@@ -1,0 +1,218 @@
+
+h1 { font-size: var(--h1-size);}
+h2 { font-size: var(--h2-size);}
+h3 { font-size: var(--h3-size);}
+h4 { font-size: var(--h4-size);}
+h5 { font-size: var(--h5-size);}
+h6 { font-size: var(--h6-size);}
+p { font-size: var(--p-size);}
+
+
+/* ==========================================================================
+   USER PROFILE
+   ========================================================================== */
+
+.img-mood {
+    max-width: 100px;
+    max-height: auto;
+}
+
+/* ==========================================================================
+   PROFILE INFO
+   ========================================================================== */
+
+.user-info-profile, .card {
+    border-radius: 0;
+    border: 1px solid var(--base-color-text);
+    color: white;
+    background-color: var(--option67-color);
+}
+
+.user-info-profile .list-group > .list-group-item {
+    color:white;
+    background-color: var(--option67-color);
+}
+.card>.list-group:last-child, .card>.list-group:first-child, .list-group-item:first-child  {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+small {
+    font-size: --var(small-size);
+    font-weight: 100;
+    text-transform: uppercase;
+}
+
+
+/* ==========================================================================
+   ACTIONS
+   ========================================================================== */
+
+:focus-visible {
+    outline: var(--base-color-text) auto 1px;
+    outline-color: var(--base-color-text);
+    outline-style: var(--base-color-text);
+    outline-width: 1px;
+}
+.actions-buttons {
+    width: 100%;
+    border-color: 1px solid var(--base-color-text);
+    border-radius: 0;
+}
+.actions-buttons button {
+    text-align: left;
+    color:var(--base-color-text);
+    border-color: 1px solid var(--base-color-text);
+
+}
+
+.actions-buttons button:nth-child(3n+1) {
+    background-color: var(--option1-color); 
+}
+
+.actions-buttons button:nth-child(3n+2) {
+    background-color: var(--option2-color);
+}
+
+.actions-buttons button:nth-child(3n+3) {
+    background-color: var(--option3-color);
+}
+
+
+/* ==========================================================================
+   RESOURCES
+   ========================================================================== */
+
+   @media (max-width: 768px) {
+    .resources-tab-title {
+      flex-direction: row; 
+      justify-content: center; 
+      text-align: center;
+    }
+  
+    .resources-tab-title img {
+      width: 50px; 
+      margin-right: 5px; 
+    }
+  }
+  
+   /* Estilo para cambiar el color de fondo de la pestaña activa */
+.nav-tabs .nav-link.active {
+    background-color: #D2F752;
+    color: #000000;
+}
+
+/* Estilo para cambiar el color de fondo al pasar el cursor sobre la pestaña */
+.nav-tabs .nav-link:hover {
+    background-color: #D2F752;
+    color: #007bff; 
+}
+
+div .tab-content{
+    margin-top: 4vh;
+}
+.resources {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px; 
+}
+
+.resources ul a{
+    text-decoration: none;
+    color: var(--base-color-text);
+}
+
+.resources ul a:hover{
+    text-decoration: none;
+    color: var(--option67-color);
+    transition: ease-in-out 0.3s;
+}
+
+.resources ul {
+    display: flex; 
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 100%; 
+}
+
+.resources ul li {
+    width: 100%; 
+}
+
+.resources ul li::before {
+    overflow: hidden; 
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+}
+
+.resources ul li p {
+    font-weight: 100;
+    margin-left: 51px;
+}
+
+
+.resources ul {
+    list-style: none; 
+    padding-left: 0; 
+    margin-left:0;
+    margin-bottom: 0; 
+}
+
+.resources li {
+    padding-left: 0px; 
+    background-repeat: no-repeat; 
+    background-position: 0 center;
+    margin-bottom: 10px;
+    line-height: 35px;
+}
+
+.resources li.articulo::before {
+    content: ''; 
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Farticle.png?alt=media&token=139ea2e3-df12-42e0-a5c9-283b1838e526');
+    display: inline-block; 
+    width: 35px;
+    height: 35px;
+    margin-right: 16px; 
+    vertical-align: middle;
+    background-size: cover;
+}
+
+.resources li.video::before {
+    content: '';
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fvideo.png?alt=media&token=20c0a734-73d9-4842-90d6-b88b73a89722');
+    display: inline-block;
+    width: 35px; 
+    height: 35px; 
+    margin-right: 16px;
+    vertical-align: middle;
+    background-size: cover;
+}
+
+.resources li.podcast::before {
+    content: '';
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fpodcast.png?alt=media&token=2cf50f74-4ad8-4706-bf34-8b07b918ccf7');
+    display: inline-block;
+    width: 35px; 
+    height: 35px; 
+    margin-right: 16px;
+    vertical-align: middle;
+    background-size: cover;
+}
+
+
+.title {
+    font-family: var(--base-font-family);
+    font-size: var(--h3);
+}
+
+
+/* ==========================================================================
+   PSYCHOLOGYST CARD
+   ========================================================================== */
+
+ .ps-card {
+    border: 1px solid var(--base-color-text);
+    background-color: white;
+
+ }
+
