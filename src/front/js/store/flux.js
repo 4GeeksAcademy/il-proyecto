@@ -50,7 +50,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return false;
 					}
 					sessionStorage.setItem("userToken", data.access_token);
-					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
+					sessionStorage.setItem("userData", JSON.stringify({ id: data.user.id, name: data.user.name, surnames: data.user.surnames }));
 
 					console.log(data);
 					getActions().getCurrentUser();
@@ -77,7 +77,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// Procesa el login exitoso
 					console.log("Login successful:", data);
 					sessionStorage.setItem('userToken', data.access_token);
-					sessionStorage.setItem("userData", JSON.stringify({id: data.user.id, name: data.user.name, surnames: data.user.surnames}));
+					sessionStorage.setItem("userData", JSON.stringify({ id: data.user.id, name: data.user.name, surnames: data.user.surnames }));
 					console.log(data.user);
 					getActions().setUser(data.user);
 					setStore({ ...getStore(), auth: true })
@@ -119,16 +119,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password`, {
 						method: 'POST',
-						headers: {'Content-Type': 'application/json'},
+						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ email })
 					});
 					const result = await response.json();
-			
-					if (!response.ok) 
+
+					if (!response.ok)
 						return { ok: false, message: result.message || "Ocurrió un error. Por favor, inténtalo de nuevo." }
-						
+
 					else {
-						return { ok: true, message: "Consulta tu email para las instrucciones de reestablecimiento de contraseña." }								
+						return { ok: true, message: "Consulta tu email para las instrucciones de reestablecimiento de contraseña." }
 					}
 				} catch (error) {
 					return { ok: false, message: "Network error" };
@@ -255,26 +255,65 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// Backend is running
 			getMessage: async () => {
-				try  {
+				try {
 					// fetching data from the backend
 					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
 					return data;
-				}  catch  (error)  {
+				} catch (error) {
 					console.log("Error loading message from backend", error)
 				}
 			},
 
 			//mood
-			getAllMoods: async() => {
+			// getAllMoods: async () => {
+
+			// 	// devuelve 5 moods, uno de cada categoría aleatoriamente
+			// 	try {
+			// 		const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`;
+
+			// 		// Obtén el token JWT del sessionStorage
+			// 		const token = sessionStorage.getItem('userToken');
+
+			// 		const response = await fetch(urlActiveLocations, {
+			// 			method: 'GET',
+			// 			headers: {
+			// 				'Authorization': `Bearer  ${token}`
+			// 			}
+			// 		});
+
+			// 		if (!response.ok) {
+			// 			throw new Error(`Failed to fetch mood data: ${response.status} ${response.statusText}`);
+			// 		}
+
+			// 		const data = await response.json();
+			// 		const categories = Object.keys(data.results);
+
+			// 		//Procesamos los moods para devolver 1 de cada categoría aleatoriamente
+			// 		const fiveAleatorieMoods = categories.map(category => {
+			// 			const moods = data.results[category];
+			// 			return moods && moods.length > 0
+			// 				? moods[Math.floor(Math.random() * moods.length)]
+			// 				: null;
+			// 		}).filter(mood => mood !== null); 
+
+			// 		setStore({ ...getStore(), mood: data });
+			// 		console.log("Mood loaded from the API to store.");
+
+			// 		return fiveAleatorieMoods;
+			// 	} catch (error) {
+			// 		console.error('Error fetching or processing mood data:', error);
+			// 		return false;
+			// 	}
+			// },
+
+			getAllMoods: async () => {
 				try {
-					const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`; 
-			
-					// Obtén el token JWT del sessionStorage
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`;
 					const token = sessionStorage.getItem('userToken');
-								
+			
 					const response = await fetch(urlActiveLocations, {
 						method: 'GET',
 						headers: {
@@ -287,70 +326,75 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 			
 					const data = await response.json();
+					// const categories = Object.keys(data.results);
+					// // Procesamos los moods para devolver 1 de cada categoría aleatoriamente
+					// const fiveAleatorieMoods = categories.reduce((acc, category) => {
+					// 	const moods = data.results[category];
+					// 	if (moods && moods.length > 0) {
+					// 		acc.push(moods[Math.floor(Math.random() * moods.length)]);
+					// 	}
+					// 	return acc;
+					// }, []);
 			
-					// Actualizar el estado con las ubicaciones de los usuarios activos
-					console.log(data);
-					setStore({ ...getStore(), mood: data});
-	
-					console.log(getStore().mood);
-					console.log("Mood loaded from the API to store.");
+					setStore({ ...getStore(), mood: data });
+					console.log("5 aletory mood loaded from the API to store.", data);
 			
-					return data;
+					return data.results;
 				} catch (error) {
 					console.error('Error fetching or processing mood data:', error);
 					return false;
 				}
 			},
 
-			saveMood : async (mood) => {
-                try {
-                    const response = await fetch('/api/save-mood', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ mood: mood })
-                    });
-                    if (!response.ok) {
-                        throw new Error('Error al guardar el estado de ánimo');
-                    }
-                    console.log('Estado de ánimo guardado correctamente');
-                } catch (error) {
-                    console.error('Error al guardar el estado de ánimo:', error);
-                }
-            },
+			saveMood: async (mood) => {
+				try {
+					const response = await fetch('/api/save-mood', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ mood: mood })
+					});
+					if (!response.ok) {
+						throw new Error('Error al guardar el estado de ánimo');
+					}
+					console.log('Estado de ánimo guardado correctamente');
+				} catch (error) {
+					console.error('Error al guardar el estado de ánimo:', error);
+				}
+			},
 
 			getAllActiveUsers: async () => {
 				console.log("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				try {
-					const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`; 
-			
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`;
+
 					// Obtén el token JWT del sessionStorage
 					const token = sessionStorage.getItem('userToken');
 					if (!token) {
 						console.error('No token available, user not logged in.');
 						setStore({ ...getStore(), user: null });
-						return false;  
-					}				
+						return false;
+					}
 					const response = await fetch(urlActiveLocations, {
 						method: 'GET',
 						headers: {
 							'Authorization': `Bearer  ${token}`
 						}
 					});
-			
+
 					if (!response.ok) {
 						throw new Error(`Failed to fetch active users data: ${response.status} ${response.statusText}`);
 					}
-			
+
 					const data = await response.json();
-			
+
 					// Actualizar el estado con las ubicaciones de los usuarios activos
 					console.log(data);
 					setStore({ active_users: data });
 
 					console.log("Active users loaded from the API to store.");
-			
+
 					return true;
 				} catch (error) {
 					console.error('Error fetching or processing active location data:', error);
@@ -361,23 +405,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 			saveUserLocation: async () => {
 				try {
 					// Obtén la ubicación del usuario
-					const position = await new Promise((resolve, reject) => 
+					const position = await new Promise((resolve, reject) =>
 						navigator.geolocation.getCurrentPosition(resolve, reject));
-			
+
 					const latitude = position.coords.latitude;
 					const longitude = position.coords.longitude;
-			
-					
+
+
 					const token = sessionStorage.getItem('userToken');
 					const userId = JSON.parse(sessionStorage.userData).id;
-			
+
 					console.log("Id de usuario: " + userId);
 
 					const urlLocation = process.env.BACKEND_URL + `/api/user/location`;
-			
+
 					const requestBody = JSON.stringify({ user_id: userId, latitude, longitude });
 					console.log("Cuerpo de la solicitud: " + requestBody);
-			
+
 					const response = await fetch(urlLocation, {
 						method: 'POST',
 						headers: {
@@ -386,17 +430,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: requestBody,
 					});
-			
+
 					console.log("Respuesta del servidor: ", response);
-			
+
 					if (!response.ok) {
 						const responseBody = await response.text();
 						console.error("Cuerpo de la respuesta del error: " + responseBody);
 						throw new Error(`Error al obtener los datos de ubicación: ${response.status} ${response.statusText}`);
 					}
-			
+
 					const data = await response.json();
-			
+
 					// Actualiza el estado con las ubicaciones
 					console.log(data);
 					setStore(prevState => ({
@@ -406,7 +450,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					getActions().getAllActiveUsers();
 					console.log("Ubicaciones cargadas desde la API al almacenamiento.");
 					return true
-			
+
 				} catch (error) {
 					console.error('Error fetching or processing location data:', error);
 					return false;
@@ -426,12 +470,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					// ubicación en el estado global (store)
 					getActions().saveUserLocation(latitude, longitude),
-					getActions().getAllActiveUsers(),
-					setStore(prevState => ({
-						...prevState,
-						active_users: [{ latitude, longitude }]
+						getActions().getAllActiveUsers(),
+						setStore(prevState => ({
+							...prevState,
+							active_users: [{ latitude, longitude }]
 
-					}));
+						}));
 
 				} catch (error) {
 					console.error('Error getting user location:', error.message);
@@ -439,33 +483,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			getAllResources: async() => {
+			getAllResources: async () => {
 				try {
-					const urlActiveLocations = process.env.BACKEND_URL + `/api/resources-bytype`; 
-			
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/resources-bytype`;
+
 					// Obtén el token JWT del sessionStorage
 					// const token = sessionStorage.getItem('userToken');
-								
+
 					const response = await fetch(urlActiveLocations, {
 						method: 'GET',
 						// headers: {
 						// 	'Authorization': `Bearer  ${token}`
 						// }
 					});
-			
+
 					if (!response.ok) {
 						throw new Error(`Failed to fetch active location data: ${response.status} ${response.statusText}`);
 					}
-			
+
 					const data = await response.json();
-			
+
 					// Actualizar el estado con las ubicaciones de los usuarios activos
 					console.log(data);
 					setStore({ ...getStore(), resources: data.results });
-	
+
 					console.log(getStore().resources);
 					console.log("Resources loaded from the API to store.");
-			
+
 					return true;
 				} catch (error) {
 					console.error('Error fetching or processing resources data:', error);
@@ -476,11 +520,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getCurrentUser: async () => {
 				try {
 					const token = sessionStorage.getItem('userToken');
-						if (!token) {
-							console.error('No token available, user not logged in.');
-							setStore({ ...getStore(), user: null });
-							return false;  
-						}
+					if (!token) {
+						console.error('No token available, user not logged in.');
+						setStore({ ...getStore(), user: null });
+						return false;
+					}
 					const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
 						method: 'GET',
 						headers: {
@@ -489,15 +533,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					});
 
-					
+
 					if (!response.ok) {
 						throw new Error('Failed to fetch current user data');
-						
+
 					}
 					const data = await response.json();
 					console.log(data);
 					setStore({ ...getStore(), user: data });
-					
+
 					console.log(getStore().user);
 					console.log('Current user data loaded from the API to store');
 					return true;
@@ -506,7 +550,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
-			
+
 			updateUserMood: async (user_id, mood_id) => {
 				try {
 					console.log("USER ID:" + user_id, "MOOD ID:" + mood_id);
@@ -534,4 +578,4 @@ const getState = ({ getStore, getActions, setStore }) => {
 };
 
 
-	export default getState;
+export default getState;

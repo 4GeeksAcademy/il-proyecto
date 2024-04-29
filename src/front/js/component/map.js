@@ -33,7 +33,6 @@ const MapComponent = () => {
   };
   
 
-
   // obtener geolocalización
   const handleGeolocation = (map) => {
     if (navigator.geolocation) {
@@ -102,8 +101,8 @@ const MapComponent = () => {
       //obtiene todas las localizaciones activas
       //guarda la ubicación del usuario
       await actions.requestUserLocation();
-      await actions.saveUserLocation();
-      await actions.getAllActiveUsers();
+      // await actions.saveUserLocation();
+      // await actions.getAllActiveUsers();
       addMarkersToMap(finalMap, store?.active_users);
 
       //cerrar modal

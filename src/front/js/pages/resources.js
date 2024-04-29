@@ -2,6 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/profile.css";
 import { useNavigate } from "react-router-dom";
+
+import VideoPopup from "../component/videoPopup";
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -15,6 +18,12 @@ export const Resources = () => {
     const navigate = useNavigate();
     const [resources, setResources] = useState(null); // Nuevo estado local para los recursos
     const [key, setKey] = useState(null);
+
+    const video = {
+        title: "Título",
+        descripton: "Descripción",
+        url: "https://youtu.be/A7BghhLcmzs?si=F0lCeqJamfY-ObAB"
+    }
 
     useEffect(() => {
         actions.getAllResources().then(res => {
@@ -130,7 +139,11 @@ export const Resources = () => {
                         ))}
                     </Tabs>
                 </Row>
+                <Row>
+                    <VideoPopup video={video} />
+                </Row>
             </Container>
         </Container>
     );
 };
+
