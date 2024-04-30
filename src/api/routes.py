@@ -382,38 +382,6 @@ def get_resources_by_type():
     
 
 
-#todos los estados filtrados por categoria
-# @api.route('/moods', methods=['GET'])
-# @jwt_required()
-# def get_all_moods():
-#     resource_results = Mood.query.all()
-#     results = {}
-
-#     for mood in resource_results:
-#         mood_dict = mood.serialize()
-#         category = CategoryMood.query.filter_by(id=mood.category_id).first()
-#         if category:
-#             mood_dict["icon_url"] = category.icon_url  # Aquí se añade el icon_url
-#             # Se elimina la línea que añade la categoría al mood_dict
-
-#             # Si la categoría ya está en los resultados, añade el Mood a la lista de esa categoría
-#             if category.category in results:
-#                 results[category.category].append(mood_dict)
-#             # Si la categoría no está en los resultados, crea una nueva lista para esa categoría
-#             else:
-#                 results[category.category] = [mood_dict]
-
-#     if results != {}:
-#         response_body = {
-#             "msg": "OK",
-#             "results": results
-#         }
-#         return jsonify(response_body), 200
-
-#     else:
-#         return jsonify({"msg": "There aren't any location yet"}), 404
-
-
 @api.route('/moods', methods=['GET'])
 @jwt_required()
 def get_all_moods():
@@ -537,8 +505,22 @@ def get_current_user():
 # CHAT
 
 
-
-
+@api.route('/user/<int:user_id>', methods=['GET'])
+def get_one_user(user_id):
+    query_results = User.query.filter_by(id=user_id).first()
+ 
+    print(query_results)
+    
+    if query_results is not None:
+        response_body = {
+        "msg": "OK",
+        "results": query_results.serialize()
+    }
+        return jsonify(response_body), 200
+    
+    else:
+        return jsonify({"msg": f"User {user_id} not found"}), 404
+    
 
 
 

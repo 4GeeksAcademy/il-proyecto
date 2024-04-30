@@ -1,6 +1,6 @@
-import ResetPassword from "../component/resetPassword";
+import { socket } from "./appContext";
 
-const getState = ({ getStore, getActions, setStore }) => {
+const getState = ({ getStore, getActions, setStore  }) => {
 	return {
 
 		store: {
@@ -19,6 +19,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			mood: [],
 
 		},
+
+		// socket:{},
 
 		actions: {
 			//mymood
@@ -593,6 +595,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error('Error fetching or processing ALL user data:', error);
 					return false;
 				}
+			},
+
+			getUserById: async (user_id) => {
+				try {
+					const token = sessionStorage.getItem('userToken');
+						if (!token) {
+							console.error('No token available, user not logged in.');
+							return null;  
+						}
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${user_id}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
+						}
+					});
+				
+					if (!response.ok) {
+						throw new Error('Failed to fetch ALL user data');
+						
+					}
+					const data = await response.json();
+					console.log("ESTE ES EL GETUSERBYID", data.results);										
+					return data.results;
+					
+				} catch (error) {
+					console.error('Error fetching or processing ALL user data:', error);
+					return null;
+				}
+			},
+
+			handleUserClick: (otherUserId) => {
+				const userData = JSON.parse(sessionStorage.getItem('userData'));
+				const currentUserId = userData.id;
+				// setCurrentUserId(currentUserId); 
+				// setName(userData.name);
+				const roomId = `chat_${Math.min(currentUserId, otherUserId)}_${Math.max(currentUserId, otherUserId)}`;
+			
+				console.log(otherUserId);
+				// setOtherUserId(otherUserId); 
+				// setRoomId(roomId);.
+				
+				console.log("Joining room 1. :", roomId, currentUserId, otherUserId);
+				socket.emit('join', { user_id: currentUserId, other_user_id: otherUserId, room: roomId});
 			},
 
 		}

@@ -41,10 +41,14 @@ export const DailyMood = () => {
     };
 
     if (isLoading) {
-        return <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-    </Spinner>; // Puedes reemplazar esto con un componente de carga si lo prefieres
-    }
+
+    return <div className="vh-100">
+    <Spinner animation="border" role="status">
+    <span className="visually-hidden">Loading...</span>
+    </Spinner>
+    </div>; 
+// Puedes reemplazar esto con un componente de carga si lo prefieres
+}
 
     if (!store.user || !store.user.user_mood) {
         return <div>No data available</div>; // Puedes reemplazar esto con un componente de error si lo prefieres
@@ -53,7 +57,7 @@ export const DailyMood = () => {
     return (
     
         
-            <Container className="user-profile">
+            <Container className="user-profile vh-100">
                 <Row className="mb-5">
                     <Col xs={11} md={6} lg={10}>
                         <div className="orange-box">

@@ -20,6 +20,7 @@ class User(db.Model):
     hobbie_id = db.Column(db.Integer, db.ForeignKey('hobbie.id'))
     mood_id = db.Column(db.Integer, db.ForeignKey('mood.id'))
     phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
+    session = db.relationship('Sessions', backref='user', cascade="all, delete")
 
     def get_reset_token(self, expires_sec=84600):
         serializer = Serializer(secret_key=current_app.config['SECRET_KEY'], salt=current_app.config['SECURITY_PASSWORD_SALT'])
@@ -47,7 +48,9 @@ class User(db.Model):
         last_mood_history = UserMoodHistory.query.filter_by(user_id=self.id).order_by(UserMoodHistory.date.desc()).first()
         mood = Mood.query.filter_by(id=self.mood_id).first()
         hobbie = Hobbie.query.filter_by(id=self.hobbie_id).first()
-        psychologists = [session.phycologyst.serialize() for session in self.sessions]
+        # psychologists = [session.phycologyst.serialize() for session in self.sessions]
+        results = list(map(lambda item: item.serialize(),self.session))
+        print(results)
 
 
         print(hobbie)              
@@ -63,7 +66,7 @@ class User(db.Model):
             "user_mood": self.mood.serialize() if self.mood else None,
             "hobbie": self.hobbie.name if self.hobbie else None,
             'created_at': self.created_at.strftime('%Y-%m-%d') if self.created_at else None,
-            "psychologists": psychologists
+            "psychologists": results,
            
             # Do not serialize the password, it's a security breach
         }
@@ -285,16 +288,17 @@ class Sessions(db.Model):
     phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     phycologyst = db.relationship('Phycologyst', backref='sessions', cascade="all, delete")
-    user = db.relationship('User', backref='sessions', cascade="all, delete")
+
     
     def __repr__(self):
         return '<Sessions %r>' % self.id
         
 
     def serialize(self):
+        print(self.phycologyst)
         return {
             "id": self.id,
-            "phycologyst_id": self.phycologyst_id,
+            "phycologyst_info": self.phycologyst.serialize() if self.phycologyst else None,
             "user_id": self.user_id
         }
 

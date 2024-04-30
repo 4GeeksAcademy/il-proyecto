@@ -1,18 +1,41 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/chat.css";
+import { socket } from "../store/appContext";
+import { set } from "firebase/database";
 
 
 function ChatForm() {
-    const { socket, store, actions } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const [message, setMessage] = useState("");
     const [conversation, setConversation] = useState([]);
     const [currentUserId, setCurrentUserId] = useState(null);
     const [roomId, setRoomId] = useState(null);
     const [otherUserId, setOtherUserId] = useState(null);
     const [name, setName] = useState(null);
+    const [dataUser, setDataUser] = useState(null);
     
-   
+
+      
+    function submitMessageRoom(e) {
+        console.log("JOIN ROOM 5");
+        if (e.key === "Enter" && message.trim()) {
+            console.log("Sending message with timestamp:", { message, timestamp: new Date().toISOString() });
+            console.log("DENTRO DEL IF");
+            const newMessage = {
+                message: message,
+                sender_id: store?.user.id,
+                timestamp: new Date(),
+                room: roomId
+            };
+            console.log(newMessage);
+            socket.emit('data', { newMessage });
+            setMessage("");
+            console.log(conversation);
+            console.log("JOIN ROOM 6 hemos pasado el send message");
+
+        }}
+
 
 
     useEffect(() => {
@@ -63,43 +86,6 @@ function ChatForm() {
     }, [socket]);
 
 
-    function submitMessageRoom(e) {
-        console.log("JOIN ROOM 5");
-        if (e.key === "Enter" && message.trim()) {
-            console.log("Sending message with timestamp:", { message, timestamp: new Date().toISOString() });
-            console.log("DENTRO DEL IF");
-            const newMessage = {
-                message: message,
-                sender_id: store?.user.id,
-                timestamp: new Date(),
-                room: roomId
-            };
-            console.log(newMessage);
-            socket.emit('data', { newMessage });
-            setMessage("");
-            console.log(conversation);
-            console.log("JOIN ROOM 6 hemos pasado el send message");
-
-        }}
-
- 
-
-    function joinChat(otherUserId, roomId, currentUserId) {
-        console.log("JOIN CHAT::"+ roomId, currentUserId, otherUserId);
-        socket.emit('join', { user_id: currentUserId, other_user_id: otherUserId, room: roomId});
-        console.log("JOIN CHAT:3"+ roomId, currentUserId, otherUserId);
-    }
-
-    const handleUserClick = (otherUserId) => {
-        setCurrentUserId(JSON.parse(sessionStorage.getItem('userData')).id); 
-        setName(JSON.parse(sessionStorage.getItem('userData')).name);
-        const roomId = `chat_${Math.min(currentUserId, otherUserId)}_${Math.max(currentUserId, otherUserId)}`;
-        setOtherUserId(otherUserId); 
-        setRoomId(roomId);
-        console.log("Joining room 1. :", roomId, currentUserId, otherUserId);
-        joinChat(otherUserId, roomId, currentUserId);
-    
-    };
 
     function groupMessagesByDay(conversation) {
         const groupedByDay = conversation.reduce((acc, message) => {
@@ -144,19 +130,21 @@ function ChatForm() {
   
     return (
         <>
-        {!roomId && (	
+        {/* {!roomId && (	 */}
+            {/* <div>
             <ul>
                 {store?.all_users.map((item, index) => {
                     return (
                         <li key={index} onClick={() => handleUserClick(item.id)}>
-                            {item.name}<span className={`${item.is_active ? 'active' : 'inactive'}`}> &#9673; </span>
+                            {item.id} / {item.name}<span className={`${item.is_active ? 'active' : 'inactive'}`}> &#9673; </span>
                         </li>
                     );
                 })}
             </ul>
-        )}
+            </div>
+        )} */}
 
-            {roomId && (
+            {/* {roomId && ( */}
                 <div className="chat">
                     {groupedMessages.map(group => (
                         <div key={group.day} className="date">
@@ -175,7 +163,7 @@ function ChatForm() {
                         value={message}
                         onKeyDown={submitMessageRoom} />
                 </div>
-            )}
+            {/* )} */}
         </>
     );
 }

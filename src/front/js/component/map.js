@@ -18,28 +18,9 @@ const MapComponent = (props) => {
   const [hasAcceptedModal, setHasAcceptedModal] = useState(false);
   const [finalMap, setFinalMap] = useState(null);
   const [showChatModal, setShowChatModal] = useState(false);
-
   const [isGeolocationLoading, setIsGeolocationLoading] = useState(false);
-  const [hasAcceptedChatModal, setHasAcceptedChatModal] = useState(false);
-  const [userId, setUserId] = useState(null);
-
-
-  // const handleUserClick = (id) => {
-  //   setUserId(id);
-  //   setShowChatModal(true);
-  // };
-
-  const handleCloseChatModal = () => {
-    setShowChatModal(false);
-  };
-
-  const handleAcceptChatModal = () => {
-    setShowChatModal(false);
-    setHasAcceptedChatModal(true);
-  };
-
-
-
+  
+ 
   // Inicializa el mapa y la posicion de watermark
   const initializeMap = (map_id) => {
     console.log("INICIANDO MAPA");
@@ -56,29 +37,7 @@ const MapComponent = (props) => {
     return map;
   };
 
-
-
-  // obtener geolocalización
-  // const handleGeolocation = (map) => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       map.setView([latitude, longitude], 13);
-  //       // agregar marca circular en la posicion del usuario
-  //       // L.circle([latitude, longitude], {
-  //       //   color: '#FF86D2',
-  //       //   fillColor: '#FF86D2',
-  //       //   fillOpacity: 0.19,
-  //       //   radius: 15000,
-  //       // }).addTo(map);
-  //     }, (error) => {
-  //       console.error('Error getting location', error);
-  //     });
-  //   } else {
-  //     console.log('Geolocation not supported in this browser');
-  //   }
-  // };
-
+  // Maneja la geolocalización del usuario y centra el mapa en su ubicación
   const handleGeolocation = async (map) => {
     return new Promise((resolve, reject) => {
         if (navigator.geolocation) {
@@ -114,15 +73,13 @@ const MapComponent = (props) => {
       const popupContent = `<div>
                 <h6>${user.name}</h6>
                 <p>Hobbie: ${user.hobbie}</p>  
-                <a href='#' class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
+                <a href='#' id=${user.id} class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
                 <a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
             </div>`;
       marker.bindPopup(popupContent);
     });
   };
-  // <a id=${uniqueId} href='#' class="details-button btn btn-dark rounded-pill text-white">Chat &rarr;</a>
-
-
+  
   //control watermark
   const waterMark = () => {
     L.Control.Watermark = L.Control.extend({
@@ -140,7 +97,6 @@ const MapComponent = (props) => {
     }
   }
 
-
   const requestLocation = async () => {
     try {
       //obtiene todas las localizaciones activas y guarda la ubicación del usuario ( tambien llama a allactiveusers )
@@ -151,7 +107,6 @@ const MapComponent = (props) => {
       }
       //cerrar modal
       handleCloseLocationModal();
-
     } catch (error) {
       console.log('Error getting location:');
     }
@@ -162,10 +117,12 @@ const MapComponent = (props) => {
     setShowLocationModal(false);
   };
 
+  const handleCloseChatModal = () => {
+    setShowChatModal(false);
+  };
 
   const handleAcceptLocationModal = async () => {
     setIsGeolocationLoading(true);
-    setShowLocationModal(false);
     setHasAcceptedModal(true);
     try {
         await handleGeolocation(finalMap);
@@ -177,13 +134,17 @@ const MapComponent = (props) => {
         setShowLocationModal(false);
     }
 };
-  //debemos tener separados los useEffect ya que el primer useEffect está manejando la adición de marcadores al mapa, mientras que el segundo está inicializando el mapa y manejando la geolocalización. Estas son tareas bastante diferentes, por lo que tiene sentido mantenerlas en useEffect separados.
-  
+
+  //debemos tener separados los useEffect ya que el primer useEffect está manejando 
+  // la adición de marcadores al mapa, mientras que el segundo está inicializando 
+  //el mapa y manejando la geolocalización. Estas son tareas bastante diferentes, 
+  //por lo que tiene sentido mantenerlas en useEffect separados.
+
   useEffect(() => {
     if (hasAcceptedModal && finalMap && store?.active_users) {
       addMarkersToMap(finalMap, store?.active_users);
     }
-  }, [hasAcceptedModal, finalMap, store?.active_users]);
+  }, [hasAcceptedModal]);
 
 
   // inicializar el mapa y manejar la geolocalización
@@ -206,8 +167,10 @@ const MapComponent = (props) => {
         });
       }
       if (buttonChat) {
-        buttonChat.addEventListener('click', () => {
+        buttonChat.addEventListener('click', (e) => {
           setShowChatModal(true);
+          actions.handleUserClick(e.target.id)
+          // console.log(e.target.id);
         });
       }
 
@@ -235,9 +198,9 @@ const MapComponent = (props) => {
                 <button className='button-login' onClick={handleAcceptLocationModal} disabled={isGeolocationLoading}>
                   {isGeolocationLoading ? 'Cargando...' : 'Aceptar'}
                 </button>
-                <button className='button-login' onClick={handleCloseLocationModal}>
-                  Cancelar
-                </button>
+                  {!isGeolocationLoading ? <button className='button-login' onClick={handleCloseLocationModal}>
+                   Cancelar 
+                </button> : ''}
               </Modal.Body>
             </Modal>
           </Col>
@@ -257,5 +220,4 @@ const MapComponent = (props) => {
 };
 
 export default MapComponent;
-
 

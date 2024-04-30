@@ -20,14 +20,9 @@ export const Chat = () => {
     return (
         <>
 
-            <Container fluid className="container-landingpage vh-100">
-                <Row className="mt-3">
-                    <Col>
-                        <h1>Chat</h1>
-                        <ChatForm />
-                    </Col>
-                </Row>
-
+            <Container fluid className="container-landingpage vh-100">                           
+                    <h1>Chat</h1>
+                    <ChatForm />                  
             </Container >
         </>
     );

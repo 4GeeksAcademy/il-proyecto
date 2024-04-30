@@ -3,7 +3,7 @@
     width: 650px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Alinea los contenidos al inicio por defecto */
+    align-items: flex-start; 
     border: 1px solid var(--base-color-text);
 }
 
@@ -11,7 +11,7 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 100%; /* Ocupa todo el ancho del contenedor .chat */
+    width: 100%; 
 }
 
 .chat li {
