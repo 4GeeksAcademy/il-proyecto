@@ -1,10 +1,7 @@
-
-
 #map {
     border: 1px solid #FF5E41;
     width: 100%;
     margin: 0 auto;
-    /* height: 800px; */
 }
 
 .map-page{
@@ -20,5 +17,4 @@
     letter-spacing: 0.08px;
     background: var(--option1-color);
     border: 1px solid #000000;
-   
 }

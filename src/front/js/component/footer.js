@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import logo from "../../img/logo.png";
 
 export const Footer = () => (
 	<>
@@ -12,7 +13,7 @@ export const Footer = () => (
 				<Row>
 					<Col>
 						<div>
-							<img src="logo.png" width="150" height="auto" />
+							<img src={logo} width="150" height="auto" />
 						</div>
 						<div>
 							<ul className="social">

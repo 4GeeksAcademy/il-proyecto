@@ -18,6 +18,8 @@ const MapComponent = (props) => {
   const [hasAcceptedModal, setHasAcceptedModal] = useState(false);
   const [finalMap, setFinalMap] = useState(null);
   const [showChatModal, setShowChatModal] = useState(false);
+
+  const [isGeolocationLoading, setIsGeolocationLoading] = useState(false);
   const [hasAcceptedChatModal, setHasAcceptedChatModal] = useState(false);
   const [userId, setUserId] = useState(null);
 
@@ -57,25 +59,43 @@ const MapComponent = (props) => {
 
 
   // obtener geolocalización
-  const handleGeolocation = (map) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        map.setView([latitude, longitude], 13);
-        // agregar marca circular en la posicion del usuario
-        // L.circle([latitude, longitude], {
-        //   color: '#FF86D2',
-        //   fillColor: '#FF86D2',
-        //   fillOpacity: 0.19,
-        //   radius: 15000,
-        // }).addTo(map);
-      }, (error) => {
-        console.error('Error getting location', error);
-      });
-    } else {
-      console.log('Geolocation not supported in this browser');
-    }
-  };
+  // const handleGeolocation = (map) => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition((position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       map.setView([latitude, longitude], 13);
+  //       // agregar marca circular en la posicion del usuario
+  //       // L.circle([latitude, longitude], {
+  //       //   color: '#FF86D2',
+  //       //   fillColor: '#FF86D2',
+  //       //   fillOpacity: 0.19,
+  //       //   radius: 15000,
+  //       // }).addTo(map);
+  //     }, (error) => {
+  //       console.error('Error getting location', error);
+  //     });
+  //   } else {
+  //     console.log('Geolocation not supported in this browser');
+  //   }
+  // };
+
+  const handleGeolocation = async (map) => {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                map.setView([latitude, longitude], 13);
+                resolve();
+            }, (error) => {
+                console.error('Error getting location', error);
+                reject(error);
+            });
+        } else {
+            console.log('Geolocation not supported in this browser');
+            reject(new Error('Geolocation not supported'));
+        }
+    });
+};
 
   // Agrega marcadores al mapa
   const addMarkersToMap = (map, locations) => {
@@ -123,15 +143,15 @@ const MapComponent = (props) => {
 
   const requestLocation = async () => {
     try {
-      //obtiene todas las localizaciones activas
-      //guarda la ubicación del usuario
+      //obtiene todas las localizaciones activas y guarda la ubicación del usuario ( tambien llama a allactiveusers )
       await actions.requestUserLocation();
-      await actions.saveUserLocation();
-      await actions.getAllActiveUsers();
-      addMarkersToMap(finalMap, store?.active_users);
-
+      // Verifica que el mapa se haya inicializado antes de intentar agregar los marcadores
+      if (finalMap) {
+        addMarkersToMap(finalMap, store?.active_users);
+      }
       //cerrar modal
       handleCloseLocationModal();
+
     } catch (error) {
       console.log('Error getting location:');
     }
@@ -142,12 +162,28 @@ const MapComponent = (props) => {
     setShowLocationModal(false);
   };
 
-  // Cuando el usuario acepta el modal, solicita la ubicación
-  const handleAcceptLocationModal = () => {
+
+  const handleAcceptLocationModal = async () => {
+    setIsGeolocationLoading(true);
     setShowLocationModal(false);
     setHasAcceptedModal(true);
-    requestLocation();
-  };
+    try {
+        await handleGeolocation(finalMap);
+        await requestLocation();
+    } catch (error) {
+        console.log('Error getting location:', error);
+    } finally {
+        setIsGeolocationLoading(false);
+        setShowLocationModal(false);
+    }
+};
+  //debemos tener separados los useEffect ya que el primer useEffect está manejando la adición de marcadores al mapa, mientras que el segundo está inicializando el mapa y manejando la geolocalización. Estas son tareas bastante diferentes, por lo que tiene sentido mantenerlas en useEffect separados.
+  
+  useEffect(() => {
+    if (hasAcceptedModal && finalMap && store?.active_users) {
+      addMarkersToMap(finalMap, store?.active_users);
+    }
+  }, [hasAcceptedModal, finalMap, store?.active_users]);
 
 
   // inicializar el mapa y manejar la geolocalización
@@ -186,35 +222,6 @@ const MapComponent = (props) => {
 
   return (
     <>
-      {/* <div id="map_id" className='map-styles' style={{ height: '100vh', width: '100%' }}></div>
-      <Modal show={showLocationModal} onHide={handleCloseLocationModal}>
-        <Modal.Header closeButton>
-          <Modal.Title className='heading1'>Solicitar Geolocalización</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p className='base-paragrahp'>Este sitio web desea conocer tu ubicación aproximada para proporcionar servicios personalizados. No te preocupes, no es tu ubicación real. </p>
-          <button className='button-login' onClick={handleAcceptLocationModal}>
-            Aceptar
-          </button>
-          <button className='button-login' onClick={handleCloseLocationModal}>
-            Cancelar
-          </button>
-        </Modal.Body>
-      </Modal>
-    
-
-      <Modal show={showChatModal} onHide={handleCloseChatModal}>
-        <Modal.Header closeButton>
-          <Modal.Title className='heading1'>Chat</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ChatForm />
-          <button className='button-login' onClick={handleCloseChatModal}>
-            Cancelar
-          </button>
-        </Modal.Body>
-      </Modal> */}
-
       <Container fluid>
         <Row>
           <Col xs={showChatModal ? 8 : 12}>
@@ -225,8 +232,8 @@ const MapComponent = (props) => {
               </Modal.Header>
               <Modal.Body>
                 <p className='base-paragrahp'>Este sitio web desea conocer tu ubicación aproximada para proporcionar servicios personalizados. No te preocupes, no es tu ubicación real. </p>
-                <button className='button-login' onClick={handleAcceptLocationModal}>
-                  Aceptar
+                <button className='button-login' onClick={handleAcceptLocationModal} disabled={isGeolocationLoading}>
+                  {isGeolocationLoading ? 'Cargando...' : 'Aceptar'}
                 </button>
                 <button className='button-login' onClick={handleCloseLocationModal}>
                   Cancelar

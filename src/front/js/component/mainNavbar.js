@@ -26,7 +26,8 @@ export const MainNavbar = () => {
     };
 
     return (
-        <Navbar className="bg-body-white" >
+       
+          <Navbar className="bg-body-white" >
             <Container fluid>
                 <Navbar.Brand href="/" className="d-flex">
                     <img
@@ -39,10 +40,10 @@ export const MainNavbar = () => {
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-                    <Nav>
-                        {store?.auth ? (
+                     <Nav>
+                         { sessionStorage.getItem('userToken') ? (
                             <>
-                                <Navbar.Text className="text-body">Hola, <b>{store.user ? store.user?.name : ""}</b></Navbar.Text>
+                                <Navbar.Text className="text-body">Hola, <b>{JSON.parse(sessionStorage.getItem('userData')).name}</b></Navbar.Text>
                                 <Button variant="link" className="text-black-50 text-decoration-none" onClick={handleLogout}>Cerrar sesión</Button>
                                 <NavDropdown title="Menu" id="basic-nav-dropdown" align="end" >
                                     <NavDropdown.Item href="/geolocation">Mapa</NavDropdown.Item>
@@ -56,11 +57,12 @@ export const MainNavbar = () => {
                         ) : (
                             <Nav.Link href="/login" className="text-black">Iniciar sesión</Nav.Link>
                         )}
-
                     </Nav>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
+
+        
     );
 };
 

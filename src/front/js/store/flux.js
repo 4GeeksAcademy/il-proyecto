@@ -270,13 +270,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			//mood
-			getAllMoods: async() => {
-				try {
-					const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`; 
+			// getAllMoods: async() => {
+			// 	try {
+			// 		const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`; 
 			
-					// Obtén el token JWT del sessionStorage
-					const token = sessionStorage.getItem('userToken');
+			// 		// Obtén el token JWT del sessionStorage
+			// 		const token = sessionStorage.getItem('userToken');
 								
+			// 		const response = await fetch(urlActiveLocations, {
+			// 			method: 'GET',
+			// 			headers: {
+			// 				'Authorization': `Bearer  ${token}`
+			// 			}
+			// 		});
+			
+			// 		if (!response.ok) {
+			// 			throw new Error(`Failed to fetch mood data: ${response.status} ${response.statusText}`);
+			// 		}
+			
+			// 		const data = await response.json();
+			
+			// 		// Actualizar el estado con las ubicaciones de los usuarios activos
+			// 		console.log(data);
+			// 		setStore({ ...getStore(), mood: data});
+	
+			// 		console.log(getStore().mood);
+			// 		console.log("Mood loaded from the API to store.");
+			
+			// 		return data;
+			// 	} catch (error) {
+			// 		console.error('Error fetching or processing mood data:', error);
+			// 		return false;
+			// 	}
+			// },
+			getAllMoods: async () => {
+				try {
+					const urlActiveLocations = process.env.BACKEND_URL + `/api/moods`;
+					const token = sessionStorage.getItem('userToken');
+			
 					const response = await fetch(urlActiveLocations, {
 						method: 'GET',
 						headers: {
@@ -288,21 +319,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 						throw new Error(`Failed to fetch mood data: ${response.status} ${response.statusText}`);
 					}
 			
+					//devuelve 5 moods, 1 por cada categoría elegidos aleatoriamente
 					const data = await response.json();
 			
-					// Actualizar el estado con las ubicaciones de los usuarios activos
-					console.log(data);
-					setStore({ ...getStore(), mood: data});
-	
-					console.log(getStore().mood);
-					console.log("Mood loaded from the API to store.");
+					setStore({ ...getStore(), mood: data });
+					console.log("5 aletory mood loaded from the API to store.", data);
 			
-					return data;
+					return data.results;
 				} catch (error) {
 					console.error('Error fetching or processing mood data:', error);
 					return false;
 				}
 			},
+
+
 
 			saveMood : async (mood) => {
                 try {
@@ -377,7 +407,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const urlLocation = process.env.BACKEND_URL + `/api/user/location`;
 			
 					const requestBody = JSON.stringify({ user_id: userId, latitude, longitude });
-					console.log("Cuerpo de la solicitud: " + requestBody);
+					
 			
 					const response = await fetch(urlLocation, {
 						method: 'POST',
@@ -433,6 +463,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 						active_users: [{ latitude, longitude }]
 
 					}));
+
+					
 
 				} catch (error) {
 					console.error('Error getting user location:', error.message);

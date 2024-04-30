@@ -10,6 +10,7 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from collections import defaultdict
+from sqlalchemy import func
 # google
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -382,37 +383,55 @@ def get_resources_by_type():
 
 
 #todos los estados filtrados por categoria
+# @api.route('/moods', methods=['GET'])
+# @jwt_required()
+# def get_all_moods():
+#     resource_results = Mood.query.all()
+#     results = {}
+
+#     for mood in resource_results:
+#         mood_dict = mood.serialize()
+#         category = CategoryMood.query.filter_by(id=mood.category_id).first()
+#         if category:
+#             mood_dict["icon_url"] = category.icon_url  # Aquí se añade el icon_url
+#             # Se elimina la línea que añade la categoría al mood_dict
+
+#             # Si la categoría ya está en los resultados, añade el Mood a la lista de esa categoría
+#             if category.category in results:
+#                 results[category.category].append(mood_dict)
+#             # Si la categoría no está en los resultados, crea una nueva lista para esa categoría
+#             else:
+#                 results[category.category] = [mood_dict]
+
+#     if results != {}:
+#         response_body = {
+#             "msg": "OK",
+#             "results": results
+#         }
+#         return jsonify(response_body), 200
+
+#     else:
+#         return jsonify({"msg": "There aren't any location yet"}), 404
+
+
 @api.route('/moods', methods=['GET'])
 @jwt_required()
 def get_all_moods():
-    resource_results = Mood.query.all()
-    results = {}
+    categories = CategoryMood.query.all()  # Obtener todas las categorías
+    results = []
+    for category in categories:
+            # Obtén un mood aleatorio de cada categoría
+            mood = Mood.query.filter_by(category_id=category.id).order_by(func.random()).first()
+            if mood:
+                mood_dict = mood.serialize()
+                mood_dict["icon_url"] = category.icon_url  
+                mood_dict["category_name"] = category.category  
+                results.append(mood_dict)  
 
-    for mood in resource_results:
-        mood_dict = mood.serialize()
-        category = CategoryMood.query.filter_by(id=mood.category_id).first()
-        if category:
-            mood_dict["icon_url"] = category.icon_url  # Aquí se añade el icon_url
-            # Se elimina la línea que añade la categoría al mood_dict
-
-            # Si la categoría ya está en los resultados, añade el Mood a la lista de esa categoría
-            if category.category in results:
-                results[category.category].append(mood_dict)
-            # Si la categoría no está en los resultados, crea una nueva lista para esa categoría
-            else:
-                results[category.category] = [mood_dict]
-
-    if results != {}:
-        response_body = {
-            "msg": "OK",
-            "results": results
-        }
-        return jsonify(response_body), 200
-
+    if results:
+        return jsonify({"msg": "OK", "results": results}), 200
     else:
-        return jsonify({"msg": "There aren't any location yet"}), 404
-
-
+        return jsonify({"msg": "No moods available"}), 404
 
 
 #ultima categoria de estado de animo del usuario
