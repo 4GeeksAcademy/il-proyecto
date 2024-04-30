@@ -522,9 +522,6 @@ def get_one_user(user_id):
         return jsonify({"msg": f"User {user_id} not found"}), 404
     
 
-
-
-
 #Socket.io
 def register_socket_events(socket_io):
 

@@ -26,7 +26,8 @@ function ChatForm() {
                 message: message,
                 sender_id: store?.user.id,
                 timestamp: new Date(),
-                room: roomId
+                room: roomId,
+                // other_user_id: 3
             };
             console.log(newMessage);
             socket.emit('data', { newMessage });
@@ -62,7 +63,8 @@ function ChatForm() {
                 message: enhancedMessage,
                 sender_id: data.data.newMessage.sender_id,
                 timestamp: timestamp,
-                room: room
+                room: room,
+                // other_user_id: 2
             };
         
             // Actualizar el estado de conversation
