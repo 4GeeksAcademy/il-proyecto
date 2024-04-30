@@ -19,16 +19,23 @@ import Form from 'react-bootstrap/Form';
 export const UserProfile = () => {
     const { store, actions } = useContext(Context);
     const params = useParams();
+    const navigate = useNavigate();
 
     const activeUser = store?.active_users.find(user => user.id === parseInt(params.uid));
 
     console.log(activeUser);
 
+    const handleProfileClick = (psychologistId) => {
+        navigate(`/phycologyst-profile/${psychologistId}`); // Navegar a la página del perfil del psicólogo
+    };
+
+    
+
     return (
 
         <Container fluid className="container-landingpage">
             <Container className="user-profile pb-4 pt-4">
-                 <Row className="mb-5">
+                <Row className="mb-5">
                     <Col xs={11} md={6} lg={10}>
                         <h2 className="">{activeUser?.name} {activeUser?.surnames}</h2>
                         <h3 className="">{activeUser?.hobbie}</h3>
@@ -62,7 +69,7 @@ export const UserProfile = () => {
                                             <Image src={psychologist.profile_url} className="img-mood" roundedCircle />
                                             <h5>{psychologist.name} {psychologist.surnames}</h5>
                                             <p><small> [nº. {psychologist.collegiate_number} ]</small></p>
-                                            <button className="btn btn-dark rounded-pill">Ver perfil &rarr;</button>
+                                            <button className="btn btn-dark rounded-pill" onClick={() => handleProfileClick(psychologist.id)}>Ver perfil &rarr;</button>
                                         </div>
                                     </Col>
                                 )
@@ -76,54 +83,3 @@ export const UserProfile = () => {
         </Container >
     );
 };
-
-
-
-                {/* <Row className="mt-5">
-                    <Col xs={12} md={12} lg={12}>
-                        <h4 className="border-bottom border-dark mb-3">Mis psicólogos de referencia</h4>
-                        
-                    </Col>
-                </Row>
-                <Row>
-                    {activeUser?.psychologists.length === 0 ? (
-                        <div>No tienes psycógolos de referencia. Cuando realices alguna sesión con ellos, se guardarán aquí.</div>
-                    ) : (
-                        activeUser?.psychologists.map((psychologist, index) => {
-                            return (
-                                <Col xs={12} md={6} lg={6} className="text-center" key={index}>
-                                    <div className="ps-card p-3">
-                                        <Image src={psychologist.profile_url} className="img-mood" roundedCircle />
-                                        <h5>{psychologist.name} {psychologist.surnames} <em>[ {psychologist.collegiate_number} ]</em></h5>
-                                        <p style={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: '2',
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis'
-                                        }}>{psychologist.biography}</p>
-                                        <button className="btn btn-dark rounded-pill">Ver perfil &rarr;</button>
-                                    </div>
-                                </Col>
-                            )
-                        })
-                    )}
-                </Row> */}
-                {/* <Row className="mt-5">
-                    <Col xs={12} md={12} lg={12}>
-                        <h4 className="border-bottom border-dark mb-3">Mis recursos</h4>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col className="resources">
-                        <ul>
-                            <li className="articulo">Artículo - Título del recurso (Nombre psicólogo)</li>
-                            <li className="video">Vídeo - Título del recurs (Nombre psicólogo)</li>
-                            <li className="podcast">Podcast - Título del recurso (Nombre psicólogo)</li>
-                        </ul>
-                    </Col>
-                </Row> */}
-
-
-

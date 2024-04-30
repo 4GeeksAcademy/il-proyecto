@@ -32,9 +32,9 @@ export const DailyMood = () => {
         navigate("/resources");
     };
 
-    // const handleClickPhycologyst = () => {
-    //     navigate("/phycologyst");
-    // };
+    const handleClickPhycologyst = () => {
+        navigate("/phycologyst");
+    };
 
     const handleClickVolver = () => {
         navigate("/choose-mood");
@@ -82,9 +82,9 @@ export const DailyMood = () => {
                                             case 1:
                                                 handleClickResources();
                                                 break;
-                                            // case 2:
-                                            //     handleClickPhycologyst();
-                                            //     break;
+                                            case 2:
+                                                handleClickPhycologyst();
+                                                break;
                                             // Agrega más casos según sea necesario
                                             default:
                                                 break;

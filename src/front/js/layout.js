@@ -19,6 +19,8 @@ import { ChooseMood } from "./pages/choose-mood";
 import { UserProfile } from "./pages/userProfile";
 import { Resources } from "./pages/resources";
 import { DayMood } from "./pages/day-mood";
+import {PhycologystProfile} from "./pages/phycologyst-profile";
+import { Phycologyst } from "./pages/phycologyst";
 import { Chat } from "./pages/chat";
 
 
@@ -59,8 +61,10 @@ const Layout = () => {
                         <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
                         <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/:uid/:url"/>
                         <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/> 
-                        <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>  
-                        <Route element={<PrivateRoute><Chat /></PrivateRoute>} path="/chat-v1" />                                   
+                        <Route element={<PrivateRoute><Chat /></PrivateRoute>} path="/chat-v1" />
+                        <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>
+                        <Route element={<PrivateRoute><PhycologystProfile /></PrivateRoute>} path="/phycologyst-profile/:url"/> 
+                        <Route element={<PrivateRoute><Phycologyst /></PrivateRoute>} path="/phycologyst"/>                                      
                     </Routes>
                     <Footer />            
             </BrowserRouter>
