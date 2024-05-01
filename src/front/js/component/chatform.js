@@ -163,7 +163,7 @@ function ChatForm({ userName }) {
                             <small>{group.day}</small>
                             <ul>
                                 {group.messages.map((item, index) => (
-                                    <li key={index} className={item.isSender ? "my-message" : "other-message"}
+                                    <li key={index} className={item.sender_name === userName ? "my-message" : "other-message"}
                                     dangerouslySetInnerHTML={{ __html: `${item.sender_name}: ${item.message}` }}>
                                  </li>
                                 ))}
