@@ -31,7 +31,7 @@ function ChatForm({ userName }) {
                 timestamp: new Date(),
                 room: store.room,
                 isSender: true,
-                other_user_name: userName,
+                recipient_id: userName,
                 
             };
             setRoomId(store.room);
@@ -39,6 +39,9 @@ function ChatForm({ userName }) {
             console.log(otherUserName);
             console.log(newMessage);
             socket.emit('data', { newMessage });
+            // socket.emit('data', { newMessage: newMessage, room: store.room });
+            // socket.emit('private_message', {newMessage});
+
             
             setMessage("");
             console.log(conversation);
@@ -55,6 +58,20 @@ function ChatForm({ userName }) {
         const handleId = (data) => {
                 setCurrentUserId(data.sender_id);};
                 setOtherUserName(userName);
+
+        // const handleRoomJoined = (data) => {
+        //     // Extraer el ID de la sala de los datos recibidos
+        //     const roomIdFromData = data.roomId;
+        //     // Establecer el estado roomId con el ID de la sala
+        //     setRoomId(roomIdFromData);
+        // };
+
+        const handleRoomJoined = (data) => {
+            console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", data); // Imprimir los datos recibidos
+        };
+
+        handleRoomJoined();
+        socket.on('room_join', handleRoomJoined);
         
 
         // problema puede ser que este AQUI
@@ -105,14 +122,16 @@ function ChatForm({ userName }) {
             console.log("SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA CLIENTE", store.room);
             socket.connect();
             socket.on('your_id', handleId);
-            socket.on('room_joined', roomId);
+            socket.on('room_joined', handleRoomJoined);
             socket.on('data', handleMessage);
-           
-   
+            // socket.connect();
+            // socket.on('your_id', handleId);
+            // socket.on('private_message', handleMessage);           
+    
         return () => {
-
+            // socket.off('private_message', handleMessage);
             socket.off('data', handleMessage);
-            socket.off('room_joined', roomId);
+            socket.off('room_joined', handleRoomJoined);
             socket.emit('leave_room', { userId: currentUserId, roomId: roomId });
             socket.disconnect();
         }

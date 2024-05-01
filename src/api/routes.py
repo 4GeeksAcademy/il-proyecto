@@ -558,12 +558,20 @@ def register_socket_events(socket_io):
         leave_room(room)
         emit('left_room', {'room': room, 'user_id': user_id}, room=room)
 
-    @socket_io.on('to')
-    def to(data):
-        print("BACK TO")
-        print(data)
-        room = data["room"]
-        emit('message', data, room=room)
+    # @socket_io.on('private_message')
+    # def handle_private_message(data):
+    #     recipient_id = data['recipientId']
+    #     message = data['message']
+    #     sender_id = data['senderId']
+    #     # Emitir el mensaje solo al usuario destinatario
+    #     emit('private_message', {'message': message, 'senderId': sender_id}, room=recipient_id)
+
+    # @socket_io.on('to')
+    # def to(data):
+    #     print("BACK TO")
+    #     print(data)
+    #     room = data["room"]
+    #     emit('message', data, room=room)
 
 
 
