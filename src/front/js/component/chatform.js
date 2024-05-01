@@ -5,7 +5,7 @@ import { socket } from "../store/appContext";
 import { set } from "firebase/database";
 
 
-function ChatForm() {
+function ChatForm({ userName }) {
     const { store, actions } = useContext(Context);
     const [message, setMessage] = useState("");
     const [conversation, setConversation] = useState([]);
@@ -14,9 +14,11 @@ function ChatForm() {
     const [otherUserId, setOtherUserId] = useState(null);
     const [name, setName] = useState(null);
     const [dataUser, setDataUser] = useState(null);
-    
+    const [otherUserName, setOtherUserName] = useState(null); // Estado para almacenar el nombre del receptor
 
-      
+   
+
+
     function submitMessageRoom(e) {
         console.log("JOIN ROOM 5");
         if (e.key === "Enter" && message.trim()) {
@@ -25,12 +27,22 @@ function ChatForm() {
             const newMessage = {
                 message: message,
                 sender_id: store?.user.id,
+                sender_name: store?.user.name,
                 timestamp: new Date(),
-                room: roomId,
-                // other_user_id: 3
+                room: store.room,
+                isSender: true,
+                recipient_id: userName,
+                
             };
+            setRoomId(store.room);
+            console.log("SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", store.room);
+            console.log(otherUserName);
             console.log(newMessage);
             socket.emit('data', { newMessage });
+            // socket.emit('data', { newMessage: newMessage, room: store.room });
+            // socket.emit('private_message', {newMessage});
+
+            
             setMessage("");
             console.log(conversation);
             console.log("JOIN ROOM 6 hemos pasado el send message");
@@ -45,6 +57,38 @@ function ChatForm() {
 
         const handleId = (data) => {
                 setCurrentUserId(data.sender_id);};
+                setOtherUserName(userName);
+
+        // const handleRoomJoined = (data) => {
+        //     // Extraer el ID de la sala de los datos recibidos
+        //     const roomIdFromData = data.roomId;
+        //     // Establecer el estado roomId con el ID de la sala
+        //     setRoomId(roomIdFromData);
+        // };
+
+        const handleRoomJoined = (data) => {
+            console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", data); // Imprimir los datos recibidos
+        };
+
+        handleRoomJoined();
+        socket.on('room_join', handleRoomJoined);
+        
+
+        // problema puede ser que este AQUI
+
+        // const handleRoomJoined = (data) => setRoomId(data.room);
+        // const handleRoomJoined = (data) => setRoomId(store?.room);
+        // handleRoomJoined();
+        // const handleRoomJoined = (data) => setRoomId(data.roomId);
+
+        // console.log("handle ROOM HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", roomId);
+        // // socket.on('room_joined', roomId);        
+        // socket.on('room_joined', (data) => {
+        //     // Update roomId state
+        //     setRoomId(data.roomId);
+        // });
+        
+        
 
         const handleMessage = (data) => {
             console.log("Received data in handleMessage:", data);
@@ -56,36 +100,47 @@ function ChatForm() {
             const messageText = data.data.newMessage.message;  // Accede a través de data.data.newMessage
             const enhancedMessage = linkify(messageText);
             const timestamp = new Date(data.data.newMessage.timestamp);  // y data.data.newMessage.timestamp
-            const room = data.data.newMessage.room;
+            // const room = store.room;
             console.log(enhancedMessage, timestamp);
             // Crear un nuevo objeto de mensaje
             const userMessage = {
                 message: enhancedMessage,
-                sender_id: data.data.newMessage.sender_id,
+                sender_id: data.data.sender_id,
+                sender_name: data.data.newMessage.sender_name,
                 timestamp: timestamp,
-                room: room,
-                // other_user_id: 2
+                room: store.room,
+                isSender: data.data.newMessage.sender_id === currentUserId,
+                other_user_name: userName,
+                
             };
-        
+            
+           
             // Actualizar el estado de conversation
             setConversation(prevConversation => [...prevConversation, userMessage]);
         };
 
+            console.log("SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA CLIENTE", store.room);
             socket.connect();
             socket.on('your_id', handleId);
-            socket.on('connect', function() {
-                console.log('Connected to the server.');
-                socket.emit('join_room', { userId: currentUserId, roomId: roomId });
-            });
-  
+            socket.on('room_joined', handleRoomJoined);
             socket.on('data', handleMessage);
-
+            // socket.connect();
+            // socket.on('your_id', handleId);
+            // socket.on('private_message', handleMessage);           
+    
         return () => {
-
+            // socket.off('private_message', handleMessage);
             socket.off('data', handleMessage);
-
+            socket.off('room_joined', handleRoomJoined);
+            socket.emit('leave_room', { userId: currentUserId, roomId: roomId });
+            socket.disconnect();
         }
     }, [socket]);
+
+
+    useEffect(() => {
+        console.log(roomId);
+    }, [roomId]);
 
 
 
@@ -99,11 +154,13 @@ function ChatForm() {
             }
             // Formatear la fecha a Castellano
             const day = new Intl.DateTimeFormat('es-ES', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).format(dateObj);
-
+    
             if (!acc[day]) {
                 acc[day] = [];
             }
-            acc[day].push(message);
+            // Utiliza el nombre del remitente del mensaje en lugar del sessionStorage
+            const messageWithSenderName = { ...message };
+            acc[day].push(messageWithSenderName);
             return acc;
         }, {});
         console.log(groupedByDay);
@@ -112,7 +169,6 @@ function ChatForm() {
             messages: groupedByDay[day]
         }));
     }
-
     const groupedMessages = groupMessagesByDay(conversation) ;
    
  
@@ -132,30 +188,15 @@ function ChatForm() {
   
     return (
         <>
-        {/* {!roomId && (	 */}
-            {/* <div>
-            <ul>
-                {store?.all_users.map((item, index) => {
-                    return (
-                        <li key={index} onClick={() => handleUserClick(item.id)}>
-                            {item.id} / {item.name}<span className={`${item.is_active ? 'active' : 'inactive'}`}> &#9673; </span>
-                        </li>
-                    );
-                })}
-            </ul>
-            </div>
-        )} */}
-
-            {/* {roomId && ( */}
                 <div className="chat">
                     {groupedMessages.map(group => (
                         <div key={group.day} className="date">
                             <small>{group.day}</small>
                             <ul>
                                 {group.messages.map((item, index) => (
-                                    <li key={index} className={item.sender_id === currentUserId ? "my-message" : "other-message"}
-                                        dangerouslySetInnerHTML={{ __html: `${item.sender_id}: ${item.message} ` }}>
-                                    </li>
+                                    <li key={index} className={item.sender_name === userName ? "my-message" : "other-message"}
+                                    dangerouslySetInnerHTML={{ __html: `${item.sender_name}: ${item.message}` }}>
+                                 </li>
                                 ))}
                             </ul>
                         </div>
@@ -165,7 +206,6 @@ function ChatForm() {
                         value={message}
                         onKeyDown={submitMessageRoom} />
                 </div>
-            {/* )} */}
         </>
     );
 }

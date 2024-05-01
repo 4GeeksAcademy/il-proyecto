@@ -19,12 +19,15 @@ const MapComponent = (props) => {
   const [finalMap, setFinalMap] = useState(null);
   const [showChatModal, setShowChatModal] = useState(false);
   const [isGeolocationLoading, setIsGeolocationLoading] = useState(false);
+  const [userName, setUserName] = useState(null);
   
  
   // Inicializa el mapa y la posicion de watermark
   const initializeMap = (map_id) => {
     console.log("INICIANDO MAPA");
-    const map = L.map(map_id);
+    const map = L.map(map_id, {
+      scrollWheelZoom: false  // Desactiva el zoom con la rueda del mouse
+    });
     console.log(map);
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
@@ -73,7 +76,7 @@ const MapComponent = (props) => {
       const popupContent = `<div>
                 <h6>${user.name}</h6>
                 <p>Hobbie: ${user.hobbie}</p>  
-                <a href='#' id=${user.id} class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
+                <a href='#' id=${user.id} data-name="${user.name}" class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
                 <a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
             </div>`;
       marker.bindPopup(popupContent);
@@ -166,11 +169,14 @@ const MapComponent = (props) => {
           navigate(`/details/${id}`);
         });
       }
+
       if (buttonChat) {
         buttonChat.addEventListener('click', (e) => {
           setShowChatModal(true);
           actions.handleUserClick(e.target.id)
-          // console.log(e.target.id);
+          setUserName(e.target.dataset.name);
+          
+         
         });
       }
 
@@ -182,7 +188,7 @@ const MapComponent = (props) => {
 
   }, []);
 
-
+  console.log("USERNAME", userName);
   return (
     <>
       <Container fluid>
@@ -205,12 +211,13 @@ const MapComponent = (props) => {
             </Modal>
           </Col>
           {showChatModal && (
-            <Col xs={4}>
-              <h4 className='heading2'>¿ Con quién quieres hablar ?</h4>
-              <ChatForm /> 
-              <button className='button-login' onClick={handleCloseChatModal}>
+            <Col xs={4} className='chat-heading'>
+              <h4 className='base-paragrahp'>Chatea con {userName}</h4><button className='button-login' onClick={handleCloseChatModal}>
                 Cancelar
               </button>
+              
+              <ChatForm userName={userName}/> 
+
             </Col>
           )}
         </Row>

@@ -1,10 +1,13 @@
 .chat {
     min-height: 80vh;
-    width: 650px;
+    /* width: 650px; */
     display: flex;
     flex-direction: column;
     align-items: flex-start; 
     border: 1px solid var(--base-color-text);
+    /* overflow-y: auto; */
+    overflow-x: none;
+    background: linear-gradient(90deg, var(--option4-color) 0%, var(--option3-color) 100%);
 }
 
 .chat ul {
@@ -18,21 +21,28 @@
     background-repeat: no-repeat;
     background-position: 0 center;
     margin-bottom: 10px;
-    line-height: 35px;
     border: 1px solid var(--base-color-text);
-    padding: 8px 15px;
+    /* padding: 8px 15px; */
     border-radius: 10px;
-    max-width: 70%;
-    min-width: 50%; 
+    width: auto;
+    min-width: 200px; 
+    max-width: fit-content;
     display: flex;
     justify-content: center; 
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    box-sizing: border-box;
+    word-break: break-all;  
+    white-space: pre-wrap;
 }
 
 .my-message {
     background-color: #fff;
     margin-right: auto; 
     margin-left: 10px;
-    text-align: left;   
+    text-align: left;  
+    width: auto; 
+   
 }
 
 .other-message {
@@ -40,6 +50,37 @@
     margin-left: auto; 
     margin-right: 10px;
     text-align: right;
+    width: auto;
+}
+
+.form-control.my-input {
+    /* Cambia el color de fondo del input */
+    background-color: #f8f8f8;
+
+    /* Cambia el color del texto del input */
+    color: #333;
+
+    /* Cambia el color del borde del input */
+    border-color: #ddd;
+
+    /* Cambia el tamaño de la fuente del input */
+    font-size: 16px;
+
+    /* Cambia el espaciado interno del input */
+    padding: 10px;
+
+    /* Cambia el radio del borde del input para hacerlo más redondeado */
+    border-radius: 5px;
+
+    /* Cambia el color del placeholder del input */
+    ::placeholder {
+        color: #999;
+    }
+}
+
+.my-message, .other-message{
+    max-width: 35%;
+    overflow-wrap: break-word;
 }
 
 .chat li a {
@@ -50,12 +91,3 @@
 .date {
     text-align: center;
 }
-
-/* .active {
-    color: var(--option1-color);
-}
-
-.inactive {
-    color:var(--option3-color);
-} */
-

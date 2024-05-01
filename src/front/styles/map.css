@@ -18,3 +18,15 @@
     background: var(--option1-color);
     border: 1px solid #000000;
 }
+
+h4.base-paragrahp{
+    font-size: var(--h2-size);
+}
+
+.chat-heading{
+    font-family: var(--base-font-family);
+    font-size: 40px;
+    color: var(--heading-color);
+    letter-spacing: 0.08px;
+    border: 1px solid #000000;
+}

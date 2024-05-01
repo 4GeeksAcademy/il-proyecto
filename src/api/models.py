@@ -50,10 +50,10 @@ class User(db.Model):
         hobbie = Hobbie.query.filter_by(id=self.hobbie_id).first()
         # psychologists = [session.psychologist.serialize() for session in self.sessions]
         results = list(map(lambda item: item.serialize(),self.session))
-        print(results)
+    
 
 
-        print(hobbie)              
+                    
         return {
             "id": self.id,
             "email": self.email,

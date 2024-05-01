@@ -192,9 +192,7 @@ def send_reset_email(user, token):
     link = url_for('api.reset_password_request', token=token, _external=False)
     new_link = link.replace("/api", "")
     full_link = f"{base_host}{new_link}"  
-    print("*************************************************")
-    print(full_link)
-    print("*************************************************")
+   
     # msg = Message('Recuperar contraseña',
     #               sender='mymoodbnp@gmail.com',
     #               recipients=[user.email])
@@ -250,8 +248,6 @@ def get_all_location():
         query_results = Location.query.all()
         results = list(map(lambda item: item.serialize(), query_results))
 
-    
-        print(query_results)
         
         if results != []:
             response_body = {
@@ -503,8 +499,6 @@ def get_all_users_active():
     
 
 
-
-
 @api.route('/user/<int:user_id>/mood', methods=['PUT'])
 @jwt_required()
 def update_user_mood(user_id):
@@ -545,12 +539,9 @@ def get_current_user():
 
 # CHAT
 
-
 @api.route('/user/<int:user_id>', methods=['GET'])
 def get_one_user(user_id):
     query_results = User.query.filter_by(id=user_id).first()
- 
-    print(query_results)
     
     if query_results is not None:
         response_body = {
@@ -572,6 +563,7 @@ def register_socket_events(socket_io):
         print("Data from the front end: ", str(data))
         emit("data", {'data': data, 'id': request.sid}, broadcast=True)
 
+
     @socket_io.on('connect')
     def test_connect():
         """event listener when client connects to the server"""
@@ -585,35 +577,8 @@ def register_socket_events(socket_io):
 
     @socket_io.on('message')
     def test_message(data):
-        print(str(data))
-
-    # @socket_io.on('connect')
-    # def test_connect():
-    #     # user_id = int(data['user_id'])  # Convertir a entero
-    #     # room = data["room"]
-    #     """event listener when client connects to the server"""
-    #     print("11111111111111111111111111111111111111111111111111111111111111111")
-    #     print(request)
-    #     print("Client connected")
-    #     emit('connected', {'message': 'Your are connected'})
-   
-
-
-    # @socket_io.on('disconnect')
-    # def test_disconnect():
-    #     """event listener when client disconnects from the server"""
-    #     print("Client disconnected")
-
-    # @socket_io.on('message')
-    # def test_message(data):
-    #     print(str(data))
-
-    # @socket_io.on('data')
-    # def handle_message(data):
-    #     """event listener when client sends data"""
-    #     print("Data from the front end: ", str(data))
-    #     emit("data", {'message': data.message, 'sender_id': data.sender_id, 'timestamp': data.timestamp, 'room': data.room}, broadcast=True)
-
+        room = data["room"]
+        emit('message', data, room=room)
 
     @socket_io.on('join')
     def on_join(data):
@@ -623,48 +588,50 @@ def register_socket_events(socket_io):
         user_id = int(data['user_id'])  # Convertir a entero
         other_user_id = int(data['other_user_id'])  # Convertir a entero
         room = data["room"]
+        print(other_user_id)
         join_room(room)
         emit('joined_room', {'room': room, 'user_id': user_id, 'other_user_id': other_user_id}, room=room)
 
-    # @socket_io.on('leave')
-    # def on_leave(data):
-    #     room = data['room']
-    #     leave_room(room)
-    #     emit('left_room', {'room': room}, room=room)
+    @socket_io.on('leave_room')
+    def on_leave(data):
+        user_id = int(data['user_id'])  # Convertir a entero
+        room = data["room"]
+        leave_room(room)
+        emit('left_room', {'room': room, 'user_id': user_id}, room=room)
 
-
-    # @socket_io.on('data')
-    # def handle_message_chat(data):
-    #     print("BACK MESSAGE SENDIINGGGG")
-    #     room = data['room']
+    # @socket_io.on('private_message')
+    # def handle_private_message(data):
+    #     recipient_id = data['recipientId']
     #     message = data['message']
-    #     sender_id = data['sender_id']
-    #     # Emitir el mensaje a todos en la sala, excepto al remitente
-    #     emit('data', {'message': message, 'sender_id': sender_id, 'room': room}, room=room)
-    #     print("BACK MESSAGE SENDIINGGGG 222222")
-    #     print("BACK MESSAGE SENDIINGGGG 333333")     
-    #     print("Data from the front end: ", str(data))
+    #     sender_id = data['senderId']
+    #     # Emitir el mensaje solo al usuario destinatario
+    #     emit('private_message', {'message': message, 'senderId': sender_id}, room=recipient_id)
+
+    # @socket_io.on('to')
+    # def to(data):
+    #     print("BACK TO")
+    #     print(data)
+    #     room = data["room"]
+    #     emit('message', data, room=room)
+
 
 
 @api.route('/send_chat_message', methods=['POST'])
 def send_message():
     data = request.json.get('data')
     id = request.json.get('id')
-    print("Received data:", data)  # Log para ver qué datos llegan exactamente
     # Continúa procesando los datos si son correctos
     new_message = Chat(
         user_sender_id="3",
         user_reciver_id="4",
         message_text=data['message'],
         time=data['timestamp']
-        # datetime.fromisoformat(data['timestamp'])  # Convertir el timestamp ISO 8601 a datetime
     )
     db.session.add(new_message)
     db.session.commit()
     return jsonify({'message': 'Message sent successfully'}), 200
         
-
-    
+  
 
 
 
