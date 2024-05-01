@@ -2,6 +2,11 @@ import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/profile.css";
 import { useNavigate } from "react-router-dom";
+
+/* MY MOOD COMPONENTS */
+import ResourcesList from "../component/resourcesList";
+
+/* REACT-BOSTRAP */
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -56,46 +61,16 @@ export const Resources = () => {
 
                 <Row>
                     <Col className="resources">
-                        <ul>
-                            {lastFour.slice(0, 2).map((item, index) => {
-                                let type = store.resources.find(type => type.resources.includes(item));
-                                return (
-                                    <li key={index} className={type.type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}>
-                                        <a href={item.url} target="_blank" rel="noreferrer">
-                                            <span className="fw-bold">
-                                                {item.title}
-                                                <br />
-                                                <p>{item.description}</p>
-                                            </span>
-                                        </a>
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                        <ResourcesList list={lastFour.slice(0, 2)} />
                     </Col>
                     <Col className="resources">
-                        <ul>
-                            {lastFour.slice(2, 4).map((item, index) => {
-                                let type = store.resources.find(type => type.resources.includes(item));
-                                return (
-                                    <li key={index + 2} className={type.type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}>
-                                        <a href={item.url} target="_blank" rel="noreferrer">
-                                            <span className="fw-bold">
-                                                {item.title}
-                                                <br />
-                                                <p>{item.description}</p>
-                                            </span>
-                                        </a>
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                        <ResourcesList list={lastFour.slice(2, 4)} />
                     </Col>
                 </Row>
 
                 <Row className="mt-5">
                     <Col xs={12} md={12} lg={12}>
-                        <h4 className="border-bottom border-dark mb-3">Todos nuestros recursos</h4>
+                        <h4 className="border-bottom border-dark mb-4">Todos nuestros recursos</h4>
                     </Col>
                 </Row>
 
@@ -104,28 +79,11 @@ export const Resources = () => {
                         id="controlled-tab-example"
                         activeKey={key}
                         onSelect={(k) => setKey(k)}
-                        className="align-items-center justify-content-center resources"
+                        className="align-items-center justify-content-center "
                     >
                         {store.resources.map(type => (
-                            <Tab key={type.type} eventKey={type.type} title={<CustomTitle type={type.type} />} className="resources">
-                                <ul>
-                                    {type.resources.map((item, index) => (
-                                        <li key={index} className={type.type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}>
-                                            <a href={item.url} target="_blank" rel="noreferrer">
-                                                <span className="fw-bold">
-                                                    {item.title}
-                                                    <br />
-                                                    <p>
-                                                        {item.description}<br />
-                                                        <span style={{ fontSize: "var(--small-size)" }}>
-                                                            Recomendado por: <span style={{ fontSize: "var(--small-size)" }}>{item.psychologist_info.name} {item.psychologist_info.surnames}</span>
-                                                        </span>
-                                                    </p>
-                                                </span>
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
+                            <Tab key={type.type} eventKey={type.type} title={<CustomTitle type={type.type} />}>
+                                <ResourcesList list={type.resources} />
                             </Tab>
                         ))}
                     </Tabs>

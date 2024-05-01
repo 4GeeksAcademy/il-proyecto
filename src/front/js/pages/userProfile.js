@@ -1,20 +1,21 @@
 import React, { useState, useContext, useEffect, } from "react";
 import { Context } from "../store/appContext";
 import { Link, useParams } from "react-router-dom";
-import "../../styles/profile.css";
 import { useNavigate } from "react-router-dom";
+
+/* MY MOOD STYLES */
+import "../../styles/profile.css";
+
+/* MY MOOD CONPONENTS */
+import PsychologistCard from "../component/psychologistCard";
+
+/* REACT-BOOSTRAP */
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Modal from 'react-bootstrap/Modal';
 import Image from 'react-bootstrap/Image';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Form from 'react-bootstrap/Form';
-
-
 
 export const UserProfile = () => {
     const { store, actions } = useContext(Context);
@@ -25,12 +26,6 @@ export const UserProfile = () => {
 
     console.log(activeUser);
 
-    const handleProfileClick = (psychologistId) => {
-        navigate(`/psychologist-profile/${psychologistId}`);
-    };
-
-
-
     return (
 
         <Container fluid className="container-landingpage">
@@ -38,12 +33,12 @@ export const UserProfile = () => {
                 <Row className="mb-5">
                     <Col xs={11} md={6} lg={10}>
                         <h2 className="">{activeUser?.name} {activeUser?.surnames}</h2>
-                        <h3 className="">{activeUser?.hobbie}</h3>
+                        <h3 className="">Lo que más me gusta es... {activeUser?.hobbie}</h3>
                     </Col>
                     <Col xs={1} md={6} lg={2} className="text-end">
                         {activeUser?.user_mood ? (
                             <Image src={activeUser?.user_mood.category_mood.icon_url} className="img-mood" />
-                        ) : (<div>no hay mood</div>)}
+                        ) : (<div></div>)}
                     </Col>
                 </Row>
                 <Row>
@@ -65,12 +60,13 @@ export const UserProfile = () => {
                                 activeUser?.psychologists.map((psychologist, index) => {
                                     return (
                                         <Col xs={12} md={6} lg={6} className="text-center" key={index}>
-                                            <div className="ps-card p-3">
-                                                <Image src={psychologist.profile_url} className="img-mood" roundedCircle />
-                                                <h5>{psychologist.name} {psychologist.surnames}</h5>
-                                                <p><small> [nº. {psychologist.collegiate_number} ]</small></p>
-                                                <button className="btn btn-dark rounded-pill" onClick={() => handleProfileClick(psychologist.id)}>Ver perfil &rarr;</button>
-                                            </div>
+                                            <PsychologistCard
+                                                id={psychologist.psychologist_info.id}
+                                                name={psychologist.psychologist_info.name}
+                                                surnames={psychologist.psychologist_info.surnames}
+                                                col_num={psychologist.psychologist_info.collegiate_number}
+                                                image={psychologist.psychologist_info.profile_url}
+                                            />
                                         </Col>
                                     )
                                 })

@@ -16,14 +16,14 @@ const ResourcesList = ({ list }) => {
         }
     };
 
-    // const formatDate = (dateString) => {
-    //     const dateObj = new Date(dateString);
-    //     const formattedDate = new Intl.DateTimeFormat('es-ES', {
-    //         weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-    //     }).format(dateObj);
+    const formatDate = (dateString) => {
+        const dateObj = new Date(dateString);
+        const formattedDate = new Intl.DateTimeFormat('es-ES', {
+            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+        }).format(dateObj);
     
-    //     return formattedDate.toUpperCase();
-    // };
+        return formattedDate.toUpperCase();
+    };
     
 
     return (
@@ -33,9 +33,8 @@ const ResourcesList = ({ list }) => {
                     <li key={index} className={resource.resource_type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}>
                         <span className="icon-container" style={{backgroundImage: `url(${getIconUrl(resource.resource_type.toLowerCase())})`}}></span>
                         <div className="content-container">
-                            {/* <em className="resource-date"> {formatDate(resource.created_at)}</em> */}
                             <div className="resource-title">{resource.title}</div>
-                            <div className="resource-description">{resource.description}</div>
+                            <div className="resource-description">{resource.description} <em className="resource-date">{formatDate(resource.created_at)}</em></div>
                             <Button variant="outline-dark" size="sm" className="resource-button rounded-pill" href={resource.url} target="_blank">Ver recurso &rarr;</Button>
                         </div>
                     </li>
