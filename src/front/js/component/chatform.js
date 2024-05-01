@@ -34,10 +34,12 @@ function ChatForm({ userName }) {
                 other_user_name: userName,
                 
             };
+            setRoomId(store.room);
+            console.log("SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", store.room);
             console.log(otherUserName);
             console.log(newMessage);
             socket.emit('data', { newMessage });
-            // socket.emit('data', { room: store.room, message: newMessage });
+            
             setMessage("");
             console.log(conversation);
             console.log("JOIN ROOM 6 hemos pasado el send message");
@@ -54,8 +56,21 @@ function ChatForm({ userName }) {
                 setCurrentUserId(data.sender_id);};
                 setOtherUserName(userName);
         
-        const handleRoomJoined = (data) => setRoomId(data.roomId);
-        socket.on('room_joined', handleRoomJoined);        
+
+        // problema puede ser que este AQUI
+
+        // const handleRoomJoined = (data) => setRoomId(data.room);
+        // const handleRoomJoined = (data) => setRoomId(store?.room);
+        // handleRoomJoined();
+        // const handleRoomJoined = (data) => setRoomId(data.roomId);
+
+        // console.log("handle ROOM HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", roomId);
+        // // socket.on('room_joined', roomId);        
+        // socket.on('room_joined', (data) => {
+        //     // Update roomId state
+        //     setRoomId(data.roomId);
+        // });
+        
         
 
         const handleMessage = (data) => {
@@ -68,7 +83,7 @@ function ChatForm({ userName }) {
             const messageText = data.data.newMessage.message;  // Accede a través de data.data.newMessage
             const enhancedMessage = linkify(messageText);
             const timestamp = new Date(data.data.newMessage.timestamp);  // y data.data.newMessage.timestamp
-            const room = store.room;
+            // const room = store.room;
             console.log(enhancedMessage, timestamp);
             // Crear un nuevo objeto de mensaje
             const userMessage = {
@@ -76,28 +91,28 @@ function ChatForm({ userName }) {
                 sender_id: data.data.sender_id,
                 sender_name: data.data.newMessage.sender_name,
                 timestamp: timestamp,
-                room: room,
+                room: store.room,
                 isSender: data.data.newMessage.sender_id === currentUserId,
                 other_user_name: userName,
-
-                // receiver_id: data.data.newMessage.receiver_id,
                 
             };
+            
            
             // Actualizar el estado de conversation
             setConversation(prevConversation => [...prevConversation, userMessage]);
         };
 
+            console.log("SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA CLIENTE", store.room);
             socket.connect();
             socket.on('your_id', handleId);
-            socket.on('room_joined', handleRoomJoined);
+            socket.on('room_joined', roomId);
             socket.on('data', handleMessage);
            
    
         return () => {
 
             socket.off('data', handleMessage);
-            socket.off('room_joined', handleRoomJoined);
+            socket.off('room_joined', roomId);
             socket.emit('leave_room', { userId: currentUserId, roomId: roomId });
             socket.disconnect();
         }

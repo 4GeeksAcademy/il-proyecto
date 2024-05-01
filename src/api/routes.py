@@ -192,9 +192,7 @@ def send_reset_email(user, token):
     link = url_for('api.reset_password_request', token=token, _external=False)
     new_link = link.replace("/api", "")
     full_link = f"{base_host}{new_link}"  
-    print("*************************************************")
-    print(full_link)
-    print("*************************************************")
+   
     # msg = Message('Recuperar contraseña',
     #               sender='mymoodbnp@gmail.com',
     #               recipients=[user.email])
@@ -250,8 +248,6 @@ def get_all_location():
         query_results = Location.query.all()
         results = list(map(lambda item: item.serialize(), query_results))
 
-    
-        print(query_results)
         
         if results != []:
             response_body = {
@@ -505,8 +501,6 @@ def get_current_user():
 @api.route('/user/<int:user_id>', methods=['GET'])
 def get_one_user(user_id):
     query_results = User.query.filter_by(id=user_id).first()
- 
-    print(query_results)
     
     if query_results is not None:
         response_body = {

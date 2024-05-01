@@ -50,10 +50,10 @@ class User(db.Model):
         hobbie = Hobbie.query.filter_by(id=self.hobbie_id).first()
         # psychologists = [session.phycologyst.serialize() for session in self.sessions]
         results = list(map(lambda item: item.serialize(),self.session))
-        print(results)
+    
 
 
-        print(hobbie)              
+                    
         return {
             "id": self.id,
             "email": self.email,
@@ -218,7 +218,6 @@ class Resource(db.Model):
 
     def serialize(self):
         info_physcologyst = Phycologyst.query.filter_by(id=self.phycologyst_id).first()
-        print(info_physcologyst)
         return {
             "id": self.id,
             'resource_type': self.resource_type.resource_type if self.resource_type else None,
@@ -295,7 +294,6 @@ class Sessions(db.Model):
         
 
     def serialize(self):
-        print(self.phycologyst)
         return {
             "id": self.id,
             "phycologyst_info": self.phycologyst.serialize() if self.phycologyst else None,
