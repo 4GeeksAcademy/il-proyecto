@@ -91,12 +91,3 @@
 .date {
     text-align: center;
 }
-
-.active {
-    color: var(--option1-color);
-}
-
-.inactive {
-    color:var(--option3-color);
-}
-
