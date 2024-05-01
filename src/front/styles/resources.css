@@ -1,0 +1,87 @@
+/* ==========================================================================
+   RESOURCES
+   ========================================================================== */
+.resources {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.resources ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+
+.resources li::before {
+    content: '';
+    display: block;
+    width: 35px;
+    height: 35px;
+    margin-right: 16px;
+    background-size: cover;
+    position: absolute;
+}
+
+.resources li .content-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+    width: calc(100% - 55px);
+}
+
+.resource-title,
+.resource-description {
+    margin-bottom: 5px;
+}
+
+.resource-button {
+    margin-top: 10px;
+}
+
+
+.icon-container {
+    width: 35px;
+    height: 35px;
+    background-size: cover;
+    margin-right: 16px;
+    /* No se necesita align-self ya que la alineación viene del parent */
+}
+
+.resources li {
+    display: flex;
+    align-items: flex-start; /* Alinea los ítems al inicio (parte superior) */
+    margin-bottom: 35px;
+}
+
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.resource-title,
+.resource-description {
+    margin-bottom: 5px; 
+}
+
+.resource-button {
+    width: auto; /* Cambia de 100% a auto para que el ancho se ajuste al contenido */
+    padding: 5px 10px; /* Añade un padding horizontal y vertical adecuado */
+    margin-top: 10px; /* Mantén el margen superior */
+    align-self: flex-start; /* Alinea el botón al inicio del contenedor flex */
+}
+
+.resource-title {
+    font-size: var(--h5-size);
+    font-weight: 700;
+}
+
+.resource-date {
+    font-size: var(--small-size);
+    color: var(--gray-color);
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+}
