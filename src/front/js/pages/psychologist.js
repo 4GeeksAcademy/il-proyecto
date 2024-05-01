@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { getPhycologyst } from "../store/flux"; // Importa la función getPhycologyst
+import { getpsychologist } from "../store/flux"; // Importa la función getpsychologist
 import { useNavigate } from "react-router-dom";
 import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
@@ -8,30 +8,26 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 
-export const Phycologyst = () => {
+export const Psychologist = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-    const [phycologyst, setPhycologyst] = useState([]); 
+    const [psychologist, setpsychologist] = useState([]);
 
     useEffect(() => {
-        actions.getPhycologyst().then(res => {
-            if (res) {
-                setPhycologyst(res.results); // Actualiza el estado con los datos obtenidos desde el arreglo results
-            }
-        }).catch(error => {
-            console.error('Error fetching or processing phycologyst data:', error);
-        });
+        actions.getAllPsychologist();
     }, []);
 
+
+
     const handleProfileClick = (psychologistId) => {
-        navigate(`/phycologyst-profile/${psychologistId}`); // Redirige al perfil del psicólogo específico
+        navigate(`/psychologist/${psychologistId}`);
     };
 
     return (
         <Container fluid className="container-landingpage">
             <h1>Conecta con un psicólogo</h1>
             <Row xs={1} md={2} lg={4} xl={4} className="g-4">
-                {phycologyst.map((psychologist, index) => (
+                {store?.allPsychologist.map((psychologist, index) => (
                     <Col key={index}>
                         <Card style={{ height: "100%" }}>
                             <div className="ps-card p-3">
@@ -48,4 +44,4 @@ export const Phycologyst = () => {
     );
 }
 
-export default Phycologyst;
+export default Psychologist;

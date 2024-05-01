@@ -1,7 +1,7 @@
   
 import os
 from flask_admin import Admin
-from .models import db, User, Location, Hobbie, Mood, UserMoodHistory, CategoryMood, Action, ResourceType, Resource, Chat, Phycologyst, Sessions
+from .models import db, User, Location, Hobbie, Mood, UserMoodHistory, CategoryMood, Action, ResourceType, Resource, Chat, Psychologist, Sessions
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
@@ -20,7 +20,7 @@ def setup_admin(app):
     admin.add_view(ModelView(ResourceType , db.session))
     admin.add_view(ModelView(Resource , db.session))
     admin.add_view(ModelView(Chat , db.session))
-    admin.add_view(ModelView(Phycologyst , db.session))
+    admin.add_view(ModelView(Psychologist , db.session))
     admin.add_view(ModelView(Sessions , db.session))
     
     # class FavoritesView(ModelView):

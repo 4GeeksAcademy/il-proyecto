@@ -118,7 +118,7 @@ export const Resources = () => {
                                                     <p>
                                                         {item.description}<br />
                                                         <span style={{ fontSize: "var(--small-size)" }}>
-                                                            Recomendado por: <span style={{ fontSize: "var(--small-size)" }}>{item.phycologyst_info.name} {item.phycologyst_info.surnames}</span>
+                                                            Recomendado por: <span style={{ fontSize: "var(--small-size)" }}>{item.psychologist_info.name} {item.psychologist_info.surnames}</span>
                                                         </span>
                                                     </p>
                                                 </span>

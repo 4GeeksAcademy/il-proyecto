@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect,} from "react";
+import React, { useState, useContext, useEffect, } from "react";
 import { Context } from "../store/appContext";
 import { Link, useParams } from "react-router-dom";
 import "../../styles/profile.css";
@@ -26,10 +26,10 @@ export const UserProfile = () => {
     console.log(activeUser);
 
     const handleProfileClick = (psychologistId) => {
-        navigate(`/phycologyst-profile/${psychologistId}`); // Navegar a la página del perfil del psicólogo
+        navigate(`/psychologist-profile/${psychologistId}`);
     };
 
-    
+
 
     return (
 
@@ -58,28 +58,28 @@ export const UserProfile = () => {
                     </Col>
                     <Col xs={12} md={6} lg={8}>
                         <Row>
-                        <h4 className="border-bottom border-dark mb-3 p-0">Mis psicólogos de referencia</h4>
-                        {activeUser?.psychologists.length === 0 ? (
-                            <div>No tienes psycógolos de referencia. Cuando realices alguna sesión con ellos, se guardarán aquí.</div>
-                        ) : (
-                            activeUser?.psychologists.map((psychologist, index) => {
-                                return (
-                                    <Col xs={12} md={6} lg={6} className="text-center" key={index}>
-                                        <div className="ps-card p-3">
-                                            <Image src={psychologist.profile_url} className="img-mood" roundedCircle />
-                                            <h5>{psychologist.name} {psychologist.surnames}</h5>
-                                            <p><small> [nº. {psychologist.collegiate_number} ]</small></p>
-                                            <button className="btn btn-dark rounded-pill" onClick={() => handleProfileClick(psychologist.id)}>Ver perfil &rarr;</button>
-                                        </div>
-                                    </Col>
-                                )
-                            })
-                        )}
+                            <h4 className="border-bottom border-dark mb-3 p-0">Mis psicólogos de referencia</h4>
+                            {activeUser?.psychologists.length === 0 ? (
+                                <div>No tienes psycógolos de referencia. Cuando realices alguna sesión con ellos, se guardarán aquí.</div>
+                            ) : (
+                                activeUser?.psychologists.map((psychologist, index) => {
+                                    return (
+                                        <Col xs={12} md={6} lg={6} className="text-center" key={index}>
+                                            <div className="ps-card p-3">
+                                                <Image src={psychologist.profile_url} className="img-mood" roundedCircle />
+                                                <h5>{psychologist.name} {psychologist.surnames}</h5>
+                                                <p><small> [nº. {psychologist.collegiate_number} ]</small></p>
+                                                <button className="btn btn-dark rounded-pill" onClick={() => handleProfileClick(psychologist.id)}>Ver perfil &rarr;</button>
+                                            </div>
+                                        </Col>
+                                    )
+                                })
+                            )}
                         </Row>
                     </Col>
                 </Row>
 
-                </Container>
+            </Container>
         </Container >
     );
 };

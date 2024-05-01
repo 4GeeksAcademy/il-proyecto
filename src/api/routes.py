@@ -5,7 +5,7 @@ import random, math, os
 import re
 from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory, Phycologyst, Chat
+from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory, Psychologist, Chat
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -332,29 +332,19 @@ def save_user_location():
 @api.route('/resources', methods=['GET'])
 # @jwt_required()
 def get_all_resources():
-    # current_user = get_jwt_identity()
-    # print(current_user)
-    # if current_user:
-        resource_results = Resource.query.all()
-        # type_results = ResourceType.query.all()
-        # print(type_results)
-        results = list(map(lambda item: item.serialize(), resource_results))
+    resource_results = Resource.query.all()
+    results = list(map(lambda item: item.serialize(), resource_results))
   
-             
-        if results != []:
-            response_body = {
-            "msg": "OK",
-            "results": results
-        }
-            return jsonify(response_body), 200
-        
-        else:
-
-            return jsonify({"msg": "There aren't any location yet"}), 404
-        
-
-
-
+    if results != []:
+        response_body = {
+        "msg": "OK",
+        "results": results
+        }    
+        return jsonify(response_body), 200
+  
+    else:
+        return jsonify({"msg": "There aren't any location yet"}), 404
+    
 @api.route('/resources-bytype', methods=['GET'])
 def get_resources_by_type():
     resource_results = Resource.query.all()
@@ -380,6 +370,57 @@ def get_resources_by_type():
     else:
         return jsonify({"msg": "There aren't any resources yet"}), 404
     
+
+
+#-------------------------------------------------------------------#
+# PSYCHOLOGIST
+#-------------------------------------------------------------------#
+
+@api.route('/psychologist', methods=['GET'])
+@jwt_required()
+def getAllPsychologistData():
+    psychologistList = Psychologist.query.all()
+
+    results = [psychologist.serialize() for psychologist in psychologistList]
+    
+    if psychologistList:
+        response_body = {
+            "msg": "OK",
+            "results": results
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "Any psychologist found"}), 404
+
+@api.route('/psychologist/<int:ps_id>', methods=['GET'])
+@jwt_required()
+def getPsychologistData(ps_id):
+    psychologistData = Psychologist.query.filter_by(id=ps_id).first()
+
+    if psychologistData:
+        response_body = {
+            "msg": "OK",
+            "results": psychologistData.serialize()
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "No psychologist found"}), 404
+
+    
+@api.route('/ps-resources/<int:psychologist_id>', methods=['GET'])  # Use underscore in the URL parameter
+@jwt_required()
+def get_psychologist_resources(psychologist_id):  # Match the parameter name with the route
+    resource_results = Resource.query.filter_by(psychologist_id=psychologist_id).all()  # Use correct field name and call all()
+    results = list(map(lambda item: item.serialize(), resource_results))
+  
+    if results:
+        response_body = {
+            "msg": "OK",
+            "results": results
+        }    
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "There aren't any resources yet"}), 404
 
 
 @api.route('/moods', methods=['GET'])
@@ -625,16 +666,5 @@ def send_message():
 
     
 
-@api.route('/phycologyst', methods=['GET'])
-def get_phycologyst():
-    phycologyst_results = Phycologyst.query.all()
-    results = list(map(lambda item: item.serialize(), phycologyst_results))
-    if results != []:
-        response_body = {
-        "msg": "OK",
-        "results": results
-    }
-        return jsonify(response_body), 200
-    else:
-        return jsonify({"msg": "There aren't any phycologyst yet"}), 404
+
 

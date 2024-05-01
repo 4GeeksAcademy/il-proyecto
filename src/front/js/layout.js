@@ -12,31 +12,31 @@ import { MainNavbar } from "./component/mainNavbar";
 import { Footer } from "./component/footer";
 import { Faqs } from "./pages/faqs";
 import { Legal } from "./pages/legal";
-import  ResetPassword  from "./component/resetPassword";
+import ResetPassword from "./component/resetPassword";
 import { SignUp } from "./pages/singup";
 import { DeleteAccount } from "./pages/deleteAccount";
 import { ChooseMood } from "./pages/choose-mood";
 import { UserProfile } from "./pages/userProfile";
 import { Resources } from "./pages/resources";
 import { DayMood } from "./pages/day-mood";
-import {PhycologystProfile} from "./pages/phycologyst-profile";
-import { Phycologyst } from "./pages/phycologyst";
+import PsychologistProfile from "./pages/psychologist-profile";
+import { Psychologist } from "./pages/psychologist";
 import { Chat } from "./pages/chat";
 
 
 
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
-    const authToken = sessionStorage.getItem('userToken'); 
+    const authToken = sessionStorage.getItem('userToken');
     const isAuthenticated = authToken !== null;
 
     if (!isAuthenticated) {
         return navigate("/login");
     }
     return children;
-    }
+}
 
-    
+
 
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -47,26 +47,26 @@ const Layout = () => {
 
     return (
         <div className="main-content">
-            <BrowserRouter basename={basename}>                              
-                    <MainNavbar />
-                    <Routes>                      
-                        <Route element={<Home />} path="/" />                       
-                        <Route element={<Login />} path="/login" />
-                        <Route element={<Faqs />} path="/faqs" />
-                        <Route element={<Legal />} path="/legal" />                    
-                        <Route element={<SignUp />} path="/singup" />
-                        <Route element={<DeleteAccount />} path="/delete-account" />
-                        <Route element={<ResetPassword />} path="/reset-password" />
-                        <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/choose-mood" />
-                        <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation"/>
-                        <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/:uid/:url"/>
-                        <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources"/> 
-                        <Route element={<PrivateRoute><Chat /></PrivateRoute>} path="/chat-v1" />
-                        <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood"/>
-                        <Route element={<PrivateRoute><PhycologystProfile /></PrivateRoute>} path="/phycologyst-profile/:url"/> 
-                        <Route element={<PrivateRoute><Phycologyst /></PrivateRoute>} path="/phycologyst"/>                                      
-                    </Routes>
-                    <Footer />            
+            <BrowserRouter basename={basename}>
+                <MainNavbar />
+                <Routes>
+                    <Route element={<Home />} path="/" />
+                    <Route element={<Login />} path="/login" />
+                    <Route element={<Faqs />} path="/faqs" />
+                    <Route element={<Legal />} path="/legal" />
+                    <Route element={<SignUp />} path="/singup" />
+                    <Route element={<DeleteAccount />} path="/delete-account" />
+                    <Route element={<ResetPassword />} path="/reset-password" />
+                    <Route element={<PrivateRoute><ChooseMood /></PrivateRoute>} path="/choose-mood" />
+                    <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation" />
+                    <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/:uid/:url" />
+                    <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources" />
+                    <Route element={<PrivateRoute><Chat /></PrivateRoute>} path="/chat-v1" />
+                    <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood" />
+                    <Route element={<PrivateRoute><PsychologistProfile /></PrivateRoute>} path="/psychologist/:uid" />
+                    <Route element={<PrivateRoute><Psychologist /></PrivateRoute>} path="/psychologist" />
+                </Routes>
+                <Footer />
             </BrowserRouter>
         </div>
     );

@@ -52,6 +52,7 @@ export const MainNavbar = () => {
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item href="/choose-mood">Mood</NavDropdown.Item>
                                     <NavDropdown.Item href="/chat-v1">Chat</NavDropdown.Item>
+                                    <NavDropdown.Item href="/psychologist">Psycólogos</NavDropdown.Item>
                                 </NavDropdown>
                             </>
                         ) : (
