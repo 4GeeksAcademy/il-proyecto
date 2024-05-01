@@ -18,6 +18,8 @@ const getState = ({ getStore, getActions, setStore  }) => {
 
 			mood: [],
 
+			room: null,
+
 		},
 
 		// socket:{},
@@ -629,16 +631,17 @@ const getState = ({ getStore, getActions, setStore  }) => {
 			handleUserClick: (otherUserId) => {
 				const userData = JSON.parse(sessionStorage.getItem('userData'));
 				const currentUserId = userData.id;
-				// setCurrentUserId(currentUserId); 
-				// setName(userData.name);
+			
 				const roomId = `chat_${Math.min(currentUserId, otherUserId)}_${Math.max(currentUserId, otherUserId)}`;
 			
 				console.log(otherUserId);
-				// setOtherUserId(otherUserId); 
-				// setRoomId(roomId);.
-				
+			
+				setStore({ ...getStore(), room: roomId })
+				console.log(getStore().room);
 				console.log("Joining room 1. :", roomId, currentUserId, otherUserId);
 				socket.emit('join', { user_id: currentUserId, other_user_id: otherUserId, room: roomId});
+			
+
 			},
 
 

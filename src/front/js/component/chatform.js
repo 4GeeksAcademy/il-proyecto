@@ -15,10 +15,10 @@ function ChatForm({ userName }) {
     const [name, setName] = useState(null);
     const [dataUser, setDataUser] = useState(null);
     const [otherUserName, setOtherUserName] = useState(null); // Estado para almacenar el nombre del receptor
-    
-
 
    
+
+
     function submitMessageRoom(e) {
         console.log("JOIN ROOM 5");
         if (e.key === "Enter" && message.trim()) {
@@ -29,7 +29,7 @@ function ChatForm({ userName }) {
                 sender_id: store?.user.id,
                 sender_name: store?.user.name,
                 timestamp: new Date(),
-                room: roomId,
+                room: store.room,
                 isSender: true,
                 other_user_name: userName,
                 
@@ -37,6 +37,7 @@ function ChatForm({ userName }) {
             console.log(otherUserName);
             console.log(newMessage);
             socket.emit('data', { newMessage });
+            // socket.emit('data', { room: store.room, message: newMessage });
             setMessage("");
             console.log(conversation);
             console.log("JOIN ROOM 6 hemos pasado el send message");
@@ -44,11 +45,6 @@ function ChatForm({ userName }) {
         }}
 
 
-        // useEffect(() => {
-        //     if (otherUserId && !otherUserName) {
-        //         setOtherUserName(userName); // Establecer el nombre del receptor como userName
-        //     }
-        // }, [otherUserId, otherUserName, userName]);
 
     useEffect(() => {
         actions.getAllUsers();
@@ -56,14 +52,11 @@ function ChatForm({ userName }) {
 
         const handleId = (data) => {
                 setCurrentUserId(data.sender_id);};
-                setOtherUserName(userName); 
-
-        // const handleName = (data) => {
-        //          setName(data.name)};
+                setOtherUserName(userName);
         
-        // const handleOtherUserId = (data) => {
-        //     actions.getUserById(data.other_user_id);
-        //         setOtherUserId(data.other_user_id);};
+        const handleRoomJoined = (data) => setRoomId(data.roomId);
+        socket.on('room_joined', handleRoomJoined);        
+        
 
         const handleMessage = (data) => {
             console.log("Received data in handleMessage:", data);
@@ -75,12 +68,12 @@ function ChatForm({ userName }) {
             const messageText = data.data.newMessage.message;  // Accede a través de data.data.newMessage
             const enhancedMessage = linkify(messageText);
             const timestamp = new Date(data.data.newMessage.timestamp);  // y data.data.newMessage.timestamp
-            const room = data.data.newMessage.room;
+            const room = store.room;
             console.log(enhancedMessage, timestamp);
             // Crear un nuevo objeto de mensaje
             const userMessage = {
                 message: enhancedMessage,
-                sender_id: data.data.newMessage.sender_id,
+                sender_id: data.data.sender_id,
                 sender_name: data.data.newMessage.sender_name,
                 timestamp: timestamp,
                 room: room,
@@ -97,19 +90,23 @@ function ChatForm({ userName }) {
 
             socket.connect();
             socket.on('your_id', handleId);
-            socket.on('connect', function() {
-                console.log('Connected to the server.');
-                socket.emit('join_room', { userId: currentUserId, roomId: roomId });
-            });
-  
+            socket.on('room_joined', handleRoomJoined);
             socket.on('data', handleMessage);
-
+           
+   
         return () => {
 
             socket.off('data', handleMessage);
-
+            socket.off('room_joined', handleRoomJoined);
+            socket.emit('leave_room', { userId: currentUserId, roomId: roomId });
+            socket.disconnect();
         }
     }, [socket]);
+
+
+    useEffect(() => {
+        console.log(roomId);
+    }, [roomId]);
 
 
 

@@ -528,6 +528,7 @@ def register_socket_events(socket_io):
         print("Data from the front end: ", str(data))
         emit("data", {'data': data, 'id': request.sid}, broadcast=True)
 
+
     @socket_io.on('connect')
     def test_connect():
         """event listener when client connects to the server"""
@@ -541,7 +542,8 @@ def register_socket_events(socket_io):
 
     @socket_io.on('message')
     def test_message(data):
-        print(str(data))
+        room = data["room"]
+        emit('message', data, room=room)
 
     @socket_io.on('join')
     def on_join(data):
@@ -554,6 +556,20 @@ def register_socket_events(socket_io):
         print(other_user_id)
         join_room(room)
         emit('joined_room', {'room': room, 'user_id': user_id, 'other_user_id': other_user_id}, room=room)
+
+    @socket_io.on('leave_room')
+    def on_leave(data):
+        user_id = int(data['user_id'])  # Convertir a entero
+        room = data["room"]
+        leave_room(room)
+        emit('left_room', {'room': room, 'user_id': user_id}, room=room)
+
+    @socket_io.on('to')
+    def to(data):
+        print("BACK TO")
+        print(data)
+        room = data["room"]
+        emit('message', data, room=room)
 
 
 

@@ -175,6 +175,7 @@ const MapComponent = (props) => {
           setShowChatModal(true);
           actions.handleUserClick(e.target.id)
           setUserName(e.target.dataset.name);
+          
          
         });
       }
