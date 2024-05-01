@@ -5,7 +5,7 @@ import { socket } from "../store/appContext";
 import { set } from "firebase/database";
 
 
-function ChatForm() {
+function ChatForm({ userName }) {
     const { store, actions } = useContext(Context);
     const [message, setMessage] = useState("");
     const [conversation, setConversation] = useState([]);
@@ -14,9 +14,11 @@ function ChatForm() {
     const [otherUserId, setOtherUserId] = useState(null);
     const [name, setName] = useState(null);
     const [dataUser, setDataUser] = useState(null);
+    const [otherUserName, setOtherUserName] = useState(null); // Estado para almacenar el nombre del receptor
     
 
-      
+
+   
     function submitMessageRoom(e) {
         console.log("JOIN ROOM 5");
         if (e.key === "Enter" && message.trim()) {
@@ -25,10 +27,14 @@ function ChatForm() {
             const newMessage = {
                 message: message,
                 sender_id: store?.user.id,
+                sender_name: store?.user.name,
                 timestamp: new Date(),
                 room: roomId,
-                // other_user_id: 3
+                isSender: true,
+                other_user_name: userName,
+                
             };
+            console.log(otherUserName);
             console.log(newMessage);
             socket.emit('data', { newMessage });
             setMessage("");
@@ -38,6 +44,11 @@ function ChatForm() {
         }}
 
 
+        // useEffect(() => {
+        //     if (otherUserId && !otherUserName) {
+        //         setOtherUserName(userName); // Establecer el nombre del receptor como userName
+        //     }
+        // }, [otherUserId, otherUserName, userName]);
 
     useEffect(() => {
         actions.getAllUsers();
@@ -45,6 +56,14 @@ function ChatForm() {
 
         const handleId = (data) => {
                 setCurrentUserId(data.sender_id);};
+                setOtherUserName(userName); 
+
+        // const handleName = (data) => {
+        //          setName(data.name)};
+        
+        // const handleOtherUserId = (data) => {
+        //     actions.getUserById(data.other_user_id);
+        //         setOtherUserId(data.other_user_id);};
 
         const handleMessage = (data) => {
             console.log("Received data in handleMessage:", data);
@@ -62,11 +81,16 @@ function ChatForm() {
             const userMessage = {
                 message: enhancedMessage,
                 sender_id: data.data.newMessage.sender_id,
+                sender_name: data.data.newMessage.sender_name,
                 timestamp: timestamp,
                 room: room,
-                // other_user_id: 2
+                isSender: data.data.newMessage.sender_id === currentUserId,
+                other_user_name: userName,
+
+                // receiver_id: data.data.newMessage.receiver_id,
+                
             };
-        
+           
             // Actualizar el estado de conversation
             setConversation(prevConversation => [...prevConversation, userMessage]);
         };
@@ -99,11 +123,13 @@ function ChatForm() {
             }
             // Formatear la fecha a Castellano
             const day = new Intl.DateTimeFormat('es-ES', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).format(dateObj);
-
+    
             if (!acc[day]) {
                 acc[day] = [];
             }
-            acc[day].push(message);
+            // Utiliza el nombre del remitente del mensaje en lugar del sessionStorage
+            const messageWithSenderName = { ...message };
+            acc[day].push(messageWithSenderName);
             return acc;
         }, {});
         console.log(groupedByDay);
@@ -112,7 +138,6 @@ function ChatForm() {
             messages: groupedByDay[day]
         }));
     }
-
     const groupedMessages = groupMessagesByDay(conversation) ;
    
  
@@ -132,30 +157,15 @@ function ChatForm() {
   
     return (
         <>
-        {/* {!roomId && (	 */}
-            {/* <div>
-            <ul>
-                {store?.all_users.map((item, index) => {
-                    return (
-                        <li key={index} onClick={() => handleUserClick(item.id)}>
-                            {item.id} / {item.name}<span className={`${item.is_active ? 'active' : 'inactive'}`}> &#9673; </span>
-                        </li>
-                    );
-                })}
-            </ul>
-            </div>
-        )} */}
-
-            {/* {roomId && ( */}
                 <div className="chat">
                     {groupedMessages.map(group => (
                         <div key={group.day} className="date">
                             <small>{group.day}</small>
                             <ul>
                                 {group.messages.map((item, index) => (
-                                    <li key={index} className={item.sender_id === currentUserId ? "my-message" : "other-message"}
-                                        dangerouslySetInnerHTML={{ __html: `${item.sender_id}: ${item.message} ` }}>
-                                    </li>
+                                    <li key={index} className={item.isSender ? "my-message" : "other-message"}
+                                    dangerouslySetInnerHTML={{ __html: `${item.sender_name}: ${item.message}` }}>
+                                 </li>
                                 ))}
                             </ul>
                         </div>
@@ -165,7 +175,6 @@ function ChatForm() {
                         value={message}
                         onKeyDown={submitMessageRoom} />
                 </div>
-            {/* )} */}
         </>
     );
 }
