@@ -106,12 +106,6 @@ export const Login = () => {
 									.max(15, '* Contraseña demasiado larga máximo 15 caracteres'),
 							})}
 
-							// onSubmit={(values, { setSubmitting }) => {
-							// 	setTimeout(() => {
-							// 	  alert(JSON.stringify(values, null, 2));
-							// 	  setSubmitting(false);
-							// 	}, 400);
-							// }}
 							onSubmit={async (values, { setSubmitting }) => {
 								try {
 									const logged = await actions.login(values['email'], values['password']);
@@ -210,7 +204,7 @@ export const Login = () => {
 									placeholder="mail@mymood.com"
 									className="w-100 mb-2 d-block"
 								/>
-								<button type="submit" className="mb-5">Envíame el enlace</button>
+								<button type="submit" className="">Envíame el enlace</button>
 							</Form>
 							
 						</Formik>

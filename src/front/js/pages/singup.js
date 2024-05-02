@@ -107,16 +107,6 @@ export const SignUp = () => {
 								validatePassword: Yup.string()
 									.required('* Debes confirmar tu contraseña')
 									.oneOf([Yup.ref('password')], '* Las contraseñas no coinciden')
-								// .required('No password provided.') 
-								// .min(8, 'Password is too short - should be 8 chars minimum.')
-								// .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
-								// .max('Conntraseña incorrecta'),
-								// jobType: Yup.string()
-								// 	.oneOf(
-								// 		['designer', 'development', 'product', 'other'],
-								// 		'Invalid Job Type'
-								// 	)
-								// .required('Required'),
 							})}
 
 							onSubmit={async (values, { setSubmitting }) => {
