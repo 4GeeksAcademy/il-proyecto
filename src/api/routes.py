@@ -556,25 +556,41 @@ def get_one_user(user_id):
 
 #Socket.io
 def register_socket_events(socket_io):
+    
 
     @socket_io.on('data')
     def handle_message(data):
         """event listener when client sends data"""
         print("Data from the front end: ", str(data))
-        emit("data", {'data': data, 'id': request.sid}, broadcast=True)
+        room = data['newMessage']['room']  # Obtén la sala de los datos
+        emit("data", {'data': data, 'id': request.sid, }, room=room)  # Emitir a la sala específica
 
-
+    
     @socket_io.on('connect')
     def test_connect():
         """event listener when client connects to the server"""
         print("Client connected")
         emit('your_id', {'id': request.sid}, room=request.sid)
 
+                                            # @socket_io.on('connect')
+                                            # def handle_connect():
+                                            #     user_name = request.args.get('user_name')
+                                            #     user_sockets[user_name] = request.sid
+                                            #     print("User connected: ", user_name)
+                                            #     print("Current user sockets: ", user_sockets)
+                                                # @socket_io.on('connect')
+                                            # def test_connect():
+                                            #     """event listener when client connects to the server"""
+                                            #     user_id = request.args.get('user_id')  # Obtén el ID del usuario de alguna manera
+                                            #     user_sockets[user_id] = request.sid  # Almacena el ID de Socket del usuario
+                                            #     print("Client connected")
+                                            #     emit('your_id', {'id': request.sid}, room=request.sid)
+
     @socket_io.on('disconnect')
     def test_disconnect():
         """event listener when client disconnects from the server"""
         print("Client disconnected")
-
+  
     @socket_io.on('message')
     def test_message(data):
         room = data["room"]
@@ -594,27 +610,14 @@ def register_socket_events(socket_io):
 
     @socket_io.on('leave_room')
     def on_leave(data):
-        user_id = int(data['user_id'])  # Convertir a entero
-        room = data["room"]
+        print(data)
+        print("BACK LEAVE")
+        user_id = int(data.get('user_id', 0))
+        room = data.get('room', '') 
+        # room = data["room"]
         leave_room(room)
         emit('left_room', {'room': room, 'user_id': user_id}, room=room)
-
-    # @socket_io.on('private_message')
-    # def handle_private_message(data):
-    #     recipient_id = data['recipientId']
-    #     message = data['message']
-    #     sender_id = data['senderId']
-    #     # Emitir el mensaje solo al usuario destinatario
-    #     emit('private_message', {'message': message, 'senderId': sender_id}, room=recipient_id)
-
-    # @socket_io.on('to')
-    # def to(data):
-    #     print("BACK TO")
-    #     print(data)
-    #     room = data["room"]
-    #     emit('message', data, room=room)
-
-
+    
 
 @api.route('/send_chat_message', methods=['POST'])
 def send_message():

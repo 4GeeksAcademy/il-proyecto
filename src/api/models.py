@@ -218,7 +218,6 @@ class Resource(db.Model):
 
     def serialize(self):
         info_psychologist = Psychologist.query.filter_by(id=self.psychologist_id).first()
-        print(info_psychologist)
         return {
             "id": self.id,
             'resource_type': self.resource_type.resource_type if self.resource_type else None,
@@ -296,7 +295,6 @@ class Sessions(db.Model):
         
 
     def serialize(self):
-        print(self.psychologist)
         return {
             "id": self.id,
             "psychologist_info": self.psychologist.serialize() if self.psychologist else None,

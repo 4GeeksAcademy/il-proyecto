@@ -36,7 +36,7 @@ const injectContext = PassedComponent => {
 			 * store, instead use actions, like this:
 			 **/
 			async function active() {
-				await state.actions.getMessage(); // <---- calling this function from the flux.js actions
+				// await state.actions.getMessage(); // <---- calling this function from the flux.js actions
 				await state.actions.validToken();
 				await state.actions.getAllActiveUsers();
 				await state.actions.getCurrentUser();	

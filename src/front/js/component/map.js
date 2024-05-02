@@ -120,9 +120,9 @@ const MapComponent = (props) => {
     setShowLocationModal(false);
   };
 
-  const handleCloseChatModal = () => {
-    setShowChatModal(false);
-  };
+  // const handleCloseChatModal = () => {
+  //   setShowChatModal(false);
+  // };
 
   const handleAcceptLocationModal = async () => {
     setIsGeolocationLoading(true);
@@ -212,11 +212,11 @@ const MapComponent = (props) => {
           </Col>
           {showChatModal && (
             <Col xs={4} className='chat-heading'>
-              <h4 className='base-paragrahp'>Chatea con {userName}</h4><button className='button-login' onClick={handleCloseChatModal}>
+              {/* <h4 className='base-paragrahp'>Chatea con {userName}</h4><button className='button-login' onClick={handleCloseChatModal}>
                 Cancelar
-              </button>
+              </button> */}
               
-              <ChatForm userName={userName}/> 
+              <ChatForm userName={userName} setShowChatModal={setShowChatModal}/> 
 
             </Col>
           )}

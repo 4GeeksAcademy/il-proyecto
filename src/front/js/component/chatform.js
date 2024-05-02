@@ -5,7 +5,7 @@ import { socket } from "../store/appContext";
 import { set } from "firebase/database";
 
 
-function ChatForm({ userName }) {
+function ChatForm({ userName, setShowChatModal }) {
     const { store, actions } = useContext(Context);
     const [message, setMessage] = useState("");
     const [conversation, setConversation] = useState([]);
@@ -35,61 +35,22 @@ function ChatForm({ userName }) {
                 
             };
             setRoomId(store.room);
-            console.log("SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", store.room);
+            console.log("SALAAAA ", store.room);
             console.log(otherUserName);
             console.log(newMessage);
-            socket.emit('data', { newMessage });
-            // socket.emit('data', { newMessage: newMessage, room: store.room });
-            // socket.emit('private_message', {newMessage});
-
-            
-            setMessage("");
+            // socket.emit('data', { newMessage });
+            socket.emit('data', { newMessage, room: store.room })
+             setMessage("");
             console.log(conversation);
             console.log("JOIN ROOM 6 hemos pasado el send message");
 
         }}
 
-
-
-    useEffect(() => {
-        actions.getAllUsers();
-        if (!socket) return;
-
-        const handleId = (data) => {
-                setCurrentUserId(data.sender_id);};
-                setOtherUserName(userName);
-
-        // const handleRoomJoined = (data) => {
-        //     // Extraer el ID de la sala de los datos recibidos
-        //     const roomIdFromData = data.roomId;
-        //     // Establecer el estado roomId con el ID de la sala
-        //     setRoomId(roomIdFromData);
-        // };
-
-        const handleRoomJoined = (data) => {
-            console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", data); // Imprimir los datos recibidos
-        };
-
-        handleRoomJoined();
-        socket.on('room_join', handleRoomJoined);
-        
-
-        // problema puede ser que este AQUI
-
-        // const handleRoomJoined = (data) => setRoomId(data.room);
-        // const handleRoomJoined = (data) => setRoomId(store?.room);
-        // handleRoomJoined();
-        // const handleRoomJoined = (data) => setRoomId(data.roomId);
-
-        // console.log("handle ROOM HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", roomId);
-        // // socket.on('room_joined', roomId);        
-        // socket.on('room_joined', (data) => {
-        //     // Update roomId state
-        //     setRoomId(data.roomId);
-        // });
-        
-        
-
+        // const handleId = (data) => {
+        //     setCurrentUserId(data.sender_id);};
+        //     setOtherUserName(userName);
+    
+    
         const handleMessage = (data) => {
             console.log("Received data in handleMessage:", data);
             // Cambiar aquí para acceder a data.data.newMessage
@@ -110,8 +71,8 @@ function ChatForm({ userName }) {
                 timestamp: timestamp,
                 room: store.room,
                 isSender: data.data.newMessage.sender_id === currentUserId,
+                recipient_id: userName,
                 other_user_name: userName,
-                
             };
             
            
@@ -119,10 +80,81 @@ function ChatForm({ userName }) {
             setConversation(prevConversation => [...prevConversation, userMessage]);
         };
 
+
+
+    useEffect(() => {
+        actions.getAllUsers();
+        if (!socket) return;
+
+        const handleId = (data) => {
+                setCurrentUserId(data.sender_id);};
+                setOtherUserName(userName);
+        
+
+        // const handleRoomJoined = (data) => {
+        //     // Extraer el ID de la sala de los datos recibidos
+        //     const roomIdFromData = roomId;
+        //     // Establecer el estado roomId con el ID de la sala
+        //     setRoomId(roomIdFromData);
+        // };
+
+        // const handleRoomJoined = (data) => {
+        //     console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", data); // Imprimir los datos recibidos
+        // };
+
+        // handleRoomJoined();
+        // socket.on('room_join', handleRoomJoined);
+        
+
+        // problema puede ser que este AQUI
+
+        // const handleRoomJoined = (data) => setRoomId(data.room);
+        // const handleRoomJoined = (data) => setRoomId(store?.room);
+        // handleRoomJoined();
+        // const handleRoomJoined = (data) => setRoomId(data.roomId);
+
+        // console.log("handle ROOM HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", roomId);
+        // // socket.on('room_joined', roomId);        
+        // socket.on('room_joined', (data) => {
+        //     // Update roomId state
+        //     setRoomId(data.roomId);
+        // });
+        
+        
+        // handleMessage();
+        // const handleMessage = (data) => {
+        //     console.log("Received data in handleMessage:", data);
+        //     // Cambiar aquí para acceder a data.data.newMessage
+        //     if (!data.data.newMessage || typeof data.data.newMessage.message !== 'string') {
+        //         console.error("Expected data.newMessage.message to be a string, got:", data);
+        //         return;
+        //     }
+        //     const messageText = data.data.newMessage.message;  // Accede a través de data.data.newMessage
+        //     const enhancedMessage = linkify(messageText);
+        //     const timestamp = new Date(data.data.newMessage.timestamp);  // y data.data.newMessage.timestamp
+        //     // const room = store.room;
+        //     console.log(enhancedMessage, timestamp);
+        //     // Crear un nuevo objeto de mensaje
+        //     const userMessage = {
+        //         message: enhancedMessage,
+        //         sender_id: data.data.sender_id,
+        //         sender_name: data.data.newMessage.sender_name,
+        //         timestamp: timestamp,
+        //         room: store.room,
+        //         isSender: data.data.newMessage.sender_id === currentUserId,
+        //         other_user_name: userName,
+                
+        //     };
+            
+           
+        //     // Actualizar el estado de conversation
+        //     setConversation(prevConversation => [...prevConversation, userMessage]);
+        // };
+
             console.log("SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA CLIENTE", store.room);
             socket.connect();
             socket.on('your_id', handleId);
-            socket.on('room_joined', handleRoomJoined);
+            // socket.on('room_joined', handleRoomJoined);
             socket.on('data', handleMessage);
             // socket.connect();
             // socket.on('your_id', handleId);
@@ -130,17 +162,17 @@ function ChatForm({ userName }) {
     
         return () => {
             // socket.off('private_message', handleMessage);
-            socket.off('data', handleMessage);
-            socket.off('room_joined', handleRoomJoined);
-            socket.emit('leave_room', { userId: currentUserId, roomId: roomId });
-            socket.disconnect();
+            // socket.off('data', handleMessage);
+            // socket.off('room_joined', handleRoomJoined);
+            // socket.emit('leave_room', { userId: currentUserId, roomId: roomId });
+            // socket.disconnect();
         }
     }, [socket]);
 
 
-    useEffect(() => {
-        console.log(roomId);
-    }, [roomId]);
+    // useEffect(() => {
+    //     console.log(roomId);
+    // }, [roomId]);
 
 
 
@@ -171,7 +203,7 @@ function ChatForm({ userName }) {
     }
     const groupedMessages = groupMessagesByDay(conversation) ;
    
- 
+
 // Función para convertir las URLs en enlaces
     function linkify(inputText) {
         if (typeof inputText !== 'string') {
@@ -184,11 +216,25 @@ function ChatForm({ userName }) {
         });
     }
 
+    const handleCloseChatModal = () => {
+        // socket.off('data', handleMessage);
+        // socket.off('room_joined', handleRoomJoined);
+        // socket.emit('leave_room', { userId: currentUserId, roomId: roomId });
+        socket.off('data', handleMessage);
+        socket.emit('leave_room', { userId: currentUserId, roomId: roomId });
+        // socket.off('leave_room', { userId: currentUserId, roomId: roomId });
+        // socket.disconnect();
+        setShowChatModal(false);
+      };
 
+    // onClick={handleCloseChatModal}
   
     return (
         <>
                 <div className="chat">
+                        <h4 className='base-paragrahp'>Chatea con {userName}</h4><button className='button-login' onClick={handleCloseChatModal} >
+                        Cancelar
+                    </button>
                     {groupedMessages.map(group => (
                         <div key={group.day} className="date">
                             <small>{group.day}</small>
