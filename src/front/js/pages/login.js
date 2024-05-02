@@ -126,6 +126,8 @@ export const Login = () => {
 								} finally {
 									setSubmitting(false);
 								}
+
+								
 							}}
 						>
 							<Form className="formik-form">
@@ -185,11 +187,12 @@ export const Login = () => {
 									const result = await actions.handleResetPassword(values['email']);
 									
 									if (result.status) {
-										console.log(result.msg);
-										actions.login(values['email'], values['password']);
-										navigate("/choose-mood");
+										setIsError(false);
+										setMessage("Consulta tu email para las instrucciones de reestablecimiento de contraseña.");
+										console.log('Reset link sent successfully!');
 									} else {
-										setError(result.msg);
+										setIsError(true);
+										setMessage(result.message || "Ocurrió un error. Por favor, inténtalo de nuevo.");
 									}
 								} catch (error) {
 									// Manejar cualquier error aquí
@@ -207,10 +210,19 @@ export const Login = () => {
 									placeholder="mail@mymood.com"
 									className="w-100 mb-2 d-block"
 								/>
-								<button type="submit" className="mb-5">¡Entrar en My Mood!</button>
+								<button type="submit" className="mb-5">Envíame el enlace</button>
 							</Form>
 							
 						</Formik>
+						<Row>
+						<Col sm={12}>
+							{message && (
+								<div className={`mt-3 border p-3 ${isError ? "border-danger text-danger" : "border-success text-success"}`}>
+									{message}
+								</div>
+							)}
+						</Col>
+					</Row> 
 
 					{/* <Form onSubmit={handleResetPassword}>
 						<Row>
