@@ -248,99 +248,99 @@ def setup_commands(app):
             users = [
                 User(name="Bárbara", surnames="Puyol", age=30, email="barbara@mymood.com", 
                     password=bcrypt.hashpw("111111".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="barbarapuyol", location_id=5, mood_id=moods[0].id),  
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="barbarapuyol", location_id=5, mood_id=moods[1].id),  
 
                 User(name="Pedro", surnames="Berruezo", age=30, email="pedro@mymood.com", 
                     password=bcrypt.hashpw("222222".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pedroberruezo", location_id=1, mood_id=moods[1].id),  
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pedroberruezo", location_id=1, mood_id=moods[5].id),  
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="nat@mymood.com", 
                     password=bcrypt.hashpw("333333".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=2, mood_id=moods[0].id),  
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=2, mood_id=moods[10].id),  
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="natalia@funtsak.com", 
                     password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4, mood_id=moods[4].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4, mood_id=moods[15].id),
 
                 User(name="Juan", surnames="Gutiérrez", age=25, email="juan@mymood.com",
                     password=bcrypt.hashpw("123456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="juangutierrez", location_id=3, mood_id=moods[2].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="juangutierrez", location_id=3, mood_id=moods[16].id),
 
                 User(name="María", surnames="Sánchez", age=35, email="maria@mymood.com",
                     password=bcrypt.hashpw("abcdef".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="mariasanchez", location_id=6, mood_id=moods[1].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="mariasanchez", location_id=6, mood_id=moods[17].id),
 
                 User(name="Luis", surnames="Martínez", age=28, email="luis@mymood.com", 
                     password=bcrypt.hashpw("qwerty".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="luismartinez", location_id=7, mood_id=moods[3].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="luismartinez", location_id=7, mood_id=moods[21].id),
                 
                 User(name="Ana", surnames="Hernández", age=42, email="ana@mymood.com", 
                     password=bcrypt.hashpw("password123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="anahernandez", location_id=8, mood_id=moods[0].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="anahernandez", location_id=8, mood_id=moods[25].id),
                 
                 User(name="Carlos", surnames="Díaz", age=31, email="carlos@mymood.com", 
                     password=bcrypt.hashpw("abc123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="carlosdiaz", location_id=9, mood_id=moods[4].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="carlosdiaz", location_id=9, mood_id=moods[26].id),
                 
                 User(name="Laura", surnames="Fernández", age=29, email="laura@mymood.com", 
                     password=bcrypt.hashpw("password456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="laurafernandez", location_id=10, mood_id=moods[2].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="laurafernandez", location_id=10, mood_id=moods[28].id),
                 
                 User(name="Javier", surnames="López", age=37, email="javier@mymood.com", 
                     password=bcrypt.hashpw("123abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="javierlopez", location_id=11, mood_id=moods[3].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="javierlopez", location_id=11, mood_id=moods[30].id),
                 
                 User(name="Marta", surnames="Gómez", age=24, email="marta@mymood.com", 
                     password=bcrypt.hashpw("password789".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="martagomez", location_id=12, mood_id=moods[1].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="martagomez", location_id=12, mood_id=moods[32].id),
                 
                 User(name="Daniel", surnames="Rodríguez", age=33, email="daniel@mymood.com", 
                     password=bcrypt.hashpw("password1234".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="danielrodriguez", location_id=13, mood_id=moods[0].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="danielrodriguez", location_id=13, mood_id=moods[35].id),
                 
                 User(name="Sara", surnames="Martín", age=27, email="sara@mymood.com", 
                     password=bcrypt.hashpw("abc456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="saramartin", location_id=14, mood_id=moods[5].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="saramartin", location_id=14, mood_id=moods[36].id),
                 
                 User(name="Pablo", surnames="Pérez", age=38, email="pablo@mymood.com", 
                     password=bcrypt.hashpw("123456abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pabloperez", location_id=15, mood_id=moods[3].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pabloperez", location_id=15, mood_id=moods[37].id),
                 
                 User(name="Elena", surnames="Ruiz", age=26, email="elena@mymood.com", 
                     password=bcrypt.hashpw("password789".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="elenaruiz", location_id=16, mood_id=moods[5].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="elenaruiz", location_id=16, mood_id=moods[38].id),
                 
                 User(name="Adrián", surnames="González", age=29, email="adrian@mymood.com", 
                     password=bcrypt.hashpw("abc123456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="adriangonzalez", location_id=17, mood_id=moods[1].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="adriangonzalez", location_id=17, mood_id=moods[16].id),
                 
                 User(name="Cristina", surnames="Herrera", age=34, email="cristina@mymood.com", 
                     password=bcrypt.hashpw("password123abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="cristinaherrera", location_id=18, mood_id=moods[2].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="cristinaherrera", location_id=18, mood_id=moods[14].id),
                 
                 User(name="Jorge", surnames="Dominguez", age=32, email="jorge@mymood.com", 
                     password=bcrypt.hashpw("abcdef123456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="jorgedominguez", location_id=19, mood_id=moods[0].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="jorgedominguez", location_id=19, mood_id=moods[40].id),
                 
                 User(name="Alicia", surnames="Muñoz", age=36, email="alicia@mymood.com", 
                     password=bcrypt.hashpw("passwordabc123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="aliciamunoz", location_id=20, mood_id=moods[3].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="aliciamunoz", location_id=20, mood_id=moods[37].id),
                 
                 User(name="Roberto", surnames="Alvarez", age=30, email="roberto@mymood.com", 
                     password=bcrypt.hashpw("abcdef123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="robertoalvarez", location_id=21, mood_id=moods[4].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="robertoalvarez", location_id=21, mood_id=moods[39].id),
                 
                 User(name="Lucía", surnames="Jiménez", age=28, email="lucia@mymood.com", 
                     password=bcrypt.hashpw("password123456abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="luciajimenez", location_id=22, mood_id=moods[1].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="luciajimenez", location_id=22, mood_id=moods[38].id),
                 
                 User(name="Alejandro", surnames="Romero", age=39, email="alejandro@mymood.com", 
                     password=bcrypt.hashpw("abcdef123456abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="alejandroromero", location_id=23, mood_id=moods[2].id),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="alejandroromero", location_id=23, mood_id=moods[46].id),
                 
                 User(name="Raquel", surnames="Santos", age=33, email="raquel@mymood.com", 
                     password=bcrypt.hashpw("passwordabc123456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
-                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="raquelsantos", location_id=24, mood_id=moods[5].id),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="raquelsantos", location_id=24, mood_id=moods[49].id),
             ]
             db.session.add_all(users)
             db.session.commit()
