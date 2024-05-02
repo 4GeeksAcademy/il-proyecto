@@ -60,10 +60,14 @@
     --p-size: 21px;
     --small-size: clamp(0.60rem, 0.75vw, 0.80rem);
 }
+
 * {
     font-family: var(--base-font-family);
 }
-html, body, * {
+
+html,
+body,
+* {
     font-size: var(--p-size);
 }
 
@@ -228,8 +232,7 @@ button.form-button {
     margin-bottom: 1.7rem;
 }
 
-select.form-select 
-{
+select.form-select {
     border: 1px solid #000;
     border-radius: 0;
     margin-bottom: 22px;
@@ -246,6 +249,88 @@ textarea.form-control {
     font-family: var(--base-font-family);
     font-size: 20px;
     font-weight: 100;
+}
+
+/* ==========================================================================
+   FORMIK FORM 
+   ========================================================================== */
+
+.formik-form input {
+    font-family: var(--base-font-family);
+    font-weight: 100;
+    font-size: 22px;
+    color: rgba(0, 0, 0, 0.50);
+    letter-spacing: 0.03px;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 0;
+    padding: 0.75rem .75rem;
+}
+
+.formik-form label {
+    font-family: var(--heading1-font-family);
+    font-style: italic;
+    border: 1px solid #000;
+    background-color: white;
+    padding: 0px 10px;
+    margin-bottom: -1px !important;
+    margin-left: 13px;
+}
+
+.formik-form button {
+    color: #000000;
+    text-align: center;
+    font-family: var(--base-font-family);
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.03px;
+    background: var(--option3-color);
+    box-shadow: var(--button1-box-shadow);
+    padding: 20px;
+    border: 1px solid #000;
+
+    display: flex;
+    margin: 0 auto;
+}
+
+.link {
+    color: var(--base-color-text);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    font-family: var(--base-font-family);
+    margin-bottom: 1.7rem;
+}
+
+.formik-form select {
+    border: 1px solid #000;
+    border-radius: 0;
+    margin-bottom: 22px;
+    height: 60px;
+    font-family: var(--base-font-family);
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.formik-form textarea {
+    border: 1px solid #000;
+    border-radius: 0;
+    margin-bottom: 22px;
+    font-family: var(--base-font-family);
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.formik-form .error {
+    font-size: var(--small-size);
+    /* color: var(--option3-color);
+    margin-bottom:10px */
+}
+
+.formik-form .form-check-input[type=checkbox] {
+    margin-right: 10px;
 }
 
 
@@ -450,4 +535,3 @@ footer a:hover {
 .navbar-nav {
     font-family: var(--base-font-family);
 }
-
