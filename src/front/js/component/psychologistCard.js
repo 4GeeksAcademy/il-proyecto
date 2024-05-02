@@ -15,7 +15,7 @@ const PsychologistCard = ({ id, name, surnames, col_num, image }) => {
     };
 
     return (
-            <Card className="ps-card " >
+            <Card className="ps-card">
                 <Card.Header className="bg-white"><Image src={image} className="ps-image" roundedCircle /></Card.Header>
                 <Card.Body>
                     <Card.Title>{name} {surnames}</Card.Title>

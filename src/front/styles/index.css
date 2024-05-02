@@ -25,6 +25,9 @@
     --option67-color: #5456D9;
     /* Color de fondo para opción 6 */
 
+    --skeleton1-color: #F9F4F0;
+    --skeleton2-color: rgb(215, 212, 212);
+
     /* Variables sombras button / button 2 mainbutton */
     --button1-border: 1px solid #000000;
     /* Borde para button1 */

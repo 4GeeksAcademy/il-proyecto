@@ -87,6 +87,7 @@
 		"react-bootstrap": "^2.10.2",
 		"react-dom": "^18.2.0",
 		"react-leaflet": "^4.2.1",
+		"react-loading-skeleton": "^3.4.0",
 		"react-native-bcrypt": "^2.4.0",
 		"react-polyfills": "0.0.1",
 		"react-router-dom": "^6.23.0",

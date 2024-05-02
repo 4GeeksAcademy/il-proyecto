@@ -47,30 +47,45 @@ def setup_commands(app):
         try:
             
             locations = [
-                Location(latitude=40.4167, longitude=-3.7033), #(Puerta del Sol)
-                Location(latitude=40.4150, longitude=-3.6833), #(Parque del Retiro)
-                Location(latitude=40.4155, longitude=-3.7079), #(Plaza Mayor)
-                Location(latitude=40.4240, longitude=-3.7174), #(Templo de Debod)
-                Location(latitude=40.4170, longitude=-3.7133), #(Palacio Real de Madrid)
-                Location(latitude=40.4530, longitude=-3.6883), #(Estadio Santiago Bernabéu)
-                Location(latitude=40.4155, longitude=-3.7094), #(Mercado de San Miguel)
-                Location(latitude=40.4075, longitude=-3.7079), #(El Rastro)
-                Location(latitude=40.4139, longitude=-3.6922) #(Museo Nacional del Prado)
-            ]
+                Location(latitude=40.4214, longitude=-3.6903), #(Gran Vía)
+                Location(latitude=40.4238, longitude=-3.6932), #(Plaza de España)
+                Location(latitude=40.4180, longitude=-3.6994), #(Puerta de Alcalá)
+                Location(latitude=40.4265, longitude=-3.6919), #(Cibeles Fountain)
+                Location(latitude=40.4109, longitude=-3.6925), #(CaixaForum Madrid)
+                Location(latitude=40.4161, longitude=-3.6976), #(Plaza de Cibeles)
+                Location(latitude=40.4123, longitude=-3.6949), #(Puerta del Príncipe - Parque del Retiro)
+                Location(latitude=40.4203, longitude=-3.7068), #(Plaza de Colón)
+                Location(latitude=40.4121, longitude=-3.6983), #(Banco de España)
+                Location(latitude=40.4289, longitude=-3.6958), #(Chueca)
+                Location(latitude=40.4219, longitude=-3.6888), #(Malasaña)
+                Location(latitude=40.4209, longitude=-3.7044), #(Barrio de las Letras)
+                Location(latitude=40.4162, longitude=-3.7058), #(CentroCentro - Palacio de Cibeles)
+                Location(latitude=40.4132, longitude=-3.7001), #(Círculo de Bellas Artes)
+                Location(latitude=40.4211, longitude=-3.7072), #(Museo Thyssen-Bornemisza)
+                Location(latitude=40.4116, longitude=-3.7010), #(Museo Nacional Centro de Arte Reina Sofía)
+                Location(latitude=40.4110, longitude=-3.6937), #(Real Jardín Botánico)
+                Location(latitude=40.4163, longitude=-3.6945), #(Paseo del Prado)
+                Location(latitude=40.4150, longitude=-3.7076), #(Puerta del Sol - Kilómetro Cero)
+                Location(latitude=40.4155, longitude=-3.7069), #(Casa de Correos - Reloj de la Puerta del Sol)
+                Location(latitude=40.4192, longitude=-3.6949), #(Teatro Real)
+                Location(latitude=40.4144, longitude=-3.6935), #(Palacio de Linares)
+                Location(latitude=40.4205, longitude=-3.7076), #(Congreso de los Diputados)
+                Location(latitude=40.4103, longitude=-3.6937), #(Real Academia de Bellas Artes de San Fernando)
+                        ]
             db.session.add_all(locations)
             db.session.commit() 
 
             categories = [
                 CategoryMood(category="Normal", description="Estado de equilibrio emocional, bienestar, o satisfacción con la vida y las circunstancias actuales.", 
-                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-0.png?alt=media&token=966182fb-4544-4bb1-9164-85f8986ecc69"),
+                            icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-0.png?alt=media&token=966182fb-4544-4bb1-9164-85f8986ecc69"),
                 CategoryMood(category="Leve", description="Estado de malestar o incomodidad que son más bien situacionales y no indican un patrón constante de pensamiento negativo.", 
-                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-1.png?alt=media&token=7a469bcb-505f-4b9e-82d0-2d8471768317"),
+                            icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-1.png?alt=media&token=7a469bcb-505f-4b9e-82d0-2d8471768317"),
                 CategoryMood(category="Moderado", description="Estado de ansiedad o tristeza que muestran un nivel de afectación personal más profundo, pero todavía gestionable en muchos casos.", 
-                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-2.png?alt=media&token=679901b2-846a-4c8b-bbd3-f1b188bf493e"),
+                            icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-2.png?alt=media&token=679901b2-846a-4c8b-bbd3-f1b188bf493e"),
                 CategoryMood(category="Severo", description="Estados que indican una lucha significativa con pensamientos negativos, donde la capacidad de funcionar en la vida diaria está claramente afectada.", 
-                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-3.png?alt=media&token=5edf7dcb-6aa3-4782-b52d-4a1a2b274549"),
+                            icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-3.png?alt=media&token=5edf7dcb-6aa3-4782-b52d-4a1a2b274549"),
                 CategoryMood(category="Extremo", description="Estados que reflejan pensamientos de desesperanza absoluta, ideación suicida o un estado mental que requiere intervención inmediata.", 
-                             icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-4.png?alt=media&token=60cdd5e4-7e13-49cb-8e9e-b8b8585be63a")
+                            icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Flevel-4.png?alt=media&token=60cdd5e4-7e13-49cb-8e9e-b8b8585be63a")
             ]
             db.session.add_all(categories)
             db.session.commit() 
@@ -245,7 +260,87 @@ def setup_commands(app):
 
                 User(name="Natalia", surnames="L. Salas", age=40, email="natalia@funtsak.com", 
                     password=bcrypt.hashpw("444444".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),  
-                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4, mood_id=moods[4].id) 
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="natalialsalas", location_id=4, mood_id=moods[4].id),
+
+                User(name="Juan", surnames="Gutiérrez", age=25, email="juan@mymood.com",
+                    password=bcrypt.hashpw("123456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="juangutierrez", location_id=3, mood_id=moods[2].id),
+
+                User(name="María", surnames="Sánchez", age=35, email="maria@mymood.com",
+                    password=bcrypt.hashpw("abcdef".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'), 
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="mariasanchez", location_id=6, mood_id=moods[1].id),
+
+                User(name="Luis", surnames="Martínez", age=28, email="luis@mymood.com", 
+                    password=bcrypt.hashpw("qwerty".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="luismartinez", location_id=7, mood_id=moods[3].id),
+                
+                User(name="Ana", surnames="Hernández", age=42, email="ana@mymood.com", 
+                    password=bcrypt.hashpw("password123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="anahernandez", location_id=8, mood_id=moods[0].id),
+                
+                User(name="Carlos", surnames="Díaz", age=31, email="carlos@mymood.com", 
+                    password=bcrypt.hashpw("abc123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="carlosdiaz", location_id=9, mood_id=moods[4].id),
+                
+                User(name="Laura", surnames="Fernández", age=29, email="laura@mymood.com", 
+                    password=bcrypt.hashpw("password456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="laurafernandez", location_id=10, mood_id=moods[2].id),
+                
+                User(name="Javier", surnames="López", age=37, email="javier@mymood.com", 
+                    password=bcrypt.hashpw("123abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="javierlopez", location_id=11, mood_id=moods[3].id),
+                
+                User(name="Marta", surnames="Gómez", age=24, email="marta@mymood.com", 
+                    password=bcrypt.hashpw("password789".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="martagomez", location_id=12, mood_id=moods[1].id),
+                
+                User(name="Daniel", surnames="Rodríguez", age=33, email="daniel@mymood.com", 
+                    password=bcrypt.hashpw("password1234".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="danielrodriguez", location_id=13, mood_id=moods[0].id),
+                
+                User(name="Sara", surnames="Martín", age=27, email="sara@mymood.com", 
+                    password=bcrypt.hashpw("abc456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="saramartin", location_id=14, mood_id=moods[5].id),
+                
+                User(name="Pablo", surnames="Pérez", age=38, email="pablo@mymood.com", 
+                    password=bcrypt.hashpw("123456abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="pabloperez", location_id=15, mood_id=moods[3].id),
+                
+                User(name="Elena", surnames="Ruiz", age=26, email="elena@mymood.com", 
+                    password=bcrypt.hashpw("password789".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="elenaruiz", location_id=16, mood_id=moods[5].id),
+                
+                User(name="Adrián", surnames="González", age=29, email="adrian@mymood.com", 
+                    password=bcrypt.hashpw("abc123456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="adriangonzalez", location_id=17, mood_id=moods[1].id),
+                
+                User(name="Cristina", surnames="Herrera", age=34, email="cristina@mymood.com", 
+                    password=bcrypt.hashpw("password123abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="cristinaherrera", location_id=18, mood_id=moods[2].id),
+                
+                User(name="Jorge", surnames="Dominguez", age=32, email="jorge@mymood.com", 
+                    password=bcrypt.hashpw("abcdef123456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="jorgedominguez", location_id=19, mood_id=moods[0].id),
+                
+                User(name="Alicia", surnames="Muñoz", age=36, email="alicia@mymood.com", 
+                    password=bcrypt.hashpw("passwordabc123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="aliciamunoz", location_id=20, mood_id=moods[3].id),
+                
+                User(name="Roberto", surnames="Alvarez", age=30, email="roberto@mymood.com", 
+                    password=bcrypt.hashpw("abcdef123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="robertoalvarez", location_id=21, mood_id=moods[4].id),
+                
+                User(name="Lucía", surnames="Jiménez", age=28, email="lucia@mymood.com", 
+                    password=bcrypt.hashpw("password123456abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="luciajimenez", location_id=22, mood_id=moods[1].id),
+                
+                User(name="Alejandro", surnames="Romero", age=39, email="alejandro@mymood.com", 
+                    password=bcrypt.hashpw("abcdef123456abc".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=True, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="alejandroromero", location_id=23, mood_id=moods[2].id),
+                
+                User(name="Raquel", surnames="Santos", age=33, email="raquel@mymood.com", 
+                    password=bcrypt.hashpw("passwordabc123456".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                    is_active=False, created_at=date.today(), hobbie_id=random.randint(1, 20), profile_url="raquelsantos", location_id=24, mood_id=moods[5].id),
             ]
             db.session.add_all(users)
             db.session.commit()
@@ -267,8 +362,7 @@ def setup_commands(app):
             ]
             db.session.add_all(psychologists)
             db.session.commit()
-               
-           
+
             resource_types = [
                 ResourceType(resource_type="Artículo", icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Farticle.png?alt=media&token=c7baed85-7d3b-4f7a-abd2-f47bbea5a372"),
                 ResourceType(resource_type="Vídeo", icon_url="https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Final%20Icons%2Fvideo.png?alt=media&token=21e95df2-7c85-4df1-a08e-848f2ef1ddf9"),
@@ -282,36 +376,62 @@ def setup_commands(app):
             base_time = datetime.now()
 
             podcasts = [
-                Resource(resource_type_id=3, url="https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk", title="Mental Illness Happy Hour", description="Paul Gilmartin hosts a weekly podcast that interviews comedians, artists, friends, and the occasional doctor about mental health issues and much more.", psychologist_id=1, created_at=base_time - timedelta(days=2)),
-                Resource(resource_type_id=3, url="https://open.spotify.com/show/2D4fDau7Kc5iQb4eUqmOR0", title="The Anxiety Guy Podcast", description="Former professional tennis player and leading anxiety expert Dennis Simsek discusses life with anxiety, panic attacks, and health anxiety.", psychologist_id=2, created_at=base_time - timedelta(days=3)),
-                Resource(resource_type_id=3, url="https://open.spotify.com/show/7jQV4EcpvsV9UcukCZ3j3A", title="The Hilarious World of Depression", description="A show about clinical depression with laughs? Comedian John Moe talks to fellow comedians who have dealt with this sad part of life.", psychologist_id=3, created_at=base_time - timedelta(days=5)),
-                Resource(resource_type_id=3, url="https://open.spotify.com/show/4XPl3uEEL9hvqMkoZrzbx5", title="All In The Mind", description="An exploration of all things mental, All in the Mind is about the brain and behaviour, and the fascinating connections between them.", psychologist_id=4, created_at=base_time - timedelta(days=1)),
-                Resource(resource_type_id=3, url="https://open.spotify.com/show/6SzvjB6jhHnh4o7zA5Vx2Y", title="Anxiety Slayer", description="Award-winning Anxiety Slayer podcast is a leading resource for anyone who wants to soothe anxiety and live a more peaceful life.", psychologist_id=5, created_at=datetime.now())
+                Resource(resource_type_id=3, url="https://open.spotify.com/episode/5IAG7ZF1nCbOkt4ZA1oTI3?si=-x3K03_FQpKx08Eh6fkARg&nd=1&dlsi=9c3eb03c72674e35", 
+                        title="Que hacer cuando estás mal y no saber por qué", 
+                        description=" ¿Alguna vez has sentido que no estabas mal, pero aun así sabías que algo en ti no estaba del todo bien? ¿O te has sentido mal sin saber por qué? ❤️‍🩹", 
+                        psychologist_id=1, created_at=base_time - timedelta(days=2)),
+                
+                Resource(resource_type_id=3, url="https://open.spotify.com/episode/3Vvbey5T3aLEARiGnQBCSI?go=1&sp_cid=f9474c4b16f6226cda32cd6db5aab82a&utm_source=embed_player_p&utm_medium=desktop&nd=1&dlsi=80d5e71d3d19434b",
+                        title="¿Hasta qué punto dependemos de los demás?", description="Y las relaciones que establecemos con nuestro entorno nos influyen de manera directa en la forma en la que construimos nuestra identidad, nuestra forma de ser y estar en el mundo.",
+                        psychologist_id=2, created_at=base_time - timedelta(days=3)),
+
+                Resource(resource_type_id=3, url="https://open.spotify.com/episode/4Uz2UreQ5F7U8ShQ4hicJQ?si=1epGRhFoSmO93L5gS17E9A",
+                        title="El peligro de la Hiperempatía", description="La empatía nos conecta con los demás de tal manera, que somos capaces de estar en el mismo estado psicológico. Es como si por un momento, fuéramos la misma persona.",
+                        psychologist_id=3, created_at=base_time - timedelta(days=5)),
+
+                Resource(resource_type_id=3, url="https://open.spotify.com/episode/1PbGUlEn16dJWstkB1zbpI",
+                        title="Memento Mori: La importancia de recordar la muerte", description="¿Cuáles son las actitudes que tenemos los seres humanos ante la muerte? ¿Por qué nos genera sufrimiento la idea de morir a pesar de ser algo inevitable?",
+                        psychologist_id=4, created_at=base_time - timedelta(days=1)),
+                
+                Resource(resource_type_id=3, url="https://open.spotify.com/episode/4gZO6dHCP7W7KTRY7qTnhO",
+                        title="Psicología del Perdoón", description="Entendemos por qué el perdón en algunas ocasiones no es realmente bueno y tenemos 5 estrategias para que, si así lo decidas, atravesar el proceso del perdón y lograr perdonar de manera salud.",
+                        psychologist_id=5, created_at=base_time - timedelta(days=4)),
+
+                Resource(resource_type_id=3, url="https://open.spotify.com/episode/60dxU7qrtS66hobKZoH7aK",
+                        title="¿Hablamos de salud mental?", description="Después de la pandemia, no paramos de escuchar: “hay que cuidar la salud mental” y es cierto.",
+                        psychologist_id=11, created_at=base_time - timedelta(days=7)),
+
+                Resource(resource_type_id=3, url="https://podcasts.apple.com/es/podcast/t%C3%A9cnicas-de-autocontrol/id1501727318?i=1000648060622",
+                        title="Técnicas de autocontrol", description="Las emociones no son ni buenas ni malas. No ponemos en duda que puedan clasificarse entre agradables o desagradables, pero todas, en su justa medida, son, han sido y serán, necesarias para la supervivencia",
+                        psychologist_id=12, created_at=base_time - timedelta(days=10)),
+
+
+            
             ]
             db.session.add_all(podcasts)
             db.session.commit()
 
             videos = [
-                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=IW-9eOPAWdA", title="Understanding Depression", description="Clinical Psychologist Ali Mattu provides a comprehensive overview of clinical depression, its causes, and treatments.", psychologist_id=6, created_at=datetime.now()),
-                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=F2hc2FLOdhI", title="What is Anxiety?", description="This video by the World Health Organization explains what anxiety is, its symptoms, and how to seek help.", psychologist_id=7, created_at=base_time - timedelta(days=2, hours=2)),
-                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=GOK1tKFFIQI", title="The Science of Well-Being", description="Yale Professor Laurie Santos discusses the psychology of happiness and provides tips on how to live a happier life.", psychologist_id=8, created_at=base_time - timedelta(days=3, hours=1)),
-                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=tzNq-H-r1TI", title="How to manage stress", description="This TEDx talk explores various stress management techniques and the science behind them.", psychologist_id=9, created_at=base_time - timedelta(days=4)),
-                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=nCrjevx3-Js", title="Mindfulness for Beginners", description="An introductory guide to mindfulness meditation, offering practical steps for beginners to follow.", psychologist_id=10, created_at=base_time - timedelta(days=5, hours=2))
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=ivUFUEC5zQI", title="¿A quién le importa la salud mental?", description="Pero, ¿cómo es el día a día de una persona con un problema de salud mental grave? ¿y el de su familia? ¿a quién puede interesarle?", psychologist_id=6, created_at=datetime.now()),
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=SNm3w2wJ3KI", title="15 Hábitos para Tener una Salud Mental del 1%", description="¿Cómo podemos reconocer nuestro dolor?", psychologist_id=7, created_at=base_time - timedelta(days=2, hours=2)),
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=0noAwrWY78U", title="El cerebro, nuestro mejor aliado contra el estrés.", description="Comprender es aliviar, y cuando comprendes por lo que pasa tu mente, te sientes aliviado; porque si no, eres esclavo de síntomas físicos, psicológicos y vas como perdido por la vida", psychologist_id=8, created_at=base_time - timedelta(days=3, hours=1)),
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=5zxQJG1khlc", title="Hablemos de Prevencion del Suicidio", description="Hablar de suicidio debe dejar de ser un tema tabú y debemos comenzar a hablar abiertamente.", psychologist_id=9, created_at=base_time - timedelta(days=4)),
+                Resource(resource_type_id=2, url="https://www.youtube.com/watch?v=tuvSOkDmr8o", title="Identifica una relación tóxica", description="Por qué tenemos relaciones tóxicas cuando somos jóvenes?", psychologist_id=10, created_at=base_time - timedelta(days=5, hours=2))
             ]
             db.session.add_all(videos)
             db.session.commit()
             
             articles = [
-                Resource(resource_type_id=1, url="https://www.psicoactiva.com/blog/como-mejorar-la-autoestima/", title="Cómo mejorar la autoestima", description="Una guía completa sobre cómo construir la confianza en uno mismo y mejorar la autoestima con estrategias prácticas y basadas en la evidencia.", psychologist_id=1, created_at=base_time - timedelta(days=1, minutes=30)),
-                Resource(resource_type_id=1, url="https://www.clinicbarcelona.org/noticias/ansiedad-como-detectarla-y-afrontarla", title="Ansiedad: cómo detectarla y afrontarla", description="Este artículo ofrece varias estrategias de afrontamiento para la ansiedad, ayudando a los lectores a entender y manejar su ansiedad de manera más efectiva.", psychologist_id=2, created_at=base_time - timedelta(days=2, minutes=25)),
-                Resource(resource_type_id=1, url="https://www.mentalhealth.org.uk/a-to-z/d/depression", title="Los efectos de la depresión en el cuerpo", description="Un vistazo a cómo la depresión afecta físicamente el cuerpo, explorando las conexiones entre la salud mental y física.", psychologist_id=3, created_at=base_time - timedelta(days=3, minutes=20)),
-                Resource(resource_type_id=1, url="https://medlineplus.gov/spanish/ency/article/003211.htm", title="Problemas de salud relacionados con el estrés", description="Medline Plus enumera varios problemas de salud comunes asociados con el estrés y cómo resolverlos.", psychologist_id=4, created_at=base_time - timedelta(days=4, minutes=15)),
-                Resource(resource_type_id=1, url="https://www.redalyc.org/pdf/1805/180521538001.pdf", title="Meditación mindfulness para la ansiedad", description="Un estudio que discute cómo la meditación mindfulness puede ayudar significativamente a reducir los niveles de ansiedad.", psychologist_id=5, created_at=base_time - timedelta(days=5, minutes=10)),
-                Resource(resource_type_id=1, url="https://www.who.int/es/news-room/fact-sheets/detail/depression", title="Qué saber sobre la depresión", description="La Organización Mundial de la Salud proporciona una visión detallada de la depresión, incluyendo síntomas, tratamientos y diferentes tipos.", psychologist_id=6, created_at=base_time - timedelta(days=1, minutes=30)),
-                Resource(resource_type_id=1, url="https://espanol.nami.org/About-Mental-Illness/Mental-Health-Conditions/Depression", title="¿Qué es la Depresión?", description="La Asociación Nacional de Salud Mental define la depresión, sus síntomas, riesgos y opciones de tratamiento.", psychologist_id=7, created_at=datetime.now()),
-                Resource(resource_type_id=1, url="https://www.infosalus.com/salud-investigacion/noticia-claves-entender-sindrome-burnout-20190606175327.html", title="Claves para entender el síndrome de 'burnout'", description="Explora el concepto de 'burnout', sus causas, síntomas y cómo manejar este tipo de estrés laboral.", psychologist_id=8, created_at=datetime.now()),
-                Resource(resource_type_id=1, url="https://www.fundacioncadah.org/web/articulo/la-meditacion-como-herramienta-para-el-tratamiento-del-tdah.html", title="Meditación como tratamiento para el TDAH", description="Discute el uso de la meditación como herramienta efectiva para manejar los síntomas del TDAH en niños y adultos.", psychologist_id=9, created_at=datetime.now()),
-                Resource(resource_type_id=1, url="https://www.psicoactiva.com/blog/estrategias-para-el-manejo-del-estres/", title="Estrategias para el manejo del estrés", description="Este artículo proporciona técnicas prácticas y consejos para gestionar el estrés diario y mejorar el bienestar emocional.", psychologist_id=10, created_at=base_time - timedelta(days=1, minutes=30)),
+                Resource(resource_type_id=1, url="https://elpais.com/eps/psicologia-y-bienestar/2024-04-11/y-si-intentaramos-decir-todo-lo-que-pensamos.html", title="¿Y si intentáramos decir todo lo que pensamos?", description="Somos rehenes del lenguaje y su estructura pone límites a nuestra voluntad de expresarnos, pero, a la vez, solo a través de las palabras podemos hablar y liberarnos", psychologist_id=1, created_at=base_time - timedelta(days=1, minutes=30)),
+                Resource(resource_type_id=1, url="https://elpais.com/eps/2024-03-21/como-encontrar-tu-proposito-en-la-vida.html", title="Cómo encontrar tu propósito en la vida", description="Es un proceso que empieza por el autoconocimiento, continúa en la exploración y desemboca en el ejercicio de prueba y error", psychologist_id=2, created_at=base_time - timedelta(days=2, minutes=25)),
+                Resource(resource_type_id=1, url="https://www.ryapsicologos.net/beneficios-de-la-terapia-de-pareja/", title="8 beneficios de la terapia de pareja", description="¿La terapia de pareja realmente ayuda?", psychologist_id=3, created_at=base_time - timedelta(days=3, minutes=20)),
+                Resource(resource_type_id=1, url="https://www.ryapsicologos.net/autoayuda/emociones-negativas/", title="Emociones negativas", description="Las emociones negativas no son malas en sí mismas, sino en tanto que se entronicen o tiranicen, por decirlo así, e impidan el paso de emociones positivas.", psychologist_id=4, created_at=base_time - timedelta(days=4, minutes=15)),
+                Resource(resource_type_id=1, url="https://www.mundopsicologos.com/articulos/depresion-laboral-por-que-surge-y-como-podemos-manejarla", title="Depresión laboral: ¿Por qué surge y cómo podemos manejarla?", description="La depresión por el trabajo es cada vez una realidad que afecta a más personas. Pero, ¿cuáles son los síntomas que pueden indicar que estás padeciendo de ellos? y, ¿qué puedes hacer para afrontarla?", psychologist_id=5, created_at=base_time - timedelta(days=5, minutes=10)),
+                Resource(resource_type_id=1, url="https://www.mundopsicologos.com/articulos/no-puedo-mas-estoy-al-limite-que-hacer-cuando-nos-sentimos-abrumados", title="¿Qué hacer cuando nos sentimos abrumados?", description="¿Sientes que estás en una situación límite o demasiado abrumado? ¿Crees que siempre estás al límite del colapso emocional? Descubre cómo lidiar con ello y las causas de ello.", psychologist_id=6, created_at=base_time - timedelta(days=1, minutes=30)),
+                Resource(resource_type_id=1, url="https://psicologiaymente.com/psicologia/errores-comunes-personas-con-ansiedad", title="Errores comunes que cometen las personas con ansiedad", description="La ansiedad puede llevar a acciones que hagan más complejos estos problemas psicoemocionales.", psychologist_id=7, created_at=datetime.now()),
+                Resource(resource_type_id=1, url="https://psicologiaymente.com/psicologia/tecnica-5-pasos-superar-tristeza", title="La técnica de los 5 pasos para gestionar la tristeza", description="Una guía para comprender este estado y aprender a manejar la tristeza.", psychologist_id=8, created_at=datetime.now()),
+                Resource(resource_type_id=1, url="https://www.areahumana.es/aprender-a-decir-no/", title="Aprender a decir no.", description="Saber decir no es uno de los más valiosos aprendizajes", psychologist_id=9, created_at=datetime.now()),
+                Resource(resource_type_id=1, url="https://www.areahumana.es/autoengano-y-disonancia-cognitiva/", title="Autoengaño: Cuando nuestro cerebro nos miente", description="¿Por qué nos mentimos? Psicología del Autoengaño", psychologist_id=10, created_at=base_time - timedelta(days=1, minutes=30)),
             ]
             
             db.session.add_all(articles)
@@ -355,14 +475,13 @@ def setup_commands(app):
             db.session.add_all(chats)
             db.session.commit()
             
-            
             all_psychologists = Psychologist.query.all()
             all_users = User.query.all()
-
+            
             # Asegurarse de que hay suficientes psicólogos para asignar como se desea
-            if len(all_psychologists) < len(all_users) + 1:  # +1 porque uno recibe dos psicólogos
-                print("No hay suficientes psicólogos para asignar según los requerimientos.")
-                return
+            # if len(all_psychologists) < len(all_users) + 1:  # +1 porque uno recibe dos psicólogos
+            #     print("No hay suficientes psicólogos para asignar según los requerimientos.")
+            #     return
                     
             used_psychologists_indices = []
             
@@ -393,8 +512,3 @@ def setup_commands(app):
         except Exception as e:
             db.session.rollback() 
             print(f"Error al llenar la base de datos: {e}")
-         
-       
-        
-
-       

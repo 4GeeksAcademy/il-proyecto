@@ -14,10 +14,19 @@
  .ps-image {
     max-width: 100px;
     max-height: auto;
+    width: 100px;
+    height: 100px;
  }
 
  .psychologist-card-container {
     display: flex;
     flex-direction: row;
     align-items: stretch;
+}
+
+/* skeleton */
+
+.ps-card {
+   min-width: 100%;
+   height: 100%;
 }
