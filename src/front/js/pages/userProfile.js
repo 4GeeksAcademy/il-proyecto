@@ -33,7 +33,7 @@ export const UserProfile = () => {
                 <Row className="mb-5">
                     <Col xs={11} md={6} lg={10}>
                         <h2 className="">{activeUser?.name} {activeUser?.surnames}</h2>
-                        <h3 className="">Lo que más me gusta es... {activeUser?.hobbie}</h3>
+                        {activeUser?.hobbie ? (<h3 className="">Lo que más me gusta es... {activeUser?.hobbie}</h3>) : (<div></div>)}
                     </Col>
                     <Col xs={1} md={6} lg={2} className="text-end">
                         {activeUser?.user_mood ? (

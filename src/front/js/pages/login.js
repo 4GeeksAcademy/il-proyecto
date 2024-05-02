@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 /* GOOGLE LOGIN */
 import { GoogleLogin } from '@react-oauth/google';
-import { GoogleProvider } from "../component/google";  // Asegúrate de que la ruta de importación es correcta
+import { GoogleProvider } from "../component/google"; 
 
 /* FORMIK */
 import { Formik, Form, useField } from 'formik';
