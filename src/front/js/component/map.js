@@ -205,7 +205,7 @@ const MapComponent = (props) => {
                   {isGeolocationLoading ? 'Cargando...' : 'Aceptar'}
                 </button>
                   {!isGeolocationLoading ? <button className='button-login' onClick={handleCloseLocationModal}>
-                   Cancelar 
+                  Cancelar 
                 </button> : ''}
               </Modal.Body>
             </Modal>

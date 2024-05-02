@@ -1,11 +1,9 @@
 .chat {
-    min-height: 80vh;
-    /* width: 650px; */
+    height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; 
+    align-items: stretch;
     border: 1px solid var(--base-color-text);
-    /* overflow-y: auto; */
     overflow-x: none;
     background: linear-gradient(90deg, var(--option4-color) 0%, var(--option3-color) 100%);
 }
@@ -21,37 +19,33 @@
     background-repeat: no-repeat;
     background-position: 0 center;
     margin-bottom: 10px;
-    border: 1px solid var(--base-color-text);
-    /* padding: 8px 15px; */
     border-radius: 10px;
     width: auto;
     min-width: 200px; 
     max-width: fit-content;
-    display: flex;
-    justify-content: center; 
     overflow-wrap: break-word;
     word-wrap: break-word;
     box-sizing: border-box;
     word-break: break-all;  
     white-space: pre-wrap;
+    padding: 5px; 
 }
 
 .my-message {
-    background-color: #fff;
+    background-color: var(--option1-color);
     margin-right: auto; 
-    margin-left: 10px;
-    text-align: left;  
-    width: auto; 
-   
+    text-align: left;
+    width: 100%; 
 }
 
 .other-message {
-    background-color: var(--option1-color);
+    background-color: #fff;
     margin-left: auto; 
-    margin-right: 10px;
     text-align: right;
-    width: auto;
+    direction: rtl;
+    width: 100%; 
 }
+
 
 .form-control.my-input {
     /* Cambia el color de fondo del input */
@@ -78,9 +72,8 @@
     }
 }
 
-.my-message, .other-message{
-    max-width: 35%;
-    overflow-wrap: break-word;
+.my-message, .other-message {
+    max-width: 60%;
 }
 
 .chat li a {
@@ -91,3 +84,11 @@
 .date {
     text-align: center;
 }
+
+.button-close-chat {
+    font-size: 1px; 
+    padding: 1px 2px;
+    float: right;
+    text-align: right;
+}
+

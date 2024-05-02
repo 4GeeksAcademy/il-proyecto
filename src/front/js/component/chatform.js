@@ -3,6 +3,8 @@ import { Context } from "../store/appContext";
 import "../../styles/chat.css";
 import { socket } from "../store/appContext";
 import { set } from "firebase/database";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 
 function ChatForm({ userName, setShowChatModal }) {
@@ -30,7 +32,7 @@ function ChatForm({ userName, setShowChatModal }) {
             };
             setRoomId(store.room);
             socket.emit('data', { newMessage, room: store.room })
-             setMessage("");
+            setMessage("");
         }}
 
     
@@ -102,7 +104,7 @@ function ChatForm({ userName, setShowChatModal }) {
         }));
     }
     const groupedMessages = groupMessagesByDay(conversation) ;
-   
+
 
 // Función para convertir las URLs en enlaces
     function linkify(inputText) {
@@ -120,24 +122,24 @@ function ChatForm({ userName, setShowChatModal }) {
         socket.emit('leave_room', { user_id: store.user.name , room: roomId });
         socket.off('data', handleMessage);
         setShowChatModal(false);
-      };
+    };
 
-  
-  
+
     return (
         <>
                 <div className="chat">
-                        <h4 className='base-paragrahp'>Chatea con {userName}</h4><button className='button-login' onClick={handleCloseChatModal} >
-                        Cancelar
-                    </button>
+                        <p className='button-close-chat' onClick={handleCloseChatModal}>
+                        <FontAwesomeIcon icon={faTimes} />
+                        </p>
+                        <h4 className='base-paragrahp'>Hablando con {userName} </h4>
                     {groupedMessages.map(group => (
                         <div key={group.day} className="date">
                             <small>{group.day}</small>
                             <ul>
                                 {group.messages.map((item, index) => (
-                                    <li key={index} className={item.sender_name === userName ? "my-message" : "other-message"}
+                                    <li key={index} className={item.sender_name === userName ? "other-message" : "my-message"}
                                     dangerouslySetInnerHTML={{ __html: `${item.sender_name}: ${item.message}` }}>
-                                 </li>
+                                </li>
                                 ))}
                             </ul>
                         </div>
@@ -149,6 +151,10 @@ function ChatForm({ userName, setShowChatModal }) {
                 </div>
         </>
     );
+
+
+
+    
 }
 
 export default ChatForm;
