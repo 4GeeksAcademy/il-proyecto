@@ -24,6 +24,8 @@ export const UserProfile = () => {
 
     const activeUser = store?.active_users.find(user => user.id === parseInt(params.uid));
 
+
+
     console.log(activeUser);
 
     return (
@@ -46,7 +48,10 @@ export const UserProfile = () => {
                         <Card className="user-info-profile">
                             <ListGroup variant="flush">
                                 <ListGroup.Item><small>Email</small><p>{activeUser?.email}</p></ListGroup.Item>
-                                <ListGroup.Item><small>Contraseña</small><p>Cambiar contraseña <small>&#8599;</small></p></ListGroup.Item>
+                                {activeUser?.id === parseInt(params.uid) 
+                                ? ( <div></div>)
+                                : (<ListGroup.Item><small>Contraseña</small><p>Cambiar contraseña <small>&#8599;</small></p></ListGroup.Item>) 
+                                }
                                 <ListGroup.Item><small>Unido/a</small><p>{activeUser?.created_at}</p></ListGroup.Item>
                             </ListGroup>
                         </Card>
