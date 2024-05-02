@@ -5,11 +5,12 @@ import random, math, os
 import re
 from random import uniform
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app, render_template
-from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory
+from api.models import db, User, Location, Mood, Resource, ResourceType, CategoryMood, UserMoodHistory, Psychologist, Chat
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from collections import defaultdict
+from sqlalchemy import func
 # google
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -27,8 +28,9 @@ import bcrypt
 from flask_session import Session
 from flask import session
 
-
-
+#socket.io
+from flask_socketio import emit, join_room, leave_room
+from flask import request
 
 api = Blueprint('api', __name__)
 
@@ -190,9 +192,7 @@ def send_reset_email(user, token):
     link = url_for('api.reset_password_request', token=token, _external=False)
     new_link = link.replace("/api", "")
     full_link = f"{base_host}{new_link}"  
-    print("*************************************************")
-    print(full_link)
-    print("*************************************************")
+   
     # msg = Message('Recuperar contraseña',
     #               sender='mymoodbnp@gmail.com',
     #               recipients=[user.email])
@@ -248,8 +248,6 @@ def get_all_location():
         query_results = Location.query.all()
         results = list(map(lambda item: item.serialize(), query_results))
 
-    
-        print(query_results)
         
         if results != []:
             response_body = {
@@ -330,29 +328,19 @@ def save_user_location():
 @api.route('/resources', methods=['GET'])
 # @jwt_required()
 def get_all_resources():
-    # current_user = get_jwt_identity()
-    # print(current_user)
-    # if current_user:
-        resource_results = Resource.query.all()
-        # type_results = ResourceType.query.all()
-        # print(type_results)
-        results = list(map(lambda item: item.serialize(), resource_results))
+    resource_results = Resource.query.all()
+    results = list(map(lambda item: item.serialize(), resource_results))
   
-             
-        if results != []:
-            response_body = {
-            "msg": "OK",
-            "results": results
-        }
-            return jsonify(response_body), 200
-        
-        else:
-
-            return jsonify({"msg": "There aren't any location yet"}), 404
-        
-
-
-
+    if results != []:
+        response_body = {
+        "msg": "OK",
+        "results": results
+        }    
+        return jsonify(response_body), 200
+  
+    else:
+        return jsonify({"msg": "There aren't any location yet"}), 404
+    
 @api.route('/resources-bytype', methods=['GET'])
 def get_resources_by_type():
     resource_results = Resource.query.all()
@@ -380,38 +368,75 @@ def get_resources_by_type():
     
 
 
-#todos los estados filtrados por categoria
-@api.route('/moods', methods=['GET'])
+#-------------------------------------------------------------------#
+# PSYCHOLOGIST
+#-------------------------------------------------------------------#
+
+@api.route('/psychologist', methods=['GET'])
 @jwt_required()
-def get_all_moods():
-    resource_results = Mood.query.all()
-    results = {}
+def getAllPsychologistData():
+    psychologistList = Psychologist.query.all()
 
-    for mood in resource_results:
-        mood_dict = mood.serialize()
-        category = CategoryMood.query.filter_by(id=mood.category_id).first()
-        if category:
-            mood_dict["icon_url"] = category.icon_url  # Aquí se añade el icon_url
-            # Se elimina la línea que añade la categoría al mood_dict
-
-            # Si la categoría ya está en los resultados, añade el Mood a la lista de esa categoría
-            if category.category in results:
-                results[category.category].append(mood_dict)
-            # Si la categoría no está en los resultados, crea una nueva lista para esa categoría
-            else:
-                results[category.category] = [mood_dict]
-
-    if results != {}:
+    results = [psychologist.serialize() for psychologist in psychologistList]
+    
+    if psychologistList:
         response_body = {
             "msg": "OK",
             "results": results
         }
         return jsonify(response_body), 200
-
     else:
-        return jsonify({"msg": "There aren't any location yet"}), 404
+        return jsonify({"msg": "Any psychologist found"}), 404
+
+@api.route('/psychologist/<int:ps_id>', methods=['GET'])
+@jwt_required()
+def getPsychologistData(ps_id):
+    psychologistData = Psychologist.query.filter_by(id=ps_id).first()
+
+    if psychologistData:
+        response_body = {
+            "msg": "OK",
+            "results": psychologistData.serialize()
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "No psychologist found"}), 404
+
+    
+@api.route('/ps-resources/<int:psychologist_id>', methods=['GET'])  # Use underscore in the URL parameter
+@jwt_required()
+def get_psychologist_resources(psychologist_id):  # Match the parameter name with the route
+    resource_results = Resource.query.filter_by(psychologist_id=psychologist_id).all()  # Use correct field name and call all()
+    results = list(map(lambda item: item.serialize(), resource_results))
+  
+    if results:
+        response_body = {
+            "msg": "OK",
+            "results": results
+        }    
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "There aren't any resources yet"}), 404
 
 
+@api.route('/moods', methods=['GET'])
+@jwt_required()
+def get_all_moods():
+    categories = CategoryMood.query.all()  # Obtener todas las categorías
+    results = []
+    for category in categories:
+            # Obtén un mood aleatorio de cada categoría
+            mood = Mood.query.filter_by(category_id=category.id).order_by(func.random()).first()
+            if mood:
+                mood_dict = mood.serialize()
+                mood_dict["icon_url"] = category.icon_url  
+                mood_dict["category_name"] = category.category  
+                results.append(mood_dict)  
+
+    if results:
+        return jsonify({"msg": "OK", "results": results}), 200
+    else:
+        return jsonify({"msg": "No moods available"}), 404
 
 
 #ultima categoria de estado de animo del usuario
@@ -474,8 +499,6 @@ def get_all_users_active():
     
 
 
-
-
 @api.route('/user/<int:user_id>/mood', methods=['PUT'])
 @jwt_required()
 def update_user_mood(user_id):
@@ -502,8 +525,6 @@ def update_user_mood(user_id):
     return jsonify({"user": user.serialize()}), 200
 
 
-
-
 @api.route('/current-user', methods=['GET'])
 @jwt_required()
 def get_current_user():
@@ -513,3 +534,91 @@ def get_current_user():
         return jsonify(user.serialize()), 200
     else:
         return jsonify({"msg": "User not found"}), 404
+    
+
+# CHAT
+
+@api.route('/user/<int:user_id>', methods=['GET'])
+def get_one_user(user_id):
+    query_results = User.query.filter_by(id=user_id).first()
+    
+    if query_results is not None:
+        response_body = {
+        "msg": "OK",
+        "results": query_results.serialize()
+    }
+        return jsonify(response_body), 200
+    
+    else:
+        return jsonify({"msg": f"User {user_id} not found"}), 404
+    
+
+#Socket.io
+def register_socket_events(socket_io):
+    
+    @socket_io.on('data')
+    def handle_message(data):
+        """event listener when client sends data"""
+        print("Data from the front end: ", str(data))
+        room = data['newMessage']['room']  # Obtén la sala de los datos
+        emit("data", {'data': data, 'id': request.sid, }, room=room)  # Emitir a la sala específica
+    
+    @socket_io.on('connect')
+    def test_connect():
+        """event listener when client connects to the server"""
+        print("Client connected")
+        emit('your_id', {'id': request.sid}, room=request.sid)
+
+    @socket_io.on('disconnect')
+    def test_disconnect():
+        """event listener when client disconnects from the server"""
+        print("Client disconnected")
+  
+    @socket_io.on('message')
+    def test_message(data):
+        room = data["room"]
+        emit('message', data, room=room)
+
+    @socket_io.on('join')
+    def on_join(data):
+        print("BACK JOIN")
+        print(data["room"])
+        print(data)
+        user_id = int(data['user_id'])  # Convertir a entero
+        other_user_id = int(data['other_user_id'])  # Convertir a entero
+        room = data["room"]
+        print(other_user_id)
+        join_room(room)
+        emit('joined_room', {'room': room, 'user_id': user_id, 'other_user_id': other_user_id}, room=room)
+
+    @socket_io.on('leave_room')
+    def on_leave(data):
+        print("BACK LEAVE")
+        user_id = data.get('user_id', None)
+        print(user_id)
+        room = data.get('room', None)
+        print(room)
+        if user_id and room:
+            leave_room(room)  
+            emit('left_room', {'room': room, 'user_id': user_id}, room=room)  
+    
+
+@api.route('/send_chat_message', methods=['POST'])
+def send_message():
+    data = request.json.get('data')
+    id = request.json.get('id')
+    # Continúa procesando los datos si son correctos
+    new_message = Chat(
+        user_sender_id="3",
+        user_reciver_id="4",
+        message_text=data['message'],
+        time=data['timestamp']
+    )
+    db.session.add(new_message)
+    db.session.commit()
+    return jsonify({'message': 'Message sent successfully'}), 200
+        
+  
+
+
+

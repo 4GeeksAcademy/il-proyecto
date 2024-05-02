@@ -5,6 +5,7 @@ import MapComponent from '../component/map';
 
 export const Geolocation = () => {
 	
+	
   return (	
     	<Container fluid className="map-page">
 			<Row>

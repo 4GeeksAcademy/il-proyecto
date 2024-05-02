@@ -21,7 +21,7 @@ p { font-size: var(--p-size);}
    PROFILE INFO
    ========================================================================== */
 
-.user-info-profile, .card {
+.user-info-profile {
     border-radius: 0;
     border: 1px solid var(--base-color-text);
     color: white;

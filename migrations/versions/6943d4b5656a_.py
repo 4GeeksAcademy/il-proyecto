@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 87c3f7d53c56
+Revision ID: 6943d4b5656a
 Revises: 
-Create Date: 2024-04-27 13:57:33.180658
+Create Date: 2024-05-01 23:01:30.293231
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '87c3f7d53c56'
+revision = '6943d4b5656a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,7 +36,7 @@ def upgrade():
     sa.Column('longitude', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('phycologyst',
+    op.create_table('psychologist',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=True),
     sa.Column('surnames', sa.String(length=255), nullable=True),
@@ -68,6 +68,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('mood', sa.String(length=255), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('response', sa.String(length=255), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['category_mood.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -77,9 +78,9 @@ def upgrade():
     sa.Column('url', sa.String(length=255), nullable=True),
     sa.Column('title', sa.String(length=255), nullable=True),
     sa.Column('description', sa.String(length=255), nullable=True),
-    sa.Column('phycologyst_id', sa.Integer(), nullable=True),
+    sa.Column('psychologist_id', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['phycologyst_id'], ['phycologyst.id'], ),
+    sa.ForeignKeyConstraint(['psychologist_id'], ['psychologist.id'], ),
     sa.ForeignKeyConstraint(['resource_type_id'], ['resource_type.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -92,15 +93,15 @@ def upgrade():
     sa.Column('password', sa.String(length=255), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('profile_url', sa.String(length=255), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.Date(), nullable=True),
     sa.Column('location_id', sa.Integer(), nullable=True),
     sa.Column('hobbie_id', sa.Integer(), nullable=True),
     sa.Column('mood_id', sa.Integer(), nullable=True),
-    sa.Column('phycologyst_id', sa.Integer(), nullable=True),
+    sa.Column('psychologist_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['hobbie_id'], ['hobbie.id'], ),
     sa.ForeignKeyConstraint(['location_id'], ['location.id'], ),
     sa.ForeignKeyConstraint(['mood_id'], ['mood.id'], ),
-    sa.ForeignKeyConstraint(['phycologyst_id'], ['phycologyst.id'], ),
+    sa.ForeignKeyConstraint(['psychologist_id'], ['psychologist.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
@@ -116,9 +117,9 @@ def upgrade():
     )
     op.create_table('sessions',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('phycologyst_id', sa.Integer(), nullable=True),
+    sa.Column('psychologist_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['phycologyst_id'], ['phycologyst.id'], ),
+    sa.ForeignKeyConstraint(['psychologist_id'], ['psychologist.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -144,7 +145,7 @@ def downgrade():
     op.drop_table('mood')
     op.drop_table('actions')
     op.drop_table('resource_type')
-    op.drop_table('phycologyst')
+    op.drop_table('psychologist')
     op.drop_table('location')
     op.drop_table('hobbie')
     op.drop_table('category_mood')

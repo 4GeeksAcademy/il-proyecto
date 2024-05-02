@@ -18,6 +18,10 @@ from flask_jwt_extended import JWTManager
 # send emails
 from flask_mail import Mail
 
+# socket.io
+from flask_socketio import SocketIO, emit
+from api.routes import register_socket_events
+
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
@@ -62,6 +66,10 @@ if app.config["JWT_SECRET_KEY"] is None or app.config['SECURITY_PASSWORD_SALT'] 
 jwt = JWTManager(app)
 mail = Mail(app)
 
+#socket.io
+app.debug = True
+socket_io = SocketIO(app, cors_allowed_origins="*")
+
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
@@ -88,10 +96,13 @@ def serve_any_other_file(path):
     return response
 
 
-
-
-
+#Socket.io
+register_socket_events(socket_io)
+      
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+   
+    #Socket.io
+    socket_io.run(app, host='0.0.0.0', port=PORT, debug=True)

@@ -19,7 +19,8 @@ class User(db.Model):
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
     hobbie_id = db.Column(db.Integer, db.ForeignKey('hobbie.id'))
     mood_id = db.Column(db.Integer, db.ForeignKey('mood.id'))
-    phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
+    psychologist_id = db.Column(db.Integer, db.ForeignKey('psychologist.id'))
+    session = db.relationship('Sessions', backref='user', cascade="all, delete")
 
     def get_reset_token(self, expires_sec=84600):
         serializer = Serializer(secret_key=current_app.config['SECRET_KEY'], salt=current_app.config['SECURITY_PASSWORD_SALT'])
@@ -47,10 +48,12 @@ class User(db.Model):
         last_mood_history = UserMoodHistory.query.filter_by(user_id=self.id).order_by(UserMoodHistory.date.desc()).first()
         mood = Mood.query.filter_by(id=self.mood_id).first()
         hobbie = Hobbie.query.filter_by(id=self.hobbie_id).first()
-        psychologists = [session.phycologyst.serialize() for session in self.sessions]
+        # psychologists = [session.psychologist.serialize() for session in self.sessions]
+        results = list(map(lambda item: item.serialize(),self.session))
+    
 
 
-        print(hobbie)              
+                    
         return {
             "id": self.id,
             "email": self.email,
@@ -63,7 +66,7 @@ class User(db.Model):
             "user_mood": self.mood.serialize() if self.mood else None,
             "hobbie": self.hobbie.name if self.hobbie else None,
             'created_at': self.created_at.strftime('%Y-%m-%d') if self.created_at else None,
-            "psychologists": psychologists
+            "psychologists": results,
            
             # Do not serialize the password, it's a security breach
         }
@@ -205,25 +208,24 @@ class Resource(db.Model):
     url = db.Column(db.String(255))
     title = db.Column(db.String(255))
     description = db.Column(db.String(255))
-    phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
+    psychologist_id = db.Column(db.Integer, db.ForeignKey('psychologist.id'))
     resource_type = db.relationship('ResourceType', backref='resource', cascade="all, delete")
-    phycologyst = db.relationship('Phycologyst', backref='resource', cascade="all, delete")
+    psychologist = db.relationship('Psychologist', backref='resource', cascade="all, delete")
     created_at = db.Column(db.DateTime)
     
     def __repr__(self):
         return '<Resource %r>' % self.id
 
     def serialize(self):
-        info_physcologyst = Phycologyst.query.filter_by(id=self.phycologyst_id).first()
-        print(info_physcologyst)
+        info_psychologist = Psychologist.query.filter_by(id=self.psychologist_id).first()
         return {
             "id": self.id,
             'resource_type': self.resource_type.resource_type if self.resource_type else None,
             "url": self.url,
             "description": self.description,
             "created_at": self.created_at,
-            "psychologist_id": self.phycologyst_id,
-            "phycologyst_info": None if info_physcologyst is None else info_physcologyst.serialize(),
+            "psychologist_id": self.psychologist_id,
+            "psychologist_info": None if info_psychologist is None else info_psychologist.serialize(),
             "title": self.title
         }
 
@@ -236,7 +238,6 @@ class Chat(db.Model):
     time = db.Column(db.DateTime)
     sender = db.relationship('User', foreign_keys=[user_sender_id], cascade="all, delete", backref='sent_messages')
     receiver = db.relationship('User', foreign_keys=[user_reciver_id], cascade="all, delete", backref='received_messages')
-
     
     def __repr__(self):
         return '<Chat %r>' % self.id
@@ -250,8 +251,8 @@ class Chat(db.Model):
             "time": self.time,
         }
 
-class Phycologyst(db.Model):
-    __tablename__ = 'phycologyst'
+class Psychologist(db.Model):
+    __tablename__ = 'psychologist'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
     surnames = db.Column(db.String(255))
@@ -261,11 +262,11 @@ class Phycologyst(db.Model):
     collegiate_number = db.Column(db.String(255))
     biography = db.Column(db.String(1000))
     web = db.Column(db.String(255))
-    users = db.relationship('User', backref='phycologyst', lazy=True, cascade="all, delete")
+    users = db.relationship('User', backref='psychologist', lazy=True, cascade="all, delete")
     profile_url = db.Column(db.String(255))
     
     def __repr__(self):
-        return '<Phycologyst %r>' % self.id
+        return '<Psychologist %r>' % self.id
 
     def serialize(self):
         return {
@@ -280,13 +281,14 @@ class Phycologyst(db.Model):
             "profile_url" : self.profile_url
         }
 
+
 class Sessions(db.Model):
     __tablename__ = 'sessions'
     id = db.Column(db.Integer, primary_key=True)
-    phycologyst_id = db.Column(db.Integer, db.ForeignKey('phycologyst.id'))
+    psychologist_id = db.Column(db.Integer, db.ForeignKey('psychologist.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    phycologyst = db.relationship('Phycologyst', backref='sessions', cascade="all, delete")
-    user = db.relationship('User', backref='sessions', cascade="all, delete")
+    psychologist = db.relationship('Psychologist', backref='sessions', cascade="all, delete")
+
     
     def __repr__(self):
         return '<Sessions %r>' % self.id
@@ -295,7 +297,7 @@ class Sessions(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "phycologyst_id": self.phycologyst_id,
+            "psychologist_info": self.psychologist.serialize() if self.psychologist else None,
             "user_id": self.user_id
         }
 

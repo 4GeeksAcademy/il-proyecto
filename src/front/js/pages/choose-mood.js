@@ -5,7 +5,7 @@ import Mood from "../component/mood";
 export const ChooseMood = () => {
 
     return (
-        <Container fluid className="container-landingpage">
+        <Container fluid className="container-landingpage vh-100">
             <Mood/>
         </Container>
     );

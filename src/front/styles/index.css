@@ -25,6 +25,9 @@
     --option67-color: #5456D9;
     /* Color de fondo para opción 6 */
 
+    --skeleton1-color: #F9F4F0;
+    --skeleton2-color: rgb(215, 212, 212);
+
     /* Variables sombras button / button 2 mainbutton */
     --button1-border: 1px solid #000000;
     /* Borde para button1 */
@@ -55,7 +58,7 @@
     --h5-size: clamp(1rem, 2vw, 1.44rem);
     --h6-size: clamp(1rem, 1.5vw, 1.2rem);
     --p-size: 21px;
-    --small-size: clamp(0.70rem, 1vw, 0.86rem);
+    --small-size: clamp(0.60rem, 0.75vw, 0.80rem);
 }
 * {
     font-family: var(--base-font-family);
