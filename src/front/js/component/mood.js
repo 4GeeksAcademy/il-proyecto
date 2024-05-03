@@ -11,8 +11,8 @@ export const Mood = () => {
     const [moods, setMoods] = useState([]);
     const [loading, setLoading] = useState(true);
     const [divStyles, setDivStyles] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    const [selectedMood, setSelectedMood] = useState(null); 
+    const [showModal, setShowModal] = useState(false); // State para controlar la visibilidad del modal
+    const [selectedMood, setSelectedMood] = useState(null); // State para almacenar el mood seleccionado
 
     useEffect(() => {
         const initializeMoods = async () => {
@@ -105,6 +105,10 @@ export const Mood = () => {
         );
     }
 
+
+
+
+    
     return (
         <Container className="mt-5">
             <Row>
@@ -127,6 +131,7 @@ export const Mood = () => {
                     </div>
                 </Col>
             </Row>
+            {/* Modal */}
             <Modal024
                 showModal={showModal}
                 handleCloseModal={handleCloseModal}
