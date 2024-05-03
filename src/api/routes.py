@@ -205,6 +205,7 @@ def send_reset_email(user, token):
     mail.send(msg)
 
 
+
 @api.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_token(token):
     user = User.verify_reset_token(token)
@@ -217,6 +218,20 @@ def reset_token(token):
         db.session.commit()
         return jsonify({'message': '¡Contraseña actualizada!'}), 200
     return jsonify({'message': 'Invalid method'}), 405
+
+
+@api.route('/reset-password/<int:user_id>', methods=["GET","POST"])
+def reset_password_profile(user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return jsonify({'message': 'Invalid method'}), 405
+        password = request.json['password']
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        user.password = hashed_password 
+        db.session.commit()
+        return jsonify({'message': '¡Contraseña actualizada!'}), 200
+            
+
 
 
 @api.route('/delete-account/<int:user_id>', methods=['DELETE'])
@@ -270,24 +285,7 @@ def get_active_users_locations():
         return jsonify(data_locations), 200
     else:
         return jsonify({"msg": "No active users found"}), 404
-    # Obtén la ubicación de cada usuario activo
-    # user_locations = []
-    # for user in active_users:
-    #     user_data = user.serialize()  # Asume que tienes un método serialize en tu modelo User
-    #     if user.location_id:
-    #         location = Location.query.filter_by(id=user.location_id).first()
-    #         if location:
-    #             user_data['location'] = location.serialize()
-    #         else:
-    #             return jsonify({"msg": f"No location found for user {user.id}"}), 404
-    #     user_locations.append(user_data)
 
-    # Si se encontraron usuarios, devuelve un objeto JSON con los usuarios y sus ubicaciones
-    # if active_users:
-    #     return jsonify(active_users), 200
-    # else:
-    #     return jsonify({"msg": "No active users found"}), 404
-    
 
 
 # Guardar la ubicación de un usuario activo con un ruido aleatorio

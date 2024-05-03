@@ -47,7 +47,7 @@ export const MainNavbar = () => {
                                     <NavDropdown.Item href={`/${store.user?.id}/${store.user?.profile_url}`}>Perfil</NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item href="/choose-mood">Mood</NavDropdown.Item>
-                                    <NavDropdown.Item href="/chat-v1">Chat</NavDropdown.Item>
+                                    {/* <NavDropdown.Item href="/chat-v1">Chat</NavDropdown.Item> */}
                                     <NavDropdown.Item href="/psychologist">Terapeutas</NavDropdown.Item>
                                 </NavDropdown>
                             </>

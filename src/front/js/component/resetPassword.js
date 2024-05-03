@@ -44,11 +44,11 @@ export const ResetPassword = () => {
             <Container fluid className="container-landingpage">
                 <Row className="mt-3">
                     <Col>
-                        <h1 className="heading1 mb-4">Registro MyMood</h1>
+                        <h1 className="heading1 mb-4">Recuperar contraseña MyMood</h1>
                         <Formik
                             initialValues={{
-                                email: '',
                                 password: '',
+                                validatePassword: '',
                             }}
                             validationSchema={Yup.object({
                                 password: Yup.string()
@@ -91,7 +91,7 @@ export const ResetPassword = () => {
                                     placeholder="********"
                                     className="w-100 mb-2 d-block"
                                 />
-                                <button type="submit" className="mb-5">¡Crear cuenta!</button>
+                                <button type="submit" className="mb-5">¡Cambiar contraseña!</button>
                             </Form>
                         </Formik>
                         {error && <div className="text-danger mt-3 border border-danger p-3">{error}</div>}

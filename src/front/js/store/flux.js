@@ -9,6 +9,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			user: null,
 			active_users: [],
 			all_users: [],
+			user_profile: {},
 			auth: false,
 
 			resources: [],
@@ -181,6 +182,35 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			resetPasswordProfile: async (user_id, password) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password/${user_id}`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							user_id,
+							password
+						})
+					});
+					if (!response.ok) {
+						let errorMessage = 'Hubo un error al restablecer la contraseña';
+						if (response.status === 400) {
+							errorMessage = 'La solicitud es incorrecta';
+						} else if (response.status === 404) {
+							errorMessage = 'No se encontró el recurso';
+						}
+						throw new Error(errorMessage);
+					}
+					return response;
+				} catch (error) {
+					console.error("Error reset password:", error);
+					return { ok: false, message: "Network error" };
+				}
+			},
+			
+			
 			resetPassword: async (token, password) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/reset-password/${token}`, {
@@ -572,7 +602,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 			/* CHAT */
-
 			getUserById: async (user_id) => {
 				try {
 					const token = sessionStorage.getItem('userToken');
@@ -580,6 +609,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.error('No token available, user not logged in.');
 						return null;
 					}
+			
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${user_id}`, {
 						method: 'GET',
 						headers: {
@@ -587,20 +617,58 @@ const getState = ({ getStore, getActions, setStore }) => {
 							'Authorization': `Bearer ${token}`
 						}
 					});
-
+			
 					if (!response.ok) {
-						throw new Error('Failed to fetch ALL user data');
-
+						throw new Error('Failed to fetch user data');
 					}
+			
 					const data = await response.json();
-					// console.log("ESTE ES EL GETUSERBYID", data.results);
-					return data.results;
-
+					if (!data.results) {
+						console.error('No user data found.');
+						return null;
+					}
+			
+					// Assuming setStore and getStore are from a global state management context
+					setStore({ ...getStore(), user_profile: data.results });
+					console.log("User data fetched successfully:", data.results);
+					return data.results; // Return the user data for further processing
+			
 				} catch (error) {
-					console.error('Error fetching or processing ALL user data:', error);
+					console.error('Error fetching user data:', error);
 					return null;
 				}
 			},
+			
+			// getUserById: async (user_id) => {
+			// 	try {
+			// 		const token = sessionStorage.getItem('userToken');
+			// 		if (!token) {
+			// 			console.error('No token available, user not logged in.');
+			// 			return null;
+			// 		}
+			// 		const response = await fetch(`${process.env.BACKEND_URL}/api/user/${user_id}`, {
+			// 			method: 'GET',
+			// 			headers: {
+			// 				'Content-Type': 'application/json',
+			// 				'Authorization': `Bearer ${token}`
+			// 			}
+			// 		});
+
+			// 		if (!response.ok) {
+			// 			throw new Error('Failed to fetch ALL user data');
+
+			// 		}
+			// 		const data = await response.json();
+			// 		setStore({ ...getStore(), user_profile: data.results })
+			// 		// console.log("ESTE ES EL GETUSERBYID", data.results);
+			// 		return true;
+					
+
+			// 	} catch (error) {
+			// 		console.error('Error fetching or processing ALL user data:', error);
+			// 		return null;
+			// 	}
+			// },
 
 			handleUserClick: (otherUserId) => {
 				const userData = JSON.parse(sessionStorage.getItem('userData'));

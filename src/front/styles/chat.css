@@ -1,26 +1,43 @@
 .chat {
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     border: 1px solid var(--base-color-text);
-    overflow-x: none;
+    overflow-x: hidden;
     background: linear-gradient(90deg, var(--option4-color) 0%, var(--option3-color) 100%);
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    height: calc(100vh - 250px); /* Ajusta esto según la altura de tus otros componentes */
+    overflow-y: auto; /* Habilita el desplazamiento vertical */
+    padding-top:20px;
+}
+
+
+.chat-heading{
+    height: 100vh;
 }
 
 .chat ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 100%; 
+    width: 100%;
+    /* height: 100vh;  */
+    flex-grow: 1;
+    overflow-y: auto; /* Opcional: asegura que solo el ul se desplace, no todo el contenedor */
 }
 
 ul {
     list-style-type: none; 
     padding: 0; 
     margin: 0; 
-}
 
+}
 
 .chat li {
     background-repeat: no-repeat;
@@ -81,7 +98,7 @@ ul {
 }
 
 .my-message, .other-message {
-    max-width: 60%;
+    max-width: 80%;
 }
 
 .chat li a {
@@ -114,6 +131,14 @@ ul {
 .message-input-container {
     position: relative;
     margin-top: 35px;
+}
+.emoji-picker {
+    position: absolute;
+    bottom: -155px;
+    max-width: 26%;
+    background: wheat;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .emoji-button, .send-button {
@@ -177,4 +202,8 @@ ul {
     border-bottom-right-radius: 10px;
     padding: 1px 1px 1px 8px;
     background-color: var(--option6-color);
+}
+
+.message-input-container {
+    flex-shrink: 0;
 }
