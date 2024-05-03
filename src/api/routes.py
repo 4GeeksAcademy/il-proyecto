@@ -53,7 +53,7 @@ def handle_hello():
 def login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-
+    access_token = create_access_token(identity=email)
     user = User.query.filter_by(email=email).first()
 
     if user: 
@@ -61,10 +61,11 @@ def login():
         if bcrypt.checkpw(password.encode('utf-8'), stored_password_hash.encode('utf-8')):
             try:
                 user.is_active = True  
-                db.session.commit()
-                access_token = create_access_token(identity=email)
+                db.session.commit()         
                 user_data = user.serialize()  # Cambié query_result a user
+                print(user_data, access_token)
                 return jsonify(access_token=access_token, user=user_data)
+            
             except Exception as e:
                 return jsonify({"msg": "Error al crear el token de acceso", "error": str(e)}), 500
         else: 
@@ -258,7 +259,7 @@ def get_all_location():
 
 # trae todas las localizaciones de los usuarios activos
 @api.route('/users/active-locations', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_active_users_locations():
     # Obtén todos los usuarios activos
     active_users = User.query.filter_by(is_active=True).all()

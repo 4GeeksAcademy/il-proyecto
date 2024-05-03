@@ -32,18 +32,27 @@ const MapComponent = (props) => {
   };
 
   const addMarkersToMap = () => {
-    store?.active_users.map((user, index) => {
+    console.log("ADD MARKERS TO MAP");
+    console.log(store.active_users);
+    (store?.active_users.length !=0 && (
+      store?.active_users.map((user, index) => {
+  
+
+      console.log("hola: ", user.name);
       const customIcon = L.icon({
         iconUrl: user.user_mood.icon_mood,
         iconSize: [40, 40],
         iconAnchor: [20, 40],
       });
-      if (!user.location) {
-    
-        return;
-      }
-     
-      const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(finalMap);
+      console.log("custom icon", customIcon);
+      
+      console.log("USUARIO", index, user);
+      const userLocation = user.location ? [user.location.latitude, user.location.longitude] : [currentLocation.latitude, currentLocation.longitude];
+      console.log("USER LOCATIONNNNNNNNNNNNNNNNNNNNNNNNNNNN", userLocation);
+      const marker = L.marker(userLocation, { icon: customIcon }).addTo(finalMap);
+      console.log("MARKER", marker);
+      
+      // const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(finalMap);
       const popupContent = `<div key=${index}>
               <h6>${user.name} ${user.surnames}</h6>
               <p>Hobbie: ${user.hobbie}</p>  
@@ -51,7 +60,7 @@ const MapComponent = (props) => {
               <a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
           </div>`;
       marker.bindPopup(popupContent);
-    });
+    })));
   };
 
   //control watermark
@@ -106,6 +115,37 @@ const MapComponent = (props) => {
   };
 
   
+  const handleCloseChatModal = () => {
+      setShowChatModal(false);
+    };
+
+  
+  const handlePopUpOpen = (map) => {
+         // listener para el evento popupopen
+        map.on('popupopen', (e) => {
+          // contenido del popup
+          const buttonChat = e.popup._contentNode.querySelector('.chat-button');
+          const button = e.popup._contentNode.querySelector('.details-button');
+          if (button) {
+            // listener de clic al botón
+            button.addEventListener('click', () => {
+              const id = button.getAttribute('data-id');
+            });
+          }
+    
+          if (buttonChat) {
+            console.log("estoy haciendo click en el chat...");
+            buttonChat.addEventListener('click', (e) => { 
+              e.preventDefault();         
+              setShowChatModal(true);
+              actions.handleUserClick(e.target.id);
+              setUserName(e.target.dataset.name);
+            });
+          }
+        });
+  }
+
+
   useEffect(() => {
     if (isMapInitialized) {
         const map = L.map('map_id', {
@@ -120,35 +160,36 @@ const MapComponent = (props) => {
         setFinalMap(map);
 
         handleGeolocation(map);
+        handlePopUpOpen(map);
     }
 
 
     
 }, [isMapInitialized, currentLocation]);
-
+const getLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCurrentLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+        setIsMapInitialized(true); 
+      },
+      (error) => {
+        console.error("Error obteniendo la ubicación", error);
+        setIsMapInitialized(false); 
+      }
+    );
+  } else {
+    console.log("Geolocalización no es soportada por este navegador.");
+    setIsMapInitialized(false); 
+  }
+};
   // inicializar el mapa y manejar la geolocalización
   useEffect(() => {
     waterMark();
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setCurrentLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
-            });
-            setIsMapInitialized(true); 
-          },
-          (error) => {
-            console.error("Error obteniendo la ubicación", error);
-            setIsMapInitialized(true); 
-          }
-        );
-      } else {
-        console.log("Geolocalización no es soportada por este navegador.");
-        setIsMapInitialized(true); 
-      }
-    };
+    
 
     getLocation();
 
@@ -156,28 +197,7 @@ const MapComponent = (props) => {
     if (!finalMap) {
       return;
     }  
-    finalMap.on('popupopen', (e) => {
-      // contenido del popup
-      const buttonChat = e.popup._contentNode.querySelector('.chat-button');
-      const button = e.popup._contentNode.querySelector('.details-button');
-      if (button) {
-        // listener de clic al botón
-        button.addEventListener('click', () => {
-          const id = button.getAttribute('data-id');
-        });
-      }
 
-      if (buttonChat) {
-        buttonChat.addEventListener('click', (e) => {
-          setShowChatModal(true);
-          actions.handleUserClick(e.target.id)
-          setUserName(e.target.dataset.name);
-
-
-        });
-      }
-
-    });
 
     return () => {
       finalMap.remove();
@@ -207,14 +227,10 @@ const MapComponent = (props) => {
               </Modal.Body>
             </Modal>
           </Col>
-          {showChatModal && (
+        
+          {showChatModal && (  
             <Col xs={4} className='chat-heading'>
-              {/* <h4 className='base-paragrahp'>Chatea con {userName}</h4><button className='button-login' onClick={handleCloseChatModal}>
-                Cancelar
-              </button> */}
-
               <ChatForm userName={userName} setShowChatModal={setShowChatModal} />
-
             </Col>
           )}
         </Row>

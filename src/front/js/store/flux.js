@@ -93,12 +93,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (response.status !== 200) {
 						console.log("Login error:", response.status, data.msg);
 						return false;
-					}
+					} console.log("Login successful:", data.access_token);
 					sessionStorage.setItem("userToken", data.access_token);
 					sessionStorage.setItem("userData", JSON.stringify({ id: data.user.id, name: data.user.name, surnames: data.user.surnames }));
-
+					console.log(sessionStorage.getItem("userToken"));
 					// console.log(data);
 					getActions().getCurrentUser();
+					getActions().getAllActiveUsers();
 					setStore({ ...getStore(), auth: true })
 					return true;
 				}
@@ -323,6 +324,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						throw new Error('Error al actualizar el estado de ánimo del usuario');
 					}
 					console.log('Estado de ánimo del usuario actualizado correctamente');
+					await getActions().getAllActiveUsers();
 					return response
 				} catch (error) {
 					console.error('Error al actualizar el estado de ánimo del usuario:', error);
@@ -339,6 +341,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({ ...getStore(), all_users: [] });
 						return false;
 					}
+					console.log("TOKEN OKKKKKKKKKKKKKKK")
 					const response = await fetch(`${process.env.BACKEND_URL}/api/users`, {
 						method: 'GET',
 						headers: {
@@ -347,7 +350,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					});
 
-
+					
 					if (!response.ok) {
 						throw new Error('Failed to fetch ALL user data');
 
@@ -363,41 +366,87 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			getAllActiveUsers: async () => {
-				try {
-					const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`;
+			// getAllActiveUsers: async () => {
+			// 	console.log("GET ALL ACTIVE USERS....");
+			// 	try {
+			// 		const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`;
+			// 		console.log("HOLA TOKEN");
+			// 		// Obtén el token JWT del sessionStorage
+			// 		const token = sessionStorage.getItem('userToken');
+			// 		if (!token) {
+			// 			console.error('No token available, user not logged in.');
+			// 			setStore({ ...getStore(), user: null });
+			// 			return false;
+			// 		}
+			// 		console.log("VOY HACER EL FETCH");
+			// 		const response = await fetch(urlActiveLocations, {
+			// 			method: 'GET',
+			// 			headers: {
+			// 				'Authorization': `Bearer  ${token}`
+			// 			}
+			// 		});
 
-					// Obtén el token JWT del sessionStorage
-					const token = sessionStorage.getItem('userToken');
+			// 		if (!response.ok) {
+			// 			throw new Error(`Failed to fetch active users data: ${response.status} ${response.statusText}`);
+			// 		}
+			// 		console.log("HE VUELTO DEL ENDPOINT");
+			// 		const data = await response.json();
+
+			// 		// Actualizar el estado con las ubicaciones de los usuarios activos
+			// 		// console.log(data);
+			// 		setStore({ ...getStore(), active_users: data });
+			// 		// setStore({ active_users: data });
+			// 		console.log("Active users loaded from the API to store.");
+			// 		return true;
+			// 	} catch (error) {
+			// 		console.error('Error fetching or processing active location data:', error);
+			// 		return false;
+			// 	}
+			// },
+			
+			getAllActiveUsers: async () => {
+				console.log("GET ALL ACTIVE USERS....");
+				const token = sessionStorage.getItem('userToken');
+				try {
+					console.log("TOKEN OKKKKKKKKKKKKKKK", token);
 					if (!token) {
 						console.error('No token available, user not logged in.');
-						setStore({ ...getStore(), user: null });
+						setStore({ ...getStore(), active_users: null });
 						return false;
 					}
-					const response = await fetch(urlActiveLocations, {
+					console.log("TOKEN OKKKKKKKKKKKKKKK");
+
+					const response = await fetch(`${process.env.BACKEND_URL}/api/users/active-locations`, {
 						method: 'GET',
 						headers: {
-							'Authorization': `Bearer  ${token}`
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
 						}
 					});
+					console.log("FECH HECHOOOOO OKKKKKKKKKKKKKKK", response);
+
 
 					if (!response.ok) {
-						throw new Error(`Failed to fetch active users data: ${response.status} ${response.statusText}`);
+						throw new Error('Failed to fetch current user data');
+
 					}
 
 					const data = await response.json();
+					console.log("JSON HECHOOOOO OKKKKKKKKKKKKKKK", data);
 
-					// Actualizar el estado con las ubicaciones de los usuarios activos
 					// console.log(data);
-					setStore({ active_users: data });
-					console.log("Active users loaded from the API to store.");
+					setStore({ ...getStore(), active_users: data });
+					// console.log(getStore().user);
+
+					console.log('ALL user data loaded from the API to store');
 					return true;
 				} catch (error) {
-					console.error('Error fetching or processing active location data:', error);
+					console.error('Error fetching or processing current user data:', error);
 					return false;
 				}
 			},
-			
+
+
 			getCurrentUser: async () => {
 				try {
 					const token = sessionStorage.getItem('userToken');
@@ -460,7 +509,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: requestBody,
 					});
-
+					console.log("GUARDADA LA LOCALIZACION");
 					console.log("Respuesta del servidor: ", response);
 
 					if (!response.ok) {
