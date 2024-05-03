@@ -53,7 +53,7 @@ def handle_hello():
 def login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-
+    access_token = create_access_token(identity=email)
     user = User.query.filter_by(email=email).first()
 
     if user: 
@@ -61,10 +61,11 @@ def login():
         if bcrypt.checkpw(password.encode('utf-8'), stored_password_hash.encode('utf-8')):
             try:
                 user.is_active = True  
-                db.session.commit()
-                access_token = create_access_token(identity=email)
+                db.session.commit()         
                 user_data = user.serialize()  # Cambié query_result a user
+                print(user_data, access_token)
                 return jsonify(access_token=access_token, user=user_data)
+            
             except Exception as e:
                 return jsonify({"msg": "Error al crear el token de acceso", "error": str(e)}), 500
         else: 
@@ -114,10 +115,6 @@ def signup():
     is_active= False
     created_at = datetime.now()
     profile_url = re.sub(r'[^a-z0-9]', '', name.replace(" ", "").lower()) + re.sub(r'[^a-z0-9]', '', surnames.replace(" ", "").lower())
-
-    
-
-
 
     query_result = User.query.filter_by(email=email).first()
     if query_result is None:
@@ -208,6 +205,7 @@ def send_reset_email(user, token):
     mail.send(msg)
 
 
+
 @api.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_token(token):
     user = User.verify_reset_token(token)
@@ -220,6 +218,20 @@ def reset_token(token):
         db.session.commit()
         return jsonify({'message': '¡Contraseña actualizada!'}), 200
     return jsonify({'message': 'Invalid method'}), 405
+
+
+@api.route('/reset-password/<int:user_id>', methods=["GET","POST"])
+def reset_password_profile(user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return jsonify({'message': 'Invalid method'}), 405
+        password = request.json['password']
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        user.password = hashed_password 
+        db.session.commit()
+        return jsonify({'message': '¡Contraseña actualizada!'}), 200
+            
+
 
 
 @api.route('/delete-account/<int:user_id>', methods=['DELETE'])
@@ -266,25 +278,14 @@ def get_all_location():
 def get_active_users_locations():
     # Obtén todos los usuarios activos
     active_users = User.query.filter_by(is_active=True).all()
-
-    # Obtén la ubicación de cada usuario activo
-    user_locations = []
-    for user in active_users:
-        user_data = user.serialize()  # Asume que tienes un método serialize en tu modelo User
-        if user.location_id:
-            location = Location.query.filter_by(id=user.location_id).first()
-            if location:
-                user_data['location'] = location.serialize()
-            else:
-                return jsonify({"msg": f"No location found for user {user.id}"}), 404
-        user_locations.append(user_data)
-
-    # Si se encontraron usuarios, devuelve un objeto JSON con los usuarios y sus ubicaciones
-    if user_locations:
-        return jsonify(user_locations), 200
+    data_locations = list(map(lambda user: user.serialize_location(), active_users))
+    print(active_users)
+    print(data_locations)	
+    if data_locations:
+        return jsonify(data_locations), 200
     else:
         return jsonify({"msg": "No active users found"}), 404
-    
+
 
 
 # Guardar la ubicación de un usuario activo con un ruido aleatorio

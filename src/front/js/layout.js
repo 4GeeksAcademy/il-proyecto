@@ -25,6 +25,7 @@ import { Chat } from "./pages/chat";
 
 
 
+
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
     const authToken = sessionStorage.getItem('userToken');
@@ -61,9 +62,10 @@ const Layout = () => {
                     <Route element={<PrivateRoute><Geolocation /></PrivateRoute>} path="/geolocation" />
                     <Route element={<PrivateRoute><UserProfile /></PrivateRoute>} path="/:uid/:url" />
                     <Route element={<PrivateRoute><Resources /></PrivateRoute>} path="/resources" />
-                    <Route element={<PrivateRoute><Chat /></PrivateRoute>} path="/chat-v1" />
+                    {/* <Route element={<PrivateRoute><Chat /></PrivateRoute>} path="/chat-v1" /> */}
                     <Route element={<PrivateRoute><DayMood /></PrivateRoute>} path="/day-mood" />
                     <Route element={<PrivateRoute><PsychologistProfile /></PrivateRoute>} path="/psychologist/:uid" />
+                    <Route element={<PrivateRoute><Psychologist /></PrivateRoute>} path="/psychologist" />
                     <Route element={<PrivateRoute><Psychologist /></PrivateRoute>} path="/psychologist" />
                 </Routes>
                 <Footer />

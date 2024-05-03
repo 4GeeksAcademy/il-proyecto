@@ -1,14 +1,13 @@
 import React, { useEffect, useContext, useState, } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../store/appContext';
-import { Modal } from 'react-bootstrap';
 import L from 'leaflet';
 import map from '../../styles/map.css';
 import 'leaflet/dist/leaflet.css';
 import logo from "../../img/logo.png";
 
 import ChatForm from './chatform';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 
 
 const MapComponent = (props) => {
@@ -20,69 +19,65 @@ const MapComponent = (props) => {
   const [showChatModal, setShowChatModal] = useState(false);
   const [isGeolocationLoading, setIsGeolocationLoading] = useState(false);
   const [userName, setUserName] = useState(null);
-  
- 
-  // Inicializa el mapa y la posicion de watermark
-  const initializeMap = (map_id) => {
-    console.log("INICIANDO MAPA");
-    const map = L.map(map_id, {
-      scrollWheelZoom: false  // Desactiva el zoom con la rueda del mouse
-    });
-    console.log(map);
-    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(map);
-    console.log(map);
-    // Agrega la marca de agua después de que el mapa se haya inicializado
-    L.control.watermark({ position: 'bottomright' }).addTo(map);
-    setFinalMap(map);
+  const [currentLocation, setCurrentLocation] = useState({ latitude: null, longitude: null });
+  const [isMapInitialized, setIsMapInitialized] = useState(false);
 
-    return map;
+  
+  const handleGeolocation = (map) => {
+    console.log("HANDLEGEOLOCATION");
+    console.log(currentLocation);
+    (currentLocation &&
+      map.setView([currentLocation?.latitude, currentLocation?.longitude], 13));
   };
 
-  // Maneja la geolocalización del usuario y centra el mapa en su ubicación
-  const handleGeolocation = async (map) => {
-    return new Promise((resolve, reject) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const { latitude, longitude } = position.coords;
-                map.setView([latitude, longitude], 13);
-                resolve();
-            }, (error) => {
-                console.error('Error getting location', error);
-                reject(error);
-            });
-        } else {
-            console.log('Geolocation not supported in this browser');
-            reject(new Error('Geolocation not supported'));
-        }
+  const addMarkersToMap = () => {
+    console.log("ADD MARKERS TO MAP");
+    console.log(store.active_users);
+
+    if (!store || !store.active_users.length) return; // Añade una verificación rápida para asegurar que hay usuarios activos.
+
+    const currentUserData = JSON.parse(sessionStorage.getItem('userData')); // Obtiene los datos del usuario actual una sola vez.
+    const currentUserId = currentUserData ? currentUserData.id : null; // Maneja el caso donde currentUserData pueda ser null.
+
+    store.active_users.forEach((user, index) => {
+        console.log("Hola: ", user.name);
+
+        // Selecciona la URL del icono dependiendo si user_mood es null o no.
+        const iconUrl = user.user_mood && user.user_mood.icon_mood ?
+            user.user_mood.icon_mood :
+            "https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Home%2Fpin-map.png?alt=media&token=7e6f0e5a-0c9b-478b-b86d-13d56a159799";
+
+        console.log("Icon URL", iconUrl);
+
+        const customIcon = L.icon({
+            iconUrl: iconUrl,
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+        });
+
+        // Determina la ubicación del usuario o usa la ubicación actual si es null.
+        const userLocation = user.location ? [user.location.latitude, user.location.longitude] : [currentLocation.latitude, currentLocation.longitude];
+        console.log("User location", userLocation);
+
+        // Crea el marcador en la ubicación determinada.
+        const marker = L.marker(userLocation, { icon: customIcon }).addTo(finalMap);
+
+        // Construye el contenido del popup con condición para mostrar el botón de chat solo si no es el usuario actual.
+        const popupContent = `<div key=${index} class="custom-popup">
+                <h5 class="mt-3">${user.name} ${user.surnames}</h5>` +
+                (user.hobbie !== null ? `<p>Hobbie: ${user.hobbie}</p>` : '') +              
+                (user.id !== currentUserId ? `<a href='#' id=${user.id} data-name="${user.name}" class="chat-button btn btn-dark rounded-pill text-white me-1">Chat &rarr;</a>` : '') +
+                `<a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
+            </div>`;
+
+        console.log("Popup content", popupContent);
+        marker.bindPopup(popupContent);
     });
 };
 
-  // Agrega marcadores al mapa
-  const addMarkersToMap = (map, locations) => {
-    locations.map((user) => {
-      const customIcon = L.icon({
-        iconUrl: user.user_mood.category_mood.icon_url,
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-      });
-      if (!user.location) {
-        // console.log("ESTE USUARIO NO TIENE LOCALIZACION");
-        return;
-      }
 
-      const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(map);
-      const popupContent = `<div>
-                <h6>${user.name}</h6>
-                <p>Hobbie: ${user.hobbie}</p>  
-                <a href='#' id=${user.id} data-name="${user.name}" class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
-                <a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
-            </div>`;
-      marker.bindPopup(popupContent);
-    });
-  };
-  
+  // };<a href='#' id=${user.id} data-name="${user.name}" class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
+
   //control watermark
   const waterMark = () => {
     L.Control.Watermark = L.Control.extend({
@@ -100,16 +95,16 @@ const MapComponent = (props) => {
     }
   }
 
-  const requestLocation = async () => {
+  const requestLocation = async (currentLocation) => {
     try {
+      console.log("REQUEST LOCATION", currentLocation);
       //obtiene todas las localizaciones activas y guarda la ubicación del usuario ( tambien llama a allactiveusers )
-      await actions.requestUserLocation();
-      // Verifica que el mapa se haya inicializado antes de intentar agregar los marcadores
-      if (finalMap) {
-        addMarkersToMap(finalMap, store?.active_users);
-      }
+      await actions.saveUserLocation(currentLocation);
+      addMarkersToMap();
+      
       //cerrar modal
       handleCloseLocationModal();
+      
     } catch (error) {
       console.log('Error getting location:');
     }
@@ -120,75 +115,112 @@ const MapComponent = (props) => {
     setShowLocationModal(false);
   };
 
-  // const handleCloseChatModal = () => {
-  //   setShowChatModal(false);
-  // };
-
   const handleAcceptLocationModal = async () => {
     setIsGeolocationLoading(true);
     setHasAcceptedModal(true);
     try {
-        await handleGeolocation(finalMap);
-        await requestLocation();
-    } catch (error) {
-        console.log('Error getting location:', error);
-    } finally {
-        setIsGeolocationLoading(false);
-        setShowLocationModal(false);
-    }
-};
 
-  //debemos tener separados los useEffect ya que el primer useEffect está manejando 
-  // la adición de marcadores al mapa, mientras que el segundo está inicializando 
-  //el mapa y manejando la geolocalización. Estas son tareas bastante diferentes, 
-  //por lo que tiene sentido mantenerlas en useEffect separados.
+      await requestLocation(currentLocation);
+    } catch (error) {
+      console.log('Error getting location:', error);
+    } finally {
+      setIsGeolocationLoading(false);
+      setShowLocationModal(false);
+    }
+  };
+
+  
+  const handleCloseChatModal = () => {
+      setShowChatModal(false);
+    };
+
+  
+  const handlePopUpOpen = (map) => {
+         // listener para el evento popupopen
+        map.on('popupopen', (e) => {
+          // contenido del popup
+          const buttonChat = e.popup._contentNode.querySelector('.chat-button');
+          const button = e.popup._contentNode.querySelector('.details-button');
+          if (button) {
+            // listener de clic al botón
+            button.addEventListener('click', () => {
+              const id = button.getAttribute('data-id');
+            });
+          }
+    
+          if (buttonChat) {
+            console.log("estoy haciendo click en el chat...");
+            buttonChat.addEventListener('click', (e) => { 
+              e.preventDefault();         
+              setShowChatModal(true);
+              actions.handleUserClick(e.target.id);
+              setUserName(e.target.dataset.name);
+            });
+          }
+        });
+  }
+
 
   useEffect(() => {
-    if (hasAcceptedModal && finalMap && store?.active_users) {
-      addMarkersToMap(finalMap, store?.active_users);
+    if (isMapInitialized) {
+        const map = L.map('map_id', {
+            scrollWheelZoom: false
+        }).setView([currentLocation.latitude, currentLocation.longitude], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.control.watermark({ position: 'bottomright' }).addTo(map);
+        setFinalMap(map);
+
+        handleGeolocation(map);
+        handlePopUpOpen(map);
     }
-  }, [hasAcceptedModal]);
 
 
+    
+}, [isMapInitialized, currentLocation]);
+const getLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCurrentLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+        setIsMapInitialized(true); 
+      },
+      (error) => {
+        console.error("Error obteniendo la ubicación", error);
+        setIsMapInitialized(false); 
+      }
+    );
+  } else {
+    console.log("Geolocalización no es soportada por este navegador.");
+    setIsMapInitialized(false); 
+  }
+};
   // inicializar el mapa y manejar la geolocalización
   useEffect(() => {
     waterMark();
+    
 
-    const map = initializeMap("map_id");
-    handleGeolocation(map);
+    getLocation();
 
     // listener para el evento popupopen
-    map.on('popupopen', (e) => {
-      // contenido del popup
-      const buttonChat = e.popup._contentNode.querySelector('.chat-button');
-      const button = e.popup._contentNode.querySelector('.details-button');
-      if (button) {
-        // listener de clic al botón
-        button.addEventListener('click', () => {
-          const id = button.getAttribute('data-id');
-          navigate(`/details/${id}`);
-        });
-      }
+    if (!finalMap) {
+      return;
+    }  
 
-      if (buttonChat) {
-        buttonChat.addEventListener('click', (e) => {
-          setShowChatModal(true);
-          actions.handleUserClick(e.target.id)
-          setUserName(e.target.dataset.name);
-          
-         
-        });
-      }
-
-    });
 
     return () => {
-      map.remove();
+      finalMap.remove();
     };
 
   }, []);
 
-  console.log("USERNAME", userName);
+  
   return (
     <>
       <Container fluid>
@@ -204,20 +236,16 @@ const MapComponent = (props) => {
                 <button className='button-login' onClick={handleAcceptLocationModal} disabled={isGeolocationLoading}>
                   {isGeolocationLoading ? 'Cargando...' : 'Aceptar'}
                 </button>
-                  {!isGeolocationLoading ? <button className='button-login' onClick={handleCloseLocationModal}>
-                  Cancelar 
+                {!isGeolocationLoading ? <button className='button-login' onClick={handleCloseLocationModal}>
+                  Cancelar
                 </button> : ''}
               </Modal.Body>
             </Modal>
           </Col>
-          {showChatModal && (
+        
+          {showChatModal && (  
             <Col xs={4} className='chat-heading'>
-              {/* <h4 className='base-paragrahp'>Chatea con {userName}</h4><button className='button-login' onClick={handleCloseChatModal}>
-                Cancelar
-              </button> */}
-              
-              <ChatForm userName={userName} setShowChatModal={setShowChatModal}/> 
-
+              <ChatForm userName={userName} setShowChatModal={setShowChatModal} />
             </Col>
           )}
         </Row>
