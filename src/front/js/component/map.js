@@ -34,34 +34,50 @@ const MapComponent = (props) => {
   const addMarkersToMap = () => {
     console.log("ADD MARKERS TO MAP");
     console.log(store.active_users);
-    (store?.active_users.length !=0 && (
-      store?.active_users.map((user, index) => {
-  
 
-      console.log("hola: ", user.name);
-      const customIcon = L.icon({
-        iconUrl: user.user_mood.icon_mood,
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-      });
-      console.log("custom icon", customIcon);
-      
-      console.log("USUARIO", index, user);
-      const userLocation = user.location ? [user.location.latitude, user.location.longitude] : [currentLocation.latitude, currentLocation.longitude];
-      console.log("USER LOCATIONNNNNNNNNNNNNNNNNNNNNNNNNNNN", userLocation);
-      const marker = L.marker(userLocation, { icon: customIcon }).addTo(finalMap);
-      console.log("MARKER", marker);
-      
-      // const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(finalMap);
-      const popupContent = `<div key=${index}>
-              <h6>${user.name} ${user.surnames}</h6>
-              <p>Hobbie: ${user.hobbie}</p>  
-              <a href='#' id=${user.id} data-name="${user.name}" class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
-              <a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
-          </div>`;
-      marker.bindPopup(popupContent);
-    })));
-  };
+    if (!store || !store.active_users.length) return; // Añade una verificación rápida para asegurar que hay usuarios activos.
+
+    const currentUserData = JSON.parse(sessionStorage.getItem('userData')); // Obtiene los datos del usuario actual una sola vez.
+    const currentUserId = currentUserData ? currentUserData.id : null; // Maneja el caso donde currentUserData pueda ser null.
+
+    store.active_users.forEach((user, index) => {
+        console.log("Hola: ", user.name);
+
+        // Selecciona la URL del icono dependiendo si user_mood es null o no.
+        const iconUrl = user.user_mood && user.user_mood.icon_mood ?
+            user.user_mood.icon_mood :
+            "https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Home%2Fpin-map.png?alt=media&token=7e6f0e5a-0c9b-478b-b86d-13d56a159799";
+
+        console.log("Icon URL", iconUrl);
+
+        const customIcon = L.icon({
+            iconUrl: iconUrl,
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+        });
+
+        // Determina la ubicación del usuario o usa la ubicación actual si es null.
+        const userLocation = user.location ? [user.location.latitude, user.location.longitude] : [currentLocation.latitude, currentLocation.longitude];
+        console.log("User location", userLocation);
+
+        // Crea el marcador en la ubicación determinada.
+        const marker = L.marker(userLocation, { icon: customIcon }).addTo(finalMap);
+
+        // Construye el contenido del popup con condición para mostrar el botón de chat solo si no es el usuario actual.
+        const popupContent = `<div key=${index} class="custom-popup">
+                <h5 class="mt-3">${user.name} ${user.surnames}</h5>` +
+                (user.hobbie !== null ? `<p>Hobbie: ${user.hobbie}</p>` : '') +              
+                (user.id !== currentUserId ? `<a href='#' id=${user.id} data-name="${user.name}" class="chat-button btn btn-dark rounded-pill text-white me-1">Chat &rarr;</a>` : '') +
+                `<a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
+            </div>`;
+
+        console.log("Popup content", popupContent);
+        marker.bindPopup(popupContent);
+    });
+};
+
+
+  // };<a href='#' id=${user.id} data-name="${user.name}" class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
 
   //control watermark
   const waterMark = () => {
