@@ -478,6 +478,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						active_users: Array.isArray(prevState.location) ? [...prevState.location, data] : [data]
 					}));
 					// getActions().getAllActiveUsers();
+					// getActions().getAllActiveUsers();
 					console.log("Ubicaciones cargadas desde la API al almacenamiento.");
 					return true
 
@@ -506,12 +507,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 				active_users: [{ latitude, longitude }]
 
 			// 			}));
+			// 			}));
 
 
 
 			// 	} catch (error) {
 			// 		console.error('Error getting user location:', error.message);
+			// 	} catch (error) {
+			// 		console.error('Error getting user location:', error.message);
 
+			// 	}
+			// },
 			// 	}
 			// },
 
