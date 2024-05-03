@@ -43,6 +43,19 @@ class User(db.Model):
     def __repr__(self):
         return '<Users %r>' % self.id
 
+    def serialize_location(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "surnames": self.surnames,
+            "hobbie": self.hobbie.name if self.hobbie else None,
+            "is_active": self.is_active,
+            "location": self.location.serialize() if self.location else None,
+            "user_mood": self.mood.serialize_icon() if self.mood else None,
+            "profile_url": self.profile_url,
+
+        }
+    
     def serialize(self):
         # Obtén la última entrada de UserMoodHistory para este usuario
         last_mood_history = UserMoodHistory.query.filter_by(user_id=self.id).order_by(UserMoodHistory.date.desc()).first()
@@ -114,6 +127,7 @@ class CategoryMood(db.Model):
     def __repr__(self):
         return '<CategoryMood %r>' % self.id
 
+
     def serialize(self):
         return {
             "id": self.id,
@@ -132,6 +146,11 @@ class Mood(db.Model):
     
     def __repr__(self):
         return '<Mood %r>' % self.id
+    
+    def serialize_icon(self):
+        return {
+            "icon_mood": self.category_mood.icon_url if self.category_mood.icon_url else None
+        }
 
     def serialize(self):
         actions = Action.query.filter_by(category_id=self.category_id).all()

@@ -115,10 +115,6 @@ def signup():
     created_at = datetime.now()
     profile_url = re.sub(r'[^a-z0-9]', '', name.replace(" ", "").lower()) + re.sub(r'[^a-z0-9]', '', surnames.replace(" ", "").lower())
 
-    
-
-
-
     query_result = User.query.filter_by(email=email).first()
     if query_result is None:
         new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at, profile_url=profile_url)
@@ -262,28 +258,34 @@ def get_all_location():
 
 # trae todas las localizaciones de los usuarios activos
 @api.route('/users/active-locations', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def get_active_users_locations():
     # Obtén todos los usuarios activos
     active_users = User.query.filter_by(is_active=True).all()
-
-    # Obtén la ubicación de cada usuario activo
-    user_locations = []
-    for user in active_users:
-        user_data = user.serialize()  # Asume que tienes un método serialize en tu modelo User
-        if user.location_id:
-            location = Location.query.filter_by(id=user.location_id).first()
-            if location:
-                user_data['location'] = location.serialize()
-            else:
-                return jsonify({"msg": f"No location found for user {user.id}"}), 404
-        user_locations.append(user_data)
-
-    # Si se encontraron usuarios, devuelve un objeto JSON con los usuarios y sus ubicaciones
-    if user_locations:
-        return jsonify(user_locations), 200
+    data_locations = list(map(lambda user: user.serialize_location(), active_users))
+    print(active_users)
+    print(data_locations)	
+    if data_locations:
+        return jsonify(data_locations), 200
     else:
         return jsonify({"msg": "No active users found"}), 404
+    # Obtén la ubicación de cada usuario activo
+    # user_locations = []
+    # for user in active_users:
+    #     user_data = user.serialize()  # Asume que tienes un método serialize en tu modelo User
+    #     if user.location_id:
+    #         location = Location.query.filter_by(id=user.location_id).first()
+    #         if location:
+    #             user_data['location'] = location.serialize()
+    #         else:
+    #             return jsonify({"msg": f"No location found for user {user.id}"}), 404
+    #     user_locations.append(user_data)
+
+    # Si se encontraron usuarios, devuelve un objeto JSON con los usuarios y sus ubicaciones
+    # if active_users:
+    #     return jsonify(active_users), 200
+    # else:
+    #     return jsonify({"msg": "No active users found"}), 404
     
 
 
