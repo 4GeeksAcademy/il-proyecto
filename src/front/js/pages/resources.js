@@ -7,11 +7,7 @@ import { useNavigate } from "react-router-dom";
 import ResourcesList from "../component/resourcesList";
 
 /* REACT-BOSTRAP */
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
+import { Container, Row, Col, Tab, Tabs } from 'react-bootstrap';
 
 
 

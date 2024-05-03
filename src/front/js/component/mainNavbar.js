@@ -4,12 +4,8 @@ import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 
 /* React Bootstrap */
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Image from 'react-bootstrap/Image';
-import Button from 'react-bootstrap/Button';
+import { Container, Row, Col, Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
+
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 

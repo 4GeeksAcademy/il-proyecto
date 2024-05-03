@@ -1,14 +1,13 @@
 import React, { useEffect, useContext, useState, } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../store/appContext';
-import { Modal } from 'react-bootstrap';
 import L from 'leaflet';
 import map from '../../styles/map.css';
 import 'leaflet/dist/leaflet.css';
 import logo from "../../img/logo.png";
 
 import ChatForm from './chatform';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 
 
 const MapComponent = (props) => {

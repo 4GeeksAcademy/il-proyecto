@@ -6,12 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { GoogleProvider } from "../component/google";  // Asegúrate de que la ruta de importación es correcta
 
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Modal from 'react-bootstrap/Modal';
+import { Container, Row, Col, Form, Modal, Button } from 'react-bootstrap';
+
+
 
 
 export const Login = () => {

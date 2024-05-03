@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
+import { Col, Container, Row, Button, Spinner } from "react-bootstrap";
+import Modal024 from "./modal024";
 import { useNavigate } from "react-router-dom";
 import "../../styles/choose-mood.css";
-import { Col, Container, Row, Button } from "react-bootstrap";
-import Spinner from 'react-bootstrap/Spinner';
-
 
 export const Mood = () => {
     const { actions, store } = useContext(Context);
@@ -12,7 +11,8 @@ export const Mood = () => {
     const [moods, setMoods] = useState([]);
     const [loading, setLoading] = useState(true);
     const [divStyles, setDivStyles] = useState([]);
-    
+    const [showModal, setShowModal] = useState(false);
+    const [selectedMood, setSelectedMood] = useState(null); 
 
     useEffect(() => {
         const initializeMoods = async () => {
@@ -25,15 +25,17 @@ export const Mood = () => {
 
         initializeMoods();
     }, []);
-    
 
     const getRandomColor = () => {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
+        const colors = [
+            "var(--option1-color)",
+            "var(--option2-color)",
+            "var(--option3-color)",
+            "var(--option4-color)",
+            "var(--option6-color)",
+            "var(--option67-color)"
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
     };
 
     const isColorDark = (color) => {
@@ -47,10 +49,15 @@ export const Mood = () => {
     const calculateStyles = (moods) => {
         const newStyles = moods.map((_, index) => {
             const backgroundColor = getRandomColor();
-            const color = isColorDark(backgroundColor) ? 'white' : 'black';
+            let textColor = 'black';
+            if (backgroundColor === 'var(--option5-color)' || backgroundColor === 'var(--option2-color)') {
+                textColor = 'white';
+            } else {
+                textColor = isColorDark(backgroundColor) ? 'white' : 'black';
+            }
             return {
                 backgroundColor,
-                color,
+                color: textColor,
                 position: 'relative',
                 width: '100%',
                 padding: '20px',
@@ -63,20 +70,39 @@ export const Mood = () => {
     };
 
     const handleMoodClick = async (moodId) => {
-        const result = await actions.updateUserMood(store.user?.id, moodId);
-        if (result) {
-            navigate('/day-mood');
+        if (moodId >= 40 && moodId <= 50) {
+            setSelectedMood(moodId);
+            setShowModal(true);
         } else {
-            console.error('Failed to update mood');
+            const result = await actions.updateUserMood(store.user?.id, moodId);
+            if (result) {
+                navigate('/day-mood');
+            } else {
+                console.error('Failed to update mood');
+            }
+        }
+    };
+
+    const handleCloseModal = async () => {
+        setShowModal(false);
+        if (selectedMood && selectedMood >= 0 && selectedMood <= 50) {
+            const result = await actions.updateUserMood(store.user?.id, selectedMood);
+            if (result) {
+                navigate('/day-mood');
+            } else {
+                console.error('Failed to update mood');
+            }
         }
     };
 
     if (loading) {
-        return <div className="vh-100 h-75">
-        <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-        </Spinner>
-        </div>
+        return (
+            <div className="vh-100 h-75">
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </div>
+        );
     }
 
     return (
@@ -90,7 +116,7 @@ export const Mood = () => {
                         {moods.map((mood, index) => (
                             <div key={mood.mood_id}>
                                 <Button
-                                    className="dynamic-content"
+                                    className={`dynamic-content option${index + 1} rounded-0`}
                                     onClick={() => handleMoodClick(mood.mood_id)}
                                     style={divStyles[index] || {}}
                                 >
@@ -101,6 +127,11 @@ export const Mood = () => {
                     </div>
                 </Col>
             </Row>
+            <Modal024
+                showModal={showModal}
+                handleCloseModal={handleCloseModal}
+                selectedMood={selectedMood}
+            />
         </Container>
     );
 }

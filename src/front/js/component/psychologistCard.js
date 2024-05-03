@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/psychologist_card.css";
 
 /* REACT-BOOSTRAP */
-import Card from 'react-bootstrap/Card';
-import Image from 'react-bootstrap/Image';
+import { Container, Row, Col, Card, Image } from 'react-bootstrap';
+
 
 const PsychologistCard = ({ id, name, surnames, col_num, image }) => {
     const navigate = useNavigate();
