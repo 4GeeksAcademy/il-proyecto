@@ -115,10 +115,6 @@ def signup():
     created_at = datetime.now()
     profile_url = re.sub(r'[^a-z0-9]', '', name.replace(" ", "").lower()) + re.sub(r'[^a-z0-9]', '', surnames.replace(" ", "").lower())
 
-    
-
-
-
     query_result = User.query.filter_by(email=email).first()
     if query_result is None:
         new_user = User(email=email, password=hashed_password, name=name, surnames=surnames, is_active=is_active, created_at=created_at, profile_url=profile_url)

@@ -477,7 +477,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						...prevState,
 						active_users: Array.isArray(prevState.location) ? [...prevState.location, data] : [data]
 					}));
-					getActions().getAllActiveUsers();
+					// getActions().getAllActiveUsers();
 					console.log("Ubicaciones cargadas desde la API al almacenamiento.");
 					return true
 
@@ -487,33 +487,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			requestUserLocation: async () => {
-				try {
-					// obtener la ubicación del usuario
-					const position = await new Promise((resolve, reject) => {
-						navigator.geolocation.getCurrentPosition(resolve, reject);
-					});
+			// requestUserLocation: async () => {
+			// 	try {
+			// 		// obtener la ubicación del usuario
+			// 		// const position = await new Promise((resolve, reject) => {
+			// 		// 	navigator.geolocation.getCurrentPosition(resolve, reject);
+			// 		// });
 
-					//  latitud y longitud de la ubicación obtenida
-					const latitude = position.coords.latitude;
-					const longitude = position.coords.longitude;
+			// 		// //  latitud y longitud de la ubicación obtenida
+			// 		// const latitude = position.coords.latitude;
+			// 		// const longitude = position.coords.longitude;
 
-					// ubicación en el estado global (store)
-					getActions().saveUserLocation(latitude, longitude),
-						getActions().getAllActiveUsers(),
-						setStore(prevState => ({
-							...prevState,
-							active_users: [{ latitude, longitude }]
+			// 		// ubicación en el estado global (store)
+			// 		getActions().saveUserLocation(),
+			// 			// getActions().getAllActiveUsers(),
+			// 			setStore(prevState => ({
+			// 				...prevState,
+			// 				active_users: [{ latitude, longitude }]
 
-						}));
+			// 			}));
 
 
 
-				} catch (error) {
-					console.error('Error getting user location:', error.message);
+			// 	} catch (error) {
+			// 		console.error('Error getting user location:', error.message);
 
-				}
-			},
+			// 	}
+			// },
 
 
 			/* CHAT */

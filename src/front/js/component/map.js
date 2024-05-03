@@ -67,10 +67,10 @@ const MapComponent = (props) => {
         iconSize: [40, 40],
         iconAnchor: [20, 40],
       });
-      if (!user.location) {
-        // console.log("ESTE USUARIO NO TIENE LOCALIZACION");
-        return;
-      }
+      // if (!user.location) {
+      //   // console.log("ESTE USUARIO NO TIENE LOCALIZACION");
+      //   return;
+      // }
 
       const marker = L.marker([user.location.latitude, user.location.longitude], { icon: customIcon }).addTo(map);
       const popupContent = `<div>
@@ -188,7 +188,6 @@ const MapComponent = (props) => {
 
   }, []);
 
-  console.log("USERNAME", userName);
   return (
     <>
       <Container fluid>
