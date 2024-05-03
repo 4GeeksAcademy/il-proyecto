@@ -2,10 +2,8 @@ import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useLocation } from 'react-router-dom';
 
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Container, Row, Col, Form } from 'react-bootstrap';
+
 
 const ResetPassword = () => {
     const { actions } = useContext(Context);

@@ -15,6 +15,13 @@
     width: 100%; 
 }
 
+ul {
+    list-style-type: none; 
+    padding: 0; 
+    margin: 0; 
+}
+
+
 .chat li {
     background-repeat: no-repeat;
     background-position: 0 center;
@@ -28,23 +35,24 @@
     box-sizing: border-box;
     word-break: break-all;  
     white-space: pre-wrap;
-    padding: 5px; 
+    padding: 5px;
 }
 
 .my-message {
-    background-color: var(--option1-color);
     margin-right: auto; 
     text-align: left;
-    width: 100%; 
+    width: 100%;
+    overflow-wrap: break-word;
+    
 }
 
 .other-message {
-    background-color: #fff;
     margin-left: auto; 
     text-align: right;
-    direction: rtl;
-    width: 100%; 
+    width: 100%;
+    overflow-wrap: break-word;
 }
+
 
 
 .form-control.my-input {
@@ -83,12 +91,90 @@
 
 .date {
     text-align: center;
+    font-size: var(--small-size);
+    font-family: var(--base-font-family) ;
 }
 
 .button-close-chat {
-    font-size: 1px; 
-    padding: 1px 2px;
+    font-size: 20px;
+    padding: 5px 9px;
     float: right;
     text-align: right;
+    display: flex;
+    align-items: center;
 }
 
+.button-close-chat text {
+    font-size: 13px;
+    margin-top: 0px;
+    margin-right: 8px;
+}
+
+
+.message-input-container {
+    position: relative;
+    margin-top: 35px;
+}
+
+.emoji-button, .send-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.emoji-button {
+    right: 40px;
+}
+
+.send-button {
+    right: 10px;
+}
+
+.input-container {
+    position: relative;
+}
+
+.message-label {
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    color: #aaa;
+    transition: all 0.3s;
+    pointer-events: none;
+}
+
+.message-label.active {
+    transform: translateY(-150%);
+    font-size: 0.8rem;
+}
+
+.message-wrapper {
+    background-color: transparent !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.sender-name {
+    font-size: 0.8em;
+}
+
+.my-message-text {
+    border-top-left-radius: 10px; 
+    border-top-right-radius: 10px; 
+    border-bottom-left-radius: 10px; 
+    border-bottom-right-radius: 10px;
+    padding: 1px 1px 1px 8px;
+    background-color: var(--option1-color);
+}
+
+.other-message-text {
+    border-top-left-radius: 10px; 
+    border-top-right-radius: 10px; 
+    border-bottom-left-radius: 10px; 
+    border-bottom-right-radius: 10px;
+    padding: 1px 1px 1px 8px;
+    background-color: var(--option6-color);
+}

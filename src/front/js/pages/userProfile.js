@@ -10,12 +10,7 @@ import "../../styles/profile.css";
 import PsychologistCard from "../component/psychologistCard";
 
 /* REACT-BOOSTRAP */
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Image from 'react-bootstrap/Image';
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
+import { Container, Row, Col, Image, Card, ListGroup } from 'react-bootstrap';
 
 export const UserProfile = () => {
     const { store, actions } = useContext(Context);

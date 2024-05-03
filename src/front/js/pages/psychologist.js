@@ -7,9 +7,7 @@ import PsychologistCard from "../component/psychologistCard";
 import PsychologistCardSkeleton from "../component/skeleton/psychologistCardSkeleton"
 
 /* REACT-BOOSTRAP */
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Container, Row, Col } from 'react-bootstrap';
 
 export const Psychologist = () => {
     const { store, actions } = useContext(Context);
@@ -18,7 +16,7 @@ export const Psychologist = () => {
     useEffect(() => {
         setTimeout(() => {
             setLoading(false);
-        }, 3000);
+        }, 1500);
         actions.getAllPsychologist();
     }, []);
     
