@@ -46,7 +46,8 @@ const MapComponent = (props) => {
             iconAnchor: [20, 40],
         });
         // Determina la ubicación del usuario o usa la ubicación actual si es null.
-        const userLocation = user.location ? [user.location.latitude, user.location.longitude] : [currentLocation.latitude, currentLocation.longitude];
+        const userLocation = user.id === currentUserId ? [currentLocation.latitude, currentLocation.longitude] : [user.location.latitude, user.location.longitude];
+        // const userLocation = user.location ? [user.location.latitude, user.location.longitude] : [currentLocation.latitude, currentLocation.longitude];
         // Crea el marcador en la ubicación determinada.
         const marker = L.marker(userLocation, { icon: customIcon }).addTo(finalMap);
         // Construye el contenido del popup con condición para mostrar el botón de chat solo si no es el usuario actual.
@@ -57,7 +58,7 @@ const MapComponent = (props) => {
                 `<a href="/${user.id}/${user.profile_url}" class="details-button btn btn-dark rounded-pill text-white">Ver perfil &rarr;</a>
             </div>`;
 
-        console.log("Popup content", popupContent);
+        
         marker.bindPopup(popupContent);
     });
 };
@@ -201,7 +202,7 @@ const getLocation = () => {
 
   }, []);
 
-  
+
   return (
     <>
       <Container fluid>
