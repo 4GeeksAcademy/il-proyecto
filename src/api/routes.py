@@ -53,7 +53,7 @@ def handle_hello():
 def login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-
+    access_token = create_access_token(identity=email)
     user = User.query.filter_by(email=email).first()
 
     if user: 
@@ -61,10 +61,10 @@ def login():
         if bcrypt.checkpw(password.encode('utf-8'), stored_password_hash.encode('utf-8')):
             try:
                 user.is_active = True  
-                db.session.commit()
-                access_token = create_access_token(identity=email)
-                user_data = user.serialize()  # Cambié query_result a user
+                db.session.commit()         
+                user_data = user.serialize() 
                 return jsonify(access_token=access_token, user=user_data)
+            
             except Exception as e:
                 return jsonify({"msg": "Error al crear el token de acceso", "error": str(e)}), 500
         else: 
@@ -94,7 +94,6 @@ def validate_token():
 def logout():
     current_user_email = get_jwt_identity()
     current_user = User.query.filter_by(email=current_user_email).first()
-    print(current_user)
     if current_user:
         current_user.is_active = False
         db.session.commit()
@@ -114,10 +113,6 @@ def signup():
     is_active= False
     created_at = datetime.now()
     profile_url = re.sub(r'[^a-z0-9]', '', name.replace(" ", "").lower()) + re.sub(r'[^a-z0-9]', '', surnames.replace(" ", "").lower())
-
-    
-
-
 
     query_result = User.query.filter_by(email=email).first()
     if query_result is None:
@@ -208,6 +203,7 @@ def send_reset_email(user, token):
     mail.send(msg)
 
 
+
 @api.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_token(token):
     user = User.verify_reset_token(token)
@@ -220,6 +216,20 @@ def reset_token(token):
         db.session.commit()
         return jsonify({'message': '¡Contraseña actualizada!'}), 200
     return jsonify({'message': 'Invalid method'}), 405
+
+
+@api.route('/reset-password/<int:user_id>', methods=["GET","POST"])
+def reset_password_profile(user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return jsonify({'message': 'Invalid method'}), 405
+        password = request.json['password']
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        user.password = hashed_password 
+        db.session.commit()
+        return jsonify({'message': '¡Contraseña actualizada!'}), 200
+            
+
 
 
 @api.route('/delete-account/<int:user_id>', methods=['DELETE'])
@@ -243,7 +253,6 @@ def delete_account(user_id):
 @jwt_required()
 def get_all_location():
     current_user = get_jwt_identity()
-    # print(current_user)
     if current_user:
         query_results = Location.query.all()
         results = list(map(lambda item: item.serialize(), query_results))
@@ -266,25 +275,12 @@ def get_all_location():
 def get_active_users_locations():
     # Obtén todos los usuarios activos
     active_users = User.query.filter_by(is_active=True).all()
-
-    # Obtén la ubicación de cada usuario activo
-    user_locations = []
-    for user in active_users:
-        user_data = user.serialize()  # Asume que tienes un método serialize en tu modelo User
-        if user.location_id:
-            location = Location.query.filter_by(id=user.location_id).first()
-            if location:
-                user_data['location'] = location.serialize()
-            else:
-                return jsonify({"msg": f"No location found for user {user.id}"}), 404
-        user_locations.append(user_data)
-
-    # Si se encontraron usuarios, devuelve un objeto JSON con los usuarios y sus ubicaciones
-    if user_locations:
-        return jsonify(user_locations), 200
+    data_locations = list(map(lambda user: user.serialize_location(), active_users))
+    if data_locations:
+        return jsonify(data_locations), 200
     else:
         return jsonify({"msg": "No active users found"}), 404
-    
+
 
 
 # Guardar la ubicación de un usuario activo con un ruido aleatorio
@@ -581,23 +577,16 @@ def register_socket_events(socket_io):
 
     @socket_io.on('join')
     def on_join(data):
-        print("BACK JOIN")
-        print(data["room"])
-        print(data)
-        user_id = int(data['user_id'])  # Convertir a entero
-        other_user_id = int(data['other_user_id'])  # Convertir a entero
+        user_id = int(data['user_id'])  
+        other_user_id = int(data['other_user_id'])  
         room = data["room"]
-        print(other_user_id)
         join_room(room)
         emit('joined_room', {'room': room, 'user_id': user_id, 'other_user_id': other_user_id}, room=room)
 
     @socket_io.on('leave_room')
     def on_leave(data):
-        print("BACK LEAVE")
         user_id = data.get('user_id', None)
-        print(user_id)
         room = data.get('room', None)
-        print(room)
         if user_id and room:
             leave_room(room)  
             emit('left_room', {'room': room, 'user_id': user_id}, room=room)  

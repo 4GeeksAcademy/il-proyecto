@@ -30,3 +30,40 @@ h4.base-paragrahp{
     letter-spacing: 0.08px;
     border: 1px solid #000000;
 }
+
+
+.leaflet-popup-content-wrapper  {
+    font-size:16px;
+    line-height:24px;
+    border-radius: 0px;
+    border: 1px solid black;
+    padding: 5px;
+    }
+
+.leaflet-popup-content-wrapper .custom-popup a   {
+      color:var(--option1-color);
+      
+    }
+ .leaflet-popup-tip-container .custom-popup {
+    width:30px;
+    height:15px;
+    }
+.leaflet-popup-tip .custom-popup {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+.leaflet-popup-close-button span {
+    font-size: 40px;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+    position: absolute;
+    top: 5px !important;
+    right: 5px !important;
+}
+
+.leaflet-popup{
+    bottom: 20px !important;
+}

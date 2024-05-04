@@ -2,12 +2,7 @@ import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { useNavigate } from "react-router-dom";
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Modal from 'react-bootstrap/Modal';
+import { Container, Row, Col, Form, Modal, Button } from 'react-bootstrap';
 
 export const DeleteAccount = () => {
     const { store, actions } = useContext(Context);

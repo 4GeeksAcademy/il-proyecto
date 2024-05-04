@@ -13,13 +13,9 @@ import PsychologistProfileSkeletons from "../component/skeleton/psychologistProf
 import "../../styles/profile.css";
 
 /* REACT BOOSTRAP ELEMENTS */
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import Image from 'react-bootstrap/Image';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Button from 'react-bootstrap/Button';
+import { Container, Row, Col, Card, Image, ListGroup, Button } from 'react-bootstrap';
+
+
 
 export const PsychologistProfile = () => {
     const { store, actions } = useContext(Context);

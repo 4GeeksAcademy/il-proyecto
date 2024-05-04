@@ -2,12 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/day-mood.css";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Spinner from 'react-bootstrap/Spinner';
+import { Container, Row, Col, Button, ButtonGroup, Spinner } from 'react-bootstrap';
 
 export const DailyMood = () => {
     const { store, actions } = useContext(Context);
@@ -47,11 +42,10 @@ export const DailyMood = () => {
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
         </div>;
-        // Puedes reemplazar esto con un componente de carga si lo prefieres
     }
 
     if (!store.user || !store.user.user_mood) {
-        return <div>No data available</div>; // Puedes reemplazar esto con un componente de error si lo prefieres
+        return <div>No data available</div>; 
     }
 
     return (
