@@ -24,44 +24,31 @@ const MapComponent = (props) => {
 
   
   const handleGeolocation = (map) => {
-    console.log("HANDLEGEOLOCATION");
-    console.log(currentLocation);
     (currentLocation &&
       map.setView([currentLocation?.latitude, currentLocation?.longitude], 13));
   };
 
   const addMarkersToMap = () => {
-    console.log("ADD MARKERS TO MAP");
-    console.log(store.active_users);
+    if (!store || !store.active_users.length) return; 
 
-    if (!store || !store.active_users.length) return; // Añade una verificación rápida para asegurar que hay usuarios activos.
-
-    const currentUserData = JSON.parse(sessionStorage.getItem('userData')); // Obtiene los datos del usuario actual una sola vez.
-    const currentUserId = currentUserData ? currentUserData.id : null; // Maneja el caso donde currentUserData pueda ser null.
+    const currentUserData = JSON.parse(sessionStorage.getItem('userData')); 
+    const currentUserId = currentUserData ? currentUserData.id : null; 
 
     store.active_users.forEach((user, index) => {
-        console.log("Hola: ", user.name);
-
-        // Selecciona la URL del icono dependiendo si user_mood es null o no.
         const iconUrl = user.user_mood && user.user_mood.icon_mood ?
             user.user_mood.icon_mood :
-            "https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/Home%2Fpin-map.png?alt=media&token=7e6f0e5a-0c9b-478b-b86d-13d56a159799";
-
-        console.log("Icon URL", iconUrl);
+            `${process.env.FIREBASE_URL}/Home%2Fpin-map.png?alt=media&token=7e6f0e5a-0c9b-478b-b86d-13d56a159799`;          
+ 
 
         const customIcon = L.icon({
             iconUrl: iconUrl,
             iconSize: [40, 40],
             iconAnchor: [20, 40],
         });
-
         // Determina la ubicación del usuario o usa la ubicación actual si es null.
         const userLocation = user.location ? [user.location.latitude, user.location.longitude] : [currentLocation.latitude, currentLocation.longitude];
-        console.log("User location", userLocation);
-
         // Crea el marcador en la ubicación determinada.
         const marker = L.marker(userLocation, { icon: customIcon }).addTo(finalMap);
-
         // Construye el contenido del popup con condición para mostrar el botón de chat solo si no es el usuario actual.
         const popupContent = `<div key=${index} class="custom-popup">
                 <h5 class="mt-3">${user.name} ${user.surnames}</h5>` +
@@ -74,9 +61,6 @@ const MapComponent = (props) => {
         marker.bindPopup(popupContent);
     });
 };
-
-
-  // };<a href='#' id=${user.id} data-name="${user.name}" class="chat-button btn btn-dark rounded-pill text-white">Chat &rarr;</a> 
 
   //control watermark
   const waterMark = () => {
@@ -98,13 +82,10 @@ const MapComponent = (props) => {
   const requestLocation = async (currentLocation) => {
     try {
       console.log("REQUEST LOCATION", currentLocation);
-      //obtiene todas las localizaciones activas y guarda la ubicación del usuario ( tambien llama a allactiveusers )
       await actions.saveUserLocation(currentLocation);
-      addMarkersToMap();
-      
+      addMarkersToMap();   
       //cerrar modal
-      handleCloseLocationModal();
-      
+      handleCloseLocationModal();    
     } catch (error) {
       console.log('Error getting location:');
     }

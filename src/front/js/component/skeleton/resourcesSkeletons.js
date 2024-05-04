@@ -4,17 +4,11 @@ import "../../../styles/profile.css";
 
 /* MY MOOD COMPONENTS */
 import ResourcesListSkeletons from "./resourcesListSkeletons";
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 
-
 /* REACT-BOSTRAP */
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-
+import { Row, Col, Tabs, Tab } from 'react-bootstrap';
 
 
 export const ResourcesSkeletons = () => {

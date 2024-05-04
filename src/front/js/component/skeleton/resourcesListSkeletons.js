@@ -4,8 +4,6 @@ import Button from 'react-bootstrap/Button';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 
-
-
 const ResourcesListSkeletons = () => {
     return (
         <div className="resources">

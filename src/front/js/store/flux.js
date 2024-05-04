@@ -395,44 +395,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
-
-			// getAllActiveUsers: async () => {
-			// 	console.log("GET ALL ACTIVE USERS....");
-			// 	try {
-			// 		const urlActiveLocations = process.env.BACKEND_URL + `/api/users/active-locations`;
-			// 		console.log("HOLA TOKEN");
-			// 		// Obtén el token JWT del sessionStorage
-			// 		const token = sessionStorage.getItem('userToken');
-			// 		if (!token) {
-			// 			console.error('No token available, user not logged in.');
-			// 			setStore({ ...getStore(), user: null });
-			// 			return false;
-			// 		}
-			// 		console.log("VOY HACER EL FETCH");
-			// 		const response = await fetch(urlActiveLocations, {
-			// 			method: 'GET',
-			// 			headers: {
-			// 				'Authorization': `Bearer  ${token}`
-			// 			}
-			// 		});
-
-			// 		if (!response.ok) {
-			// 			throw new Error(`Failed to fetch active users data: ${response.status} ${response.statusText}`);
-			// 		}
-			// 		console.log("HE VUELTO DEL ENDPOINT");
-			// 		const data = await response.json();
-
-			// 		// Actualizar el estado con las ubicaciones de los usuarios activos
-			// 		// console.log(data);
-			// 		setStore({ ...getStore(), active_users: data });
-			// 		// setStore({ active_users: data });
-			// 		console.log("Active users loaded from the API to store.");
-			// 		return true;
-			// 	} catch (error) {
-			// 		console.error('Error fetching or processing active location data:', error);
-			// 		return false;
-			// 	}
-			// },
 			
 			getAllActiveUsers: async () => {
 				console.log("GET ALL ACTIVE USERS....");
@@ -513,24 +475,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			saveUserLocation: async (currentLocation) => {
 				try {
-					// // Obtén la ubicación del usuario
-					// const position = await new Promise((resolve, reject) =>
-					// 	navigator.geolocation.getCurrentPosition(resolve, reject));
-
-					// const latitude = position.coords.latitude;
-					// const longitude = position.coords.longitude;
-
-
 					const token = sessionStorage.getItem('userToken');
 					const userId = JSON.parse(sessionStorage.userData).id;
-
-					// console.log("Id de usuario: " + userId);
-
 					const urlLocation = process.env.BACKEND_URL + `/api/user/location`;
-
 					const requestBody = JSON.stringify({ user_id: userId, latitude: currentLocation.latitude, longitude: currentLocation.longitude });
-
-
 					const response = await fetch(urlLocation, {
 						method: 'POST',
 						headers: {
@@ -556,50 +504,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 						...prevState,
 						active_users: Array.isArray(prevState.location) ? [...prevState.location, data] : [data]
 					}));
-					// getActions().getAllActiveUsers();
-					// getActions().getAllActiveUsers();
 					console.log("Ubicaciones cargadas desde la API al almacenamiento.");
 					return true
-
 				} catch (error) {
 					console.error('Error fetching or processing location data:', error);
 					return false;
 				}
 			},
-
-			// requestUserLocation: async () => {
-			// 	try {
-			// 		// obtener la ubicación del usuario
-			// 		const position = await new Promise((resolve, reject) => {
-			// 			navigator.geolocation.getCurrentPosition(resolve, reject);
-			// 		});
-
-			// 		//  latitud y longitud de la ubicación obtenida
-			// 		const latitude = position.coords.latitude;
-			// 		const longitude = position.coords.longitude;
-
-			// 		// ubicación en el estado global (store)
-			// 		getActions().saveUserLocation(latitude, longitude),
-			// 			getActions().getAllActiveUsers(),
-			// 			setStore(prevState => ({
-			// 				...prevState,
-			// 				active_users: [{ latitude, longitude }]
-
-			// 			}));
-			// 			}));
-
-
-
-			// 	} catch (error) {
-			// 		console.error('Error getting user location:', error.message);
-			// 	} catch (error) {
-			// 		console.error('Error getting user location:', error.message);
-
-			// 	}
-			// },
-			// 	}
-			// },
-
 
 			/* CHAT */
 			getUserById: async (user_id) => {
@@ -628,7 +539,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return null;
 					}
 			
-					// Assuming setStore and getStore are from a global state management context
 					setStore({ ...getStore(), user_profile: data.results });
 					console.log("User data fetched successfully:", data.results);
 					return data.results; // Return the user data for further processing
@@ -639,36 +549,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			
-			// getUserById: async (user_id) => {
-			// 	try {
-			// 		const token = sessionStorage.getItem('userToken');
-			// 		if (!token) {
-			// 			console.error('No token available, user not logged in.');
-			// 			return null;
-			// 		}
-			// 		const response = await fetch(`${process.env.BACKEND_URL}/api/user/${user_id}`, {
-			// 			method: 'GET',
-			// 			headers: {
-			// 				'Content-Type': 'application/json',
-			// 				'Authorization': `Bearer ${token}`
-			// 			}
-			// 		});
-
-			// 		if (!response.ok) {
-			// 			throw new Error('Failed to fetch ALL user data');
-
-			// 		}
-			// 		const data = await response.json();
-			// 		setStore({ ...getStore(), user_profile: data.results })
-			// 		// console.log("ESTE ES EL GETUSERBYID", data.results);
-			// 		return true;
-					
-
-			// 	} catch (error) {
-			// 		console.error('Error fetching or processing ALL user data:', error);
-			// 		return null;
-			// 	}
-			// },
 
 			handleUserClick: (otherUserId) => {
 				const userData = JSON.parse(sessionStorage.getItem('userData'));

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 /* React Boostrap */
 import { Container, Row, Col, Accordion } from 'react-bootstrap';

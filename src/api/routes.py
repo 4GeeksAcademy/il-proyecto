@@ -62,8 +62,7 @@ def login():
             try:
                 user.is_active = True  
                 db.session.commit()         
-                user_data = user.serialize()  # Cambié query_result a user
-                print(user_data, access_token)
+                user_data = user.serialize() 
                 return jsonify(access_token=access_token, user=user_data)
             
             except Exception as e:
@@ -95,7 +94,6 @@ def validate_token():
 def logout():
     current_user_email = get_jwt_identity()
     current_user = User.query.filter_by(email=current_user_email).first()
-    print(current_user)
     if current_user:
         current_user.is_active = False
         db.session.commit()
@@ -255,7 +253,6 @@ def delete_account(user_id):
 @jwt_required()
 def get_all_location():
     current_user = get_jwt_identity()
-    # print(current_user)
     if current_user:
         query_results = Location.query.all()
         results = list(map(lambda item: item.serialize(), query_results))
@@ -279,8 +276,6 @@ def get_active_users_locations():
     # Obtén todos los usuarios activos
     active_users = User.query.filter_by(is_active=True).all()
     data_locations = list(map(lambda user: user.serialize_location(), active_users))
-    print(active_users)
-    print(data_locations)	
     if data_locations:
         return jsonify(data_locations), 200
     else:
@@ -582,23 +577,16 @@ def register_socket_events(socket_io):
 
     @socket_io.on('join')
     def on_join(data):
-        print("BACK JOIN")
-        print(data["room"])
-        print(data)
-        user_id = int(data['user_id'])  # Convertir a entero
-        other_user_id = int(data['other_user_id'])  # Convertir a entero
+        user_id = int(data['user_id'])  
+        other_user_id = int(data['other_user_id'])  
         room = data["room"]
-        print(other_user_id)
         join_room(room)
         emit('joined_room', {'room': room, 'user_id': user_id, 'other_user_id': other_user_id}, room=room)
 
     @socket_io.on('leave_room')
     def on_leave(data):
-        print("BACK LEAVE")
         user_id = data.get('user_id', None)
-        print(user_id)
         room = data.get('room', None)
-        print(room)
         if user_id and room:
             leave_room(room)  
             emit('left_room', {'room': room, 'user_id': user_id}, room=room)  

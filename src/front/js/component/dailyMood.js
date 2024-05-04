@@ -42,11 +42,10 @@ export const DailyMood = () => {
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
         </div>;
-        // Puedes reemplazar esto con un componente de carga si lo prefieres
     }
 
     if (!store.user || !store.user.user_mood) {
-        return <div>No data available</div>; // Puedes reemplazar esto con un componente de error si lo prefieres
+        return <div>No data available</div>; 
     }
 
     return (

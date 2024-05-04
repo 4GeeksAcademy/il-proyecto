@@ -36,8 +36,8 @@ def setup_commands(app):
         pass
     
 
-    @app.cli.command("fill-db-with-example-data")
-    def fill_db_with_example_data():
+    @app.cli.command("fill-db")
+    def fill_db():
         """ Este comando rellenará la base de datos con datos de ejemplo. """
 
 
