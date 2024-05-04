@@ -12,6 +12,7 @@ import "../../styles/profile.css";
 
 /* MY MOOD CONPONENTS */
 import PsychologistCard from "../component/psychologistCard";
+import { userProfileSkeleton } from "../component/skeleton/userProfileSkeleton";
 
 /* REACT-BOOSTRAP */
 import { Container, Row, Col, Image, Card, ListGroup, Button, Modal } from 'react-bootstrap';
