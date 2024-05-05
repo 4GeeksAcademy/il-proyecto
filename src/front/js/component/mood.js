@@ -58,12 +58,12 @@ export const Mood = () => {
             return {
                 backgroundColor,
                 color: textColor,
-                position: 'relative',
-                width: '100%',
-                padding: '20px',
+                // position: 'relative',
+                // width: '100%',
+                // padding: '20px',
                 marginTop: index === 0 ? '120px' : '20px',
                 opacity: 0,
-                animation: `fadeIn 1s ${index * 0.5}s forwards`
+                // animation: `fadeIn 1s ${index * 0.5}s forwards`
             };
         });
         setDivStyles(newStyles);
@@ -108,10 +108,13 @@ export const Mood = () => {
 
 
 
-    
+
     return (
-        <Container className="mt-5">
-            <Row>
+        <Container fluid className="">
+                <Row md={12} xs={12} className="d-flex text-center align-items-center justify-content-center ">
+                    <h2>{JSON.parse(sessionStorage.getItem('userData')).name},</h2> <h1>¿Cómo te sientes hoy?</h1> 
+                </Row>
+            {/* <Row>
                 <Col lg={4} md={12} xs={12} className="d-flex text-left align-items-center justify-content-center ">
                     <h1>Hola, {JSON.parse(sessionStorage.getItem('userData')).name}<br /> ¿Cómo te sientes hoy?</h1>
                 </Col>
@@ -132,13 +135,64 @@ export const Mood = () => {
                 </Col>
             </Row>
             {/* Modal */}
-            <Modal024
+            {/* <Modal024
                 showModal={showModal}
                 handleCloseModal={handleCloseModal}
                 selectedMood={selectedMood}
-            />
+            /> */}
+
+            <Row className="d-flex justify-content-center align-items-center">
+                <div className="main">
+                    {moods.map((mood, index) => (
+                        <div key={index} className={`chemin${index+1}`}>
+                            <div className={`particle${index+1}`}></div>
+                            <div className={`text-undertext {dynamic-content option${index + 1}`} onClick={() => handleMoodClick(mood.mood_id)} style={divStyles[index] || {}}>{mood.mood}</div>
+                        </div>
+                    ))}
+
+                </div>
+
+
+            </Row>
         </Container>
+
+
+
+
+
     );
 }
 
 export default Mood;
+
+
+// <Row className="d-flex justify-content-center align-items-center">
+// <div className="main">
+//         <div className="chemin1">
+//             <div className="particle1"></div>
+
+//             <div className="text-undertext">Particle 1</div>
+//         </div>
+//         <div className="chemin2">
+//             <div className="particle2"></div>
+
+//             <div className="text-undertext">Particle 2</div>
+//         </div>
+//         <div className="chemin3">
+//             <div className="particle3"></div>
+
+//             <div className="text-undertextleft">Particle 3</div>
+//         </div>
+//         <div className="chemin4">
+//             <div className="particle4"></div>
+
+//             <div className="text-undertextleft">Particle 4</div>
+//         </div>
+//         <div className="chemin5">
+//             <div className="particle5"></div>
+//             <div className="text-undertext">Particle 5</div>
+//         </div>
+// </div>
+
+
+// </Row>

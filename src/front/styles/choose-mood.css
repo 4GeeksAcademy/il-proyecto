@@ -29,3 +29,164 @@
     }
   }
 
+
+
+/* ******************************************************** */
+/* .main {
+  position: relative;
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+  background-image: url("https://images.unsplash.com/photo-1496124248071-3e497bb1696c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=5bd747b3ca4544099668dffe8895d0e3&auto=format&fit=crop&w=858&q=80");
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  align-content: flex-end;
+  overflow: hidden;
+} */
+.main {
+  width: 100vw;
+  height: 80vh;
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/my-mood-507ca.appspot.com/o/mood%2Fmood.png?alt=media&token=403d5fc7-992b-45bd-bc12-104d2c40d171");
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  align-content: flex-end;
+  position: relative;
+  overflow: hidden;
+}
+
+.chemin1,
+.chemin2,
+.chemin3,
+.chemin4,
+.chemin5 {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  height: 100px;
+}
+
+.chemin1 { animation: listen 4s ease-in-out forwards; }
+.chemin2 { animation: listen2 4s ease-in-out forwards; }
+.chemin3 { animation: listen3 4s ease-in-out forwards; }
+.chemin4 { animation: listen4 4s ease-in-out forwards; }
+.chemin5 { animation: listen5 4s ease-in-out forwards; }
+
+
+@keyframes listen {
+  0%, 20% { margin-left: 49%; margin-top: 40vh; transform: rotate(0deg); }
+  100% { margin-left: 38%; margin-top: 5vh; transform: rotate(720deg); }
+}
+
+@keyframes listen2 {
+  0%, 20% { margin-left: 49%; margin-top: 40vh; transform: rotate(0deg); }
+  100% { margin-left: 65%; margin-top: 28vh; transform: rotate(720deg); }
+}
+
+@keyframes listen3 {
+  0%, 20% { margin-left: 49%; margin-top: 40vh; transform: rotate(0deg); }
+  100% { margin-left: 15%; margin-top: 30vh; transform: rotate(720deg); }
+}
+
+@keyframes listen4 {
+  0%, 20% { margin-left: 49%; margin-top: 40vh; transform: rotate(0deg); }
+  100% { margin-left: 60%; margin-top: 50vh; transform: rotate(720deg); }
+}
+
+@keyframes listen5 {
+  0%, 20% { margin-left: 49%; margin-top: 40vh; transform: rotate(0deg); }
+  100% { margin-left: 30%; margin-top: 60vh; transform: rotate(720deg); }
+}
+
+
+
+.particle1,
+.particle2,
+.particle3,
+.particle4,
+.particle5{
+  width: 5px;
+  height: 5px;
+  background-color: rgb(0, 0, 0);
+  border-radius: 90px;
+}
+/* 
+.particle1,
+.particle2,
+.particle5{
+  animation: growparticleright 5s forwards;
+}
+
+.particle3,
+.particle4
+ {
+  animation: growparticleleft 5s forwards;
+} */
+
+@keyframes growparticleright {
+  0% { width: 5px; height: 5px; }
+  80% { width: 5px; height: 5px; }
+  81% { height: 1px; }
+  100% { width: 100px; height: 1px; }
+}
+
+@keyframes growparticleleft {
+  0% { width: 5px; height: 5px; }
+  80% { width: 5px; height: 5px; }
+  81% { height: 1px; margin-left: -5px; }
+  100% { width: 100px; height: 1px; margin-left: -100px; }
+}
+
+.text-underparticule,
+.text-underparticuleleft {
+  color: rgb(0, 0, 0);
+  animation: showtext 6s forwards;
+}
+
+@keyframes showtext {
+  0% { margin-top: -5px; opacity: 0; }
+  90% { margin-top: -5px; opacity: 0; }
+  100% { margin-top: 0px; opacity: 1; }
+}
+
+.text-undertext,
+.text-undertextleft {
+  color: rgb(0, 0, 0);
+  font-size: 40px;
+  width: 450px;
+  font-weight: bold;
+  text-align: left;
+  animation: showtextundertext 4s forwards;
+  background-color: #f0f0f0; 
+  border: 3px solid #000;  
+  border-radius: 7px;  
+  box-shadow: 5px 5px 0px #000;
+  padding: 5px;             
+  box-sizing: border-box;    
+  overflow: hidden;
+  position: absolute;
+  text-align: center;
+  /* top: -120px; 
+  left: 0; 
+  width: 100%; 
+  max-width: 100%;  */
+  margin: 0 auto; 
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.text-undertextleft {
+  margin-left: -100px;
+}
+
+@keyframes showtextundertext {
+  0% { margin-top: -5px; opacity: 0; }
+  90% { margin-top: -5px; opacity: 0; }
+  100% { margin-top: 5px; opacity: 1; }
+}
